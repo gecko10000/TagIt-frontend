@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:tagit_frontend/objects/saved_file.dart';
 import 'package:tagit_frontend/requests.dart';
-import 'package:tagit_frontend/widgets/file_widget.dart';
+import 'package:tagit_frontend/widgets/file_tile.dart';
 
 import '../objects/tag.dart';
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tagit_frontend/widgets/file_list_widget.dart';
+import 'package:tagit_frontend/widgets/file_list.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -24,11 +24,12 @@ class SideDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+
         child: ListView(
-          children: const [
-            DrawerTile(Icons.file_copy, "Files", "/"),
-            DrawerTile(Icons.tag, "Tags", "/tags"),
-            DrawerTile(Icons.search, "Search", "/search")
+          children: [
+            DrawerTile(Icons.file_copy, "Files", (context) => const HomeScreen()),
+            DrawerTile(Icons.tag, "Tags", (context) => const HomeScreen()),
+            DrawerTile(Icons.search, "Search", (context) => const HomeScreen())
           ],
         )
     );
@@ -38,16 +39,20 @@ class SideDrawer extends StatelessWidget {
 class DrawerTile extends StatelessWidget {
   final IconData icon;
   final String title;
-  final String destination;
+  final Widget Function(BuildContext) callback;
 
-  const DrawerTile(this.icon, this.title, this.destination, {super.key});
+  const DrawerTile(this.icon, this.title, this.callback, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(title),
-      onTap: () => Navigator.pushReplacementNamed(context, destination),
+    return Material(
+      child: ListTile(
+        leading: Icon(icon),
+        title: Text(title),
+        onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: callback));
+        },
+      )
     );
   }
 }

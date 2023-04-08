@@ -22,10 +22,11 @@ class FileTile extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(5),
       child: ListTile(
-          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
-          hoverColor: CustomColor.paynesGray,
-          tileColor: CustomColor.paynesGray.withOpacity(0.9),
-          title: Text(file.name),
+        shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+        title: Text(file.name),
+          //splashColor: Colors.green,
+          //hoverColor: CustomColor.paynesGray,
+          //tileColor: CustomColor.paynesGray.withOpacity(0.9),
           onTap: () => {}, // without an onTap, hoverColor does not work
       )
 

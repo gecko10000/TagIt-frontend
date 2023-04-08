@@ -14,7 +14,7 @@ class APIClient extends BaseClient {
   Future<StreamedResponse> send(BaseRequest request) {
     return _client.send(request);
   }
-  
+
 }
 
 APIClient _client = APIClient(Client());
@@ -25,7 +25,5 @@ Future<List<SavedFile>> retrieveFiles() async {
   var response = await _client.get(url("files/all"));
   var fileList = jsonDecode(utf8.decode(response.bodyBytes)) as List;
 
-  return fileList.map((e) {
-    return SavedFile.fromJson(e);
-  }).toList();
+  return fileList.map((e) => SavedFile.fromJson(e)).toList();
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tagit_frontend/misc/colors.dart';
 import 'package:tagit_frontend/routing.dart';
 import 'package:tagit_frontend/widgets/home.dart';
 
@@ -17,7 +18,7 @@ class TagIt extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "TagIt",
       theme: ThemeData(
-        colorScheme: const ColorScheme.dark()
+        colorScheme: const ColorScheme.dark(primary: Colors.blueAccent),
       ),
       home: const HomeScreen(),
       routes: routing(),
