@@ -52,4 +52,10 @@ class _FileListViewState extends State<FileListView> {
     }
   }
 
+  @override
+  void dispose() {
+    _pagingController.dispose();
+    super.dispose();
+  }
+
 }
