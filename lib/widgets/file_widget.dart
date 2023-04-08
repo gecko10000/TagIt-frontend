@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:tagit_frontend/misc/colors.dart';
 import 'package:tagit_frontend/objects/saved_file.dart';
 
 class FileTile extends StatelessWidget {
@@ -18,9 +19,16 @@ class FileTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      tileColor: Color.fromRGBO(_color(), _color(), _color(), 0.3),
-      title: Text(file.name),
+    return Container(
+      padding: const EdgeInsets.all(5),
+      child: ListTile(
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(5))),
+          hoverColor: CustomColor.paynesGray,
+          tileColor: CustomColor.paynesGray.withOpacity(0.9),
+          title: Text(file.name),
+          onTap: () => {}, // without an onTap, hoverColor does not work
+      )
+
     );
   }
 }

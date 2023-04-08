@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:tagit_frontend/objects/saved_file.dart';
+import 'package:tagit_frontend/requests.dart';
 import 'package:tagit_frontend/widgets/file_widget.dart';
 
 import '../objects/tag.dart';
@@ -39,7 +40,7 @@ class _FileListViewState extends State<FileListView> {
 
   Future<void> _loadFiles(int pageKey) async {
     try {
-      final newItems = [SavedFile("test"), SavedFile("test2", tags: [Tag("tag")])];
+      final newItems = await retrieveFiles();
       final isLastPage = newItems.length < _pageSize;
       if (isLastPage) {
         _pagingController.appendLastPage(newItems);
@@ -49,6 +50,7 @@ class _FileListViewState extends State<FileListView> {
       }
     } catch (error) {
       _pagingController.error = error;
+      print(error);
     }
   }
 

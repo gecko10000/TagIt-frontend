@@ -2,9 +2,9 @@ import 'package:tagit_frontend/objects/saved_file.dart';
 
 class Tag {
   final String name;
-  final Tag? parent;
-  final Set<Tag> children = {};
-  final Set<SavedFile> files = {};
+  final String? parent;
+  final Set<String> children = {};
+  final Set<String> files = {};
 
   factory Tag.fromJson(Map<String, dynamic> json) =>
       Tag(
@@ -13,7 +13,7 @@ class Tag {
           children: json["children"],
           files: json["files"]
       );
-  Tag(this.name, {this.parent, List<Tag> children = const [], List<SavedFile> files = const []}) {
+  Tag(this.name, {this.parent, List<String> children = const [], List<String> files = const []}) {
     this.children.addAll(children);
     this.files.addAll(files);
   }
