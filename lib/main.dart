@@ -14,6 +14,7 @@ class TagIt extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: "TagIt",
       theme: ThemeData(
         colorScheme: const ColorScheme.dark()

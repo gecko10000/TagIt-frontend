@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tagit_frontend/widgets/file_list_widget.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -12,7 +13,7 @@ class HomeScreen extends StatelessWidget {
           title: const Text("TagIt"),
         ),
         drawer: const SideDrawer(),
-        body: const Placeholder()
+        body: const FileListView()
     );
   }
 }
