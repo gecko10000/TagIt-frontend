@@ -8,21 +8,21 @@ import '../requests.dart';
 
 class TagScreen extends StatelessWidget {
 
-  final String? parent;
+  final Tag? parent;
 
   const TagScreen({super.key, this.parent});
 
   @override
   Widget build(BuildContext context) {
     return SimpleScaffold(
-        title: parent == null ? "Tags" : "Tag: $parent",
+        title: parent == null ? "Tags" : "Tag: ${parent?.fullName()}",
         body: ScrollableListView<Tag>((t) => TagTile(t), _loadTags)
     );
   }
 
   Future<void> _loadTags(int pageKey, PagingController<int, Tag> controller) async {
     try {
-      final newItems = await retrieveChildren(parent);
+      final newItems = await retrieveChildren(parent?.fullName());
       final isLastPage = newItems.length < 20;
       if (isLastPage) {
         controller.appendLastPage(newItems);

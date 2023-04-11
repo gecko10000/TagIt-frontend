@@ -11,7 +11,7 @@ class TagTile extends StatelessWidget {
   void defaultOnTap(BuildContext context) {
     Navigator.push(context,
       MaterialPageRoute(
-        builder: (context) => TagScreen(parent: tag.fullName())
+        builder: (context) => TagScreen(parent: tag)
       )
     );
   }
