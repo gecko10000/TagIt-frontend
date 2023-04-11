@@ -16,7 +16,7 @@ class BrowseScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SimpleScaffold(
         title: parent?.fullName() ?? "Browse Tags",
-        body: ScrollableListView<Tileable>((t) => t.createTile(context), _loadList),
+        body: InfiniteScrollView<Tileable>((t) => t.createTile(context), _loadList),
         backButton: parent != null,
     );
   }

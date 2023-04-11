@@ -26,19 +26,19 @@ class SimpleScaffold extends StatelessWidget {
   }
 }
 
-class ScrollableListView<T> extends StatefulWidget {
+class InfiniteScrollView<T> extends StatefulWidget {
 
   final Widget Function(T) widgetFunction;
   final Future<void> Function(int, PagingController<int, T>) loadingFunction;
 
-  const ScrollableListView(this.widgetFunction, this.loadingFunction, {super.key});
+  const InfiniteScrollView(this.widgetFunction, this.loadingFunction, {super.key});
 
   @override
-  State createState() => _ScrollableListViewState<T>();
+  State createState() => _InfiniteScrollViewState<T>();
 
 }
 
-class _ScrollableListViewState<T> extends State<ScrollableListView<T>> {
+class _InfiniteScrollViewState<T> extends State<InfiniteScrollView<T>> {
 
   final PagingController<int, T> _pagingController = PagingController<int, T>(firstPageKey: 0);
 

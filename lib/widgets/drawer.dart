@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tagit_frontend/screens/browser.dart';
 
-import '../screens/files.dart';
+import '../screens/not_implemented.dart';
 
 class SideDrawer extends StatelessWidget {
 
