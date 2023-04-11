@@ -6,16 +6,16 @@ import 'package:tagit_frontend/widgets/tag_tile.dart';
 import '../objects/tag.dart';
 import '../requests.dart';
 
-class TagScreen extends StatelessWidget {
+class BrowseScreen extends StatelessWidget {
 
   final Tag? parent;
 
-  const TagScreen({super.key, this.parent});
+  const BrowseScreen({super.key, this.parent});
 
   @override
   Widget build(BuildContext context) {
     return SimpleScaffold(
-        title: parent?.fullName() ?? "Tags",
+        title: parent?.fullName() ?? "Browse Tags",
         body: ScrollableListView<Tag>((t) => TagTile(t), _loadTags),
         backButton: parent != null,
     );

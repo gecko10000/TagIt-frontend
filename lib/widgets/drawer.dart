@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tagit_frontend/screens/tags.dart';
+import 'package:tagit_frontend/screens/browser.dart';
 
 import '../screens/files.dart';
 
@@ -12,9 +12,9 @@ class SideDrawer extends StatelessWidget {
 
         child: ListView(
           children: [
+            DrawerTile(Icons.tag, "Browse", (context) => const BrowseScreen()),
             DrawerTile(Icons.file_copy, "Files", (context) => const FileScreen()),
-            DrawerTile(Icons.tag, "Tags", (context) => const TagScreen()),
-            DrawerTile(Icons.search, "Search", (context) => const FileScreen())
+            DrawerTile(Icons.search, "Search", (context) => const FileScreen()),
           ],
         )
     );

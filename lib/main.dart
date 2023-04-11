@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tagit_frontend/routing.dart';
-import 'package:tagit_frontend/screens/files.dart';
+import 'package:tagit_frontend/screens/browser.dart';
 
 void main() {
   runApp(const TagIt());
@@ -19,7 +19,7 @@ class TagIt extends StatelessWidget {
       theme: ThemeData(
         colorScheme: const ColorScheme.dark(primary: Colors.blueAccent),
       ),
-      home: const FileScreen(),
+      home: const BrowseScreen(),
       routes: routing(),
     );
   }

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tagit_frontend/screens/tags.dart';
+import 'package:tagit_frontend/screens/browser.dart';
 
 import '../objects/tag.dart';
 
@@ -11,7 +11,7 @@ class TagTile extends StatelessWidget {
   void defaultOnTap(BuildContext context) {
     Navigator.push(context,
       MaterialPageRoute(
-        builder: (context) => TagScreen(parent: tag)
+        builder: (context) => BrowseScreen(parent: tag)
       )
     );
   }
