@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tagit_frontend/screens/tags.dart';
 
 import '../objects/tag.dart';
 
@@ -14,11 +15,14 @@ class TagTile extends StatelessWidget {
         padding: const EdgeInsets.all(5),
         child: ListTile(
           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-          title: Text(tag.fullName()),
+          title: Text(tag.name),
           //splashColor: Colors.green,
           //hoverColor: CustomColor.paynesGray,
           //tileColor: CustomColor.paynesGray.withOpacity(0.9),
-          onTap: () => {}, // without an onTap, hoverColor does not work
+          onTap: () => Navigator.push(context, MaterialPageRoute(
+              builder: (context) => TagScreen(parent: tag.fullName())
+          )
+          ),
         )
 
     );

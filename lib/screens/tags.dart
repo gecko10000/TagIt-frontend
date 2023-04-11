@@ -15,14 +15,14 @@ class TagScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SimpleScaffold(
-        title: "Tags",
+        title: parent == null ? "Tags" : "Tag: $parent",
         body: ScrollableListView<Tag>((t) => TagTile(t), _loadTags)
     );
   }
 
   Future<void> _loadTags(int pageKey, PagingController<int, Tag> controller) async {
     try {
-      final newItems = await retrieveTags(parent);
+      final newItems = await retrieveChildren(parent);
       final isLastPage = newItems.length < 20;
       if (isLastPage) {
         controller.appendLastPage(newItems);
