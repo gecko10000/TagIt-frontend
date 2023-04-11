@@ -23,7 +23,7 @@ class BrowseScreen extends StatelessWidget {
 
   Future<void> _loadTags(int pageKey, PagingController<int, Tag> controller) async {
     try {
-      final newItems = await retrieveChildren(parent?.fullName());
+      final newItems = await retrieveTagChildren(parent?.fullName());
       final isLastPage = newItems.length < 20;
       if (isLastPage) {
         controller.appendLastPage(newItems);

@@ -24,7 +24,16 @@ class TagTile extends StatelessWidget {
         padding: const EdgeInsets.all(5),
         child: ListTile(
           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
-          title: Text(tag.name),
+          title: Text(tag.name,
+            style: const TextStyle(
+              fontSize: 24,
+            ),
+          ),
+          trailing: Text("${tag.children.length} | ${tag.files.length}",
+            style: const TextStyle(
+              fontSize: 24,
+            ),
+          ),
           //splashColor: Colors.green,
           //hoverColor: CustomColor.paynesGray,
           //tileColor: CustomColor.paynesGray.withOpacity(0.9),

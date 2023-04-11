@@ -4,7 +4,7 @@ import 'package:tagit_frontend/screens/browser.dart';
 import '../screens/files.dart';
 
 class SideDrawer extends StatelessWidget {
-  
+
   const SideDrawer({super.key});
 
   @override
@@ -15,9 +15,9 @@ class SideDrawer extends StatelessWidget {
           children: [
             DrawerTile(Icons.file_copy, "Browse", (context) => const BrowseScreen()),
             //DrawerTile(Icons.file_copy, "Files", (context) => const FileScreen()),
-            DrawerTile(Icons.search, "Search", (context) => const FileScreen()),
-            DrawerTile(Icons.upload, "Upload", (context) => const FileScreen()),
-            DrawerTile(Icons.settings, "Settings", (context) => const FileScreen()),
+            DrawerTile(Icons.search, "Search", (context) => const NotImplementedScreen()),
+            DrawerTile(Icons.upload, "Upload", (context) => const NotImplementedScreen()),
+            DrawerTile(Icons.settings, "Settings", (context) => const NotImplementedScreen()),
           ],
         )
     );
