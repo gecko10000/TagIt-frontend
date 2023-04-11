@@ -1,4 +1,4 @@
-import 'package:tagit_frontend/objects/saved_file.dart';
+
 
 class Tag {
   final String name;
@@ -10,11 +10,13 @@ class Tag {
       Tag(
           json["name"],
           parent: json["parent"],
-          children: json["children"],
-          files: json["files"]
+          children: (json["children"] as List).map((d) => d as String).toList(),
+          files: (json["files"] as List).map((d) => d as String).toList()
       );
   Tag(this.name, {this.parent, List<String> children = const [], List<String> files = const []}) {
     this.children.addAll(children);
     this.files.addAll(files);
   }
+
+  String fullName() => parent == null ? name : "$parent/$name";
 }

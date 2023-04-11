@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart';
 
 import 'objects/saved_file.dart';
+import 'objects/tag.dart';
 
 class APIClient extends BaseClient {
 
@@ -26,4 +27,11 @@ Future<List<SavedFile>> retrieveFiles() async {
   var fileList = jsonDecode(utf8.decode(response.bodyBytes)) as List;
 
   return fileList.map((e) => SavedFile.fromJson(e)).toList();
+}
+
+Future<List<Tag>> retrieveTags() async {
+  var response = await _client.get(url("tags/all"));
+  var fileList = jsonDecode(utf8.decode(response.bodyBytes)) as List;
+
+  return fileList.map((e) => Tag.fromJson(e)).toList();
 }

@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:tagit_frontend/objects/saved_file.dart';
 
 class FileTile extends StatelessWidget {
-  const FileTile({super.key, required this.file});
 
   final SavedFile file;
+
+  const FileTile(this.file, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,10 +14,10 @@ class FileTile extends StatelessWidget {
       child: ListTile(
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
         title: Text(file.name),
-          //splashColor: Colors.green,
-          //hoverColor: CustomColor.paynesGray,
-          //tileColor: CustomColor.paynesGray.withOpacity(0.9),
-          onTap: () => {}, // without an onTap, hoverColor does not work
+        //splashColor: Colors.green,
+        //hoverColor: CustomColor.paynesGray,
+        //tileColor: CustomColor.paynesGray.withOpacity(0.9),
+        onTap: () => {}, // without an onTap, hoverColor does not work
       )
 
     );
