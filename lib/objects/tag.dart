@@ -15,10 +15,10 @@ class Tag implements Tileable {
       Tag(
           json["name"],
           parent: json["parent"],
-          children: (json["children"] as List).map((d) => d as String).toList(),
-          files: (json["files"] as List).map((d) => d as String).toList()
+          children: (json["children"] as List).map((d) => d as String),
+          files: (json["files"] as List).map((d) => d as String),
       );
-  Tag(this.name, {this.parent, List<String> children = const [], List<String> files = const []}) {
+  Tag(this.name, {this.parent, Iterable<String> children = const [], Iterable<String> files = const []}) {
     this.children.addAll(children);
     this.files.addAll(files);
   }
