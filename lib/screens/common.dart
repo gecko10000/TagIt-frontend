@@ -5,9 +5,10 @@ import '../widgets/drawer.dart';
 
 class SimpleScaffold extends StatelessWidget {
 
+  final String title;
   final Widget body;
 
-  const SimpleScaffold(this.body, {super.key});
+  const SimpleScaffold({super.key, required this.body, required this.title});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +16,7 @@ class SimpleScaffold extends StatelessWidget {
         appBar: AppBar(
           // custom name set on the backend? make this stateful?
           // if date is april 1, TaGit?
-          title: const Text("TagIt"),
+          title: Text(title),
         ),
         drawer: const SideDrawer(),
         body: body

@@ -29,8 +29,8 @@ Future<List<SavedFile>> retrieveFiles() async {
   return fileList.map((e) => SavedFile.fromJson(e)).toList();
 }
 
-Future<List<Tag>> retrieveTags() async {
-  var response = await _client.get(url("tags/all"));
+Future<List<Tag>> retrieveTags(String? parent) async {
+  var response = await _client.get(url(parent == null ? "tag" : "tag/$parent"));
   var fileList = jsonDecode(utf8.decode(response.bodyBytes)) as List;
 
   return fileList.map((e) => Tag.fromJson(e)).toList();

@@ -7,16 +7,22 @@ import '../objects/tag.dart';
 import '../requests.dart';
 
 class TagScreen extends StatelessWidget {
-  const TagScreen({super.key});
+
+  final String? parent;
+
+  const TagScreen({super.key, this.parent});
 
   @override
   Widget build(BuildContext context) {
-    return SimpleScaffold(ScrollableListView<Tag>((t) => TagTile(t), _loadTags));
+    return SimpleScaffold(
+        title: "Tags",
+        body: ScrollableListView<Tag>((t) => TagTile(t), _loadTags)
+    );
   }
 
   Future<void> _loadTags(int pageKey, PagingController<int, Tag> controller) async {
     try {
-      final newItems = await retrieveTags();
+      final newItems = await retrieveTags(parent);
       final isLastPage = newItems.length < 20;
       if (isLastPage) {
         controller.appendLastPage(newItems);

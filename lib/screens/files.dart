@@ -12,7 +12,8 @@ class FileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SimpleScaffold(
-        ScrollableListView<SavedFile>((f) => FileTile(f), _loadFiles)
+        title: "Files",
+        body: ScrollableListView<SavedFile>((f) => FileTile(f), _loadFiles)
     );
   }
 
