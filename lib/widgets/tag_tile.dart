@@ -6,17 +6,8 @@ import '../objects/tag.dart';
 class TagTile extends StatelessWidget {
 
   final Tag tag;
-  final void Function(BuildContext)? onTap;
 
-  void defaultOnTap(BuildContext context) {
-    Navigator.push(context,
-      MaterialPageRoute(
-        builder: (context) => BrowseScreen(parent: tag)
-      )
-    );
-  }
-
-  const TagTile(this.tag, {super.key, this.onTap});
+  const TagTile(this.tag, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +28,11 @@ class TagTile extends StatelessWidget {
           //splashColor: Colors.green,
           //hoverColor: CustomColor.paynesGray,
           //tileColor: CustomColor.paynesGray.withOpacity(0.9),
-          onTap: () => onTap == null ? defaultOnTap(context) : onTap!(context),
+          onTap: () => Navigator.push(context,
+              MaterialPageRoute(
+                  builder: (context) => BrowseScreen(parent: tag)
+              )
+          )
         )
 
     );
