@@ -15,7 +15,7 @@ class TagScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SimpleScaffold(
-        title: parent == null ? "Tags" : "Tag: ${parent?.fullName()}",
+        title: parent?.fullName() ?? "Tags",
         body: ScrollableListView<Tag>((t) => TagTile(t), _loadTags),
         backButton: parent != null,
     );
