@@ -1,6 +1,7 @@
-import 'package:tagit_frontend/objects/tag.dart';
+import 'package:flutter/material.dart';
+import 'package:tagit_frontend/objects/tileable.dart';
 
-class SavedFile {
+class SavedFile implements Tileable {
   final String name;
   final Set<String> tags = {};
 
@@ -14,5 +15,25 @@ class SavedFile {
 
   SavedFile(this.name, {List<String> tags = const []}) {
     this.tags.addAll(tags);
+  }
+
+  @override
+  Widget createTile(BuildContext context) {
+    return Container(
+        padding: const EdgeInsets.all(5),
+        child: ListTile(
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+          title: Text(name,
+            style: const TextStyle(
+              fontSize: 24,
+            ),
+          ),
+          //splashColor: Colors.green,
+          //hoverColor: CustomColor.paynesGray,
+          //tileColor: CustomColor.paynesGray.withOpacity(0.9),
+          onTap: () => {}, // without an onTap, hoverColor does not work
+        )
+
+    );
   }
 }

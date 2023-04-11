@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:tagit_frontend/screens/common.dart';
-import 'package:tagit_frontend/widgets/tag_tile.dart';
 
 import '../objects/tag.dart';
+import '../objects/tileable.dart';
 import '../requests.dart';
 
 class BrowseScreen extends StatelessWidget {
@@ -16,14 +16,14 @@ class BrowseScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return SimpleScaffold(
         title: parent?.fullName() ?? "Browse Tags",
-        body: ScrollableListView<Tag>((t) => TagTile(t), _loadTags),
+        body: ScrollableListView<Tileable>((t) => t.createTile(context), _loadList),
         backButton: parent != null,
     );
   }
 
-  Future<void> _loadTags(int pageKey, PagingController<int, Tag> controller) async {
+  Future<void> _loadList(int pageKey, PagingController<int, Tileable> controller) async {
     try {
-      final newItems = await retrieveTagChildren(parent?.fullName());
+      final newItems = await retrieveChildren(parent?.fullName());
       final isLastPage = newItems.length < 20;
       if (isLastPage) {
         controller.appendLastPage(newItems);
