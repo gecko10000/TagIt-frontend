@@ -41,10 +41,12 @@ class Tag implements Tileable {
         builder: (context) => AlertDialog(
           content: Text("Are you sure you want to delete tag \"${fullName()}\"?"),
           actions: [
-            TextButton(child: Text("No"),
+            TextButton(
+              child: const Text("Cancel"),
               onPressed: () => Navigator.pop(context),
             ),
-            TextButton(child: Text("Yes"),
+            TextButton(
+                child: const Text("Delete", style: TextStyle(color: Colors.red)),
               onPressed: () => sendTagDeletion(this).then((value) async {
                   Navigator.pop(context);
                   Tag? parentTag = parent == null ? null : await getTag(parent!);
