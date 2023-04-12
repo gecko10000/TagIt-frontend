@@ -22,6 +22,7 @@ class SavedFile implements Tileable {
     return Container(
         padding: const EdgeInsets.all(5),
         child: ListTile(
+          leading: const Icon(Icons.file_copy),
           shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
           title: Text(name,
             style: const TextStyle(

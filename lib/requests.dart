@@ -30,7 +30,17 @@ Future<List<Tileable>> retrieveChildren(String? parent) async {
   returned.addAll((map["children"] as List).map((e) => Tag.fromJson(e)));
   List? files = map["files"];
   if (files != null) {
-    returned.addAll(files!.map((e) => SavedFile.fromJson(e)));
+    returned.addAll(files.map((e) => SavedFile.fromJson(e)));
   }
   return returned;
+}
+
+Future<Tag> getTag(String name) async {
+  final response = await _client.get(url("tag/${Uri.encodeComponent(name)}"));
+  final map = jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+  return Tag.fromJson(map);
+}
+
+Future<void> sendTagDeletion(Tag tag) async {
+  await _client.delete(url("tag/${Uri.encodeComponent(tag.fullName())}"));
 }
