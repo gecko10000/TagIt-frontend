@@ -9,11 +9,12 @@ void main() {
 class TagIt extends StatelessWidget {
   const TagIt({super.key});
 
-
+  static final RouteObserver browseObserver = RouteObserver<MaterialPageRoute>();
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorObservers: [browseObserver],
       debugShowCheckedModeBanner: false,
       title: "TagIt",
       theme: ThemeData(

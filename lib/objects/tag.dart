@@ -26,7 +26,7 @@ class Tag implements Tileable {
   String fullName() => parent == null ? name : "$parent/$name";
 
   // opens the dialog for renaming the tag
-  void renameTag(BuildContext context) {
+  void renameTag(BuildContext context, void Function()? refreshCallback) {
     TextEditingController controller = TextEditingController(text: fullName());
     Future<String?> newName = showDialog<String>(
         context: context,
@@ -54,13 +54,8 @@ class Tag implements Tileable {
         ));
     newName.then((value) async {
       if (value == null) return;
-      sendTagRename(this, value);
-      Tag? parentTag = parent == null ? null : await getTag(parent!);
-      if (context.mounted) {
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => BrowseScreen(parent: parentTag,))
-        );
-      }
+      await sendTagRename(this, value);
+      if (refreshCallback != null) refreshCallback();
     });
   }
 
@@ -70,7 +65,7 @@ class Tag implements Tileable {
   }
 
   // opens the confirmation for deletion
-  void deleteTag(BuildContext context) {
+  void deleteTag(BuildContext context, void Function()? refreshCallback) {
     Future<bool?> deleted = showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
@@ -97,18 +92,13 @@ class Tag implements Tileable {
     deleted.then((value) async {
       if (!(value ?? false)) return;
       await sendTagDeletion(this);
-      Tag? parentTag = parent == null ? null : await getTag(parent!);
-      if (context.mounted) {
-        Navigator.pushReplacement(context, MaterialPageRoute(
-            builder: (context) => BrowseScreen(parent: parentTag,))
-        );
-      }
+      if (refreshCallback != null) refreshCallback();
     });
 
   }
 
   @override
-  Widget createTile(BuildContext context) {
+  Widget createTile({required BuildContext context, void Function()? refreshCallback}) {
     return Container(
         padding: const EdgeInsets.all(5),
         child: ListTile(
@@ -119,7 +109,7 @@ class Tag implements Tileable {
               fontSize: 24,
             ),
           ),
-          trailing: PopupMenuButton<void Function(BuildContext)>(
+          trailing: PopupMenuButton<void Function(BuildContext, void Function()?)>(
             itemBuilder: (context) => [
               PopupMenuItem(
                 value: renameTag,
@@ -134,7 +124,7 @@ class Tag implements Tileable {
                 child: const Text("Delete", style: TextStyle(color: Colors.red)),
               ),
             ],
-            onSelected: (func) => func(context),
+            onSelected: (func) => func(context, refreshCallback),
           ),
           //splashColor: Colors.green,
           //hoverColor: CustomColor.paynesGray,

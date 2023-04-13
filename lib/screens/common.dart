@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../widgets/drawer.dart';
 
@@ -24,43 +23,4 @@ class SimpleScaffold extends StatelessWidget {
         body: body
     );
   }
-}
-
-class InfiniteScrollView<T> extends StatefulWidget {
-
-  final Widget Function(T) widgetFunction;
-  final Future<void> Function(int, PagingController<int, T>) loadingFunction;
-
-  const InfiniteScrollView(this.widgetFunction, this.loadingFunction, {super.key});
-
-  @override
-  State createState() => _InfiniteScrollViewState<T>();
-
-}
-
-class _InfiniteScrollViewState<T> extends State<InfiniteScrollView<T>> {
-
-  final PagingController<int, T> _pagingController = PagingController<int, T>(firstPageKey: 0);
-
-  @override
-  Widget build(BuildContext context) {
-    return PagedListView<int, T>(pagingController: _pagingController,
-        builderDelegate: PagedChildBuilderDelegate<T>(
-            itemBuilder: (ctx, item, index) => widget.widgetFunction(item)
-        )
-    );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _pagingController.addPageRequestListener((pageKey) => widget.loadingFunction(pageKey, _pagingController));
-  }
-
-  @override
-  void dispose() {
-    _pagingController.dispose();
-    super.dispose();
-  }
-
 }

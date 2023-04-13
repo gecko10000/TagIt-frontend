@@ -1,41 +1,81 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:tagit_frontend/screens/common.dart';
 
+import '../main.dart';
 import '../objects/tag.dart';
 import '../objects/tileable.dart';
 import '../requests.dart';
 
-class BrowseScreen extends StatelessWidget {
+class BrowseScreen extends StatefulWidget {
 
   final Tag? parent;
 
   const BrowseScreen({super.key, this.parent});
 
   @override
+  State createState() => _BrowseScreenState();
+
+}
+
+class _BrowseScreenState extends State<BrowseScreen> with RouteAware {
+
+  List<Tileable> tagsAndFiles = [];
+
+  @override
   Widget build(BuildContext context) {
     return SimpleScaffold(
-        title: parent?.fullName() ?? "Browse Tags",
-        body: InfiniteScrollView<Tileable>((t) => t.createTile(context), _loadList),
-        backButton: parent != null,
+        title: widget.parent?.fullName() ?? "Browse Tags",
+        body: tagsAndFiles.isEmpty
+            ? const Align(
+                child: Text("Nothing here.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                      fontSize: 32
+                  ),
+                )
+              )
+            : ListView.builder(
+                itemCount: tagsAndFiles.length,
+                itemBuilder: (context, i) => tagsAndFiles[i].createTile(context: context, refreshCallback: refresh),
+              ),
+        backButton: widget.parent != null,
     );
   }
 
-  Future<void> _loadList(int pageKey, PagingController<int, Tileable> controller) async {
+  Future<void> _loadContents() async {
     try {
-      final newItems = await retrieveChildren(parent?.fullName());
-      final isLastPage = newItems.length < 20;
-      if (isLastPage) {
-        controller.appendLastPage(newItems);
-      } else {
-        final nextPageKey = pageKey + newItems.length;
-        controller.appendPage(newItems, nextPageKey);
-      }
+      final newItems = await retrieveChildren(widget.parent?.fullName());
+      setState(() => tagsAndFiles = newItems);
     } catch (error, t) {
-      controller.error = error;
       print("ERROR: $error");
       print(t);
     }
   }
 
+  void refresh() {
+    _loadContents();
+  }
+
+  @override
+  void didPush() => setState(() {
+    refresh();
+  });
+
+  @override
+  void didPopNext() => setState(() {
+    refresh();
+  });
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    TagIt.browseObserver.subscribe(this, ModalRoute.of(context) as PageRoute);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    TagIt.browseObserver.unsubscribe(this);
+  }
 }

@@ -18,7 +18,7 @@ class SavedFile implements Tileable {
   }
 
   @override
-  Widget createTile(BuildContext context) {
+  Widget createTile({required BuildContext context, void Function()? refreshCallback}) {
     return Container(
         padding: const EdgeInsets.all(5),
         child: ListTile(

@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
 
 abstract class Tileable {
-  Widget createTile(BuildContext context);
+  Widget createTile({required BuildContext context, void Function() refreshCallback});
 }
