@@ -79,12 +79,6 @@ class Tag implements Tileable {
             TextButton(
                 child: const Text("Delete", style: TextStyle(color: Colors.red)),
                 onPressed: () => Navigator.pop(context, true),
-                  /*Tag? parentTag = parent == null ? null : await getTag(parent!);
-                  if (context.mounted) {
-                    Navigator.pushReplacement(context, MaterialPageRoute(
-                        builder: (context) => BrowseScreen(parent: parentTag,))
-                    );
-                  }*/
             ),
           ],
         ),
