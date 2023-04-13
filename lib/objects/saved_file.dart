@@ -9,7 +9,7 @@ class SavedFile implements Tileable {
     return
       SavedFile(
           json["name"],
-          tags: (json["tags"] as List).map((e) => e as String).toList()
+          tags: (json["tags"] as List?)?.map((e) => e as String).toList() ?? []
       );
   }
 

@@ -15,8 +15,8 @@ class Tag implements Tileable {
   factory Tag.fromJson(Map<String, dynamic> json) => Tag(
           json["name"],
           parent: json["parent"],
-          children: (json["children"] as List).map((d) => d as String),
-          files: (json["files"] as List).map((d) => d as String),
+          children: (json["children"] as List?)?.map((d) => d as String) ?? [],
+          files: (json["files"] as List?)?.map((d) => d as String) ?? [],
       );
   Tag(this.name, {this.parent, Iterable<String> children = const [], Iterable<String> files = const []}) {
     this.children.addAll(children);
