@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:tagit_frontend/objects/tileable.dart';
+import 'package:tagit_frontend/requests.dart';
 
-import '../requests.dart';
 import '../screens/browser.dart';
 
 class Tag implements Tileable {
@@ -27,7 +27,9 @@ class Tag implements Tileable {
 
   // opens the dialog for renaming the tag
   void renameTag(BuildContext context) {
-
+    Navigator.push(context, MaterialPageRoute(
+        builder: (context) => AlertDialog()
+    ));
   }
 
   // opens the file browser to select a place to move it to?
@@ -37,28 +39,39 @@ class Tag implements Tileable {
 
   // opens the confirmation for deletion
   void deleteTag(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(
+    Future<bool?> deleted = showDialog<bool>(
+        context: context,
         builder: (context) => AlertDialog(
           content: Text("Are you sure you want to delete tag \"${fullName()}\"?"),
           actions: [
             TextButton(
               child: const Text("Cancel"),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.pop(context, false),
             ),
             TextButton(
                 child: const Text("Delete", style: TextStyle(color: Colors.red)),
-              onPressed: () => sendTagDeletion(this).then((value) async {
-                  Navigator.pop(context);
-                  Tag? parentTag = parent == null ? null : await getTag(parent!);
+                onPressed: () => Navigator.pop(context, true),
+                  /*Tag? parentTag = parent == null ? null : await getTag(parent!);
                   if (context.mounted) {
                     Navigator.pushReplacement(context, MaterialPageRoute(
-                      builder: (context) => BrowseScreen(parent: parentTag,))
-                  );
-                  }
-                })),
+                        builder: (context) => BrowseScreen(parent: parentTag,))
+                    );
+                  }*/
+            ),
           ],
         ),
-    ));
+    );
+    deleted.then((value) async {
+      if (!(value ?? false)) return;
+      await sendTagDeletion(this);
+      Tag? parentTag = parent == null ? null : await getTag(parent!);
+      if (context.mounted) {
+        Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) => BrowseScreen(parent: parentTag,))
+        );
+      }
+    });
+
   }
 
   @override
@@ -76,16 +89,16 @@ class Tag implements Tileable {
           trailing: PopupMenuButton<void Function(BuildContext)>(
             itemBuilder: (context) => [
               PopupMenuItem(
-                child: Text("Rename"),
                 value: renameTag,
+                child: const Text("Rename"),
               ),
               PopupMenuItem(
-                child: Text("Move"),
-                value: moveTag,
+                value: renameTag,
+                child: const Text("Move"),
               ),
               PopupMenuItem(
-                child: Text("Delete", style: TextStyle(color: Colors.red)),
                 value: deleteTag,
+                child: const Text("Delete", style: TextStyle(color: Colors.red)),
               ),
             ],
             onSelected: (func) => func(context),
