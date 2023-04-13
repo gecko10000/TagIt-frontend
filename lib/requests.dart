@@ -6,11 +6,11 @@ import 'objects/saved_file.dart';
 import 'objects/tag.dart';
 import 'objects/tileable.dart';
 
-class APIClient extends BaseClient {
+class _APIClient extends BaseClient {
 
   final Client _client;
 
-  APIClient(this._client);
+  _APIClient(this._client);
 
   @override
   Future<StreamedResponse> send(BaseRequest request) {
@@ -19,7 +19,7 @@ class APIClient extends BaseClient {
 
 }
 
-APIClient _client = APIClient(Client());
+_APIClient _client = _APIClient(Client());
 
 Uri url(String endpoint) => Uri(scheme: 'http', host: "localhost", port: 10000, path: endpoint);
 
@@ -43,4 +43,11 @@ Future<Tag> getTag(String name) async {
 
 Future<void> sendTagDeletion(Tag tag) async {
   await _client.delete(url("tag/${Uri.encodeComponent(tag.fullName())}"));
+}
+
+Future<void> sendTagRename(Tag tag, String newName) async {
+  await _client.patch(
+      url("tag/${Uri.encodeComponent(tag.fullName())}"),
+      body: {"name": newName}
+  );
 }

@@ -27,9 +27,41 @@ class Tag implements Tileable {
 
   // opens the dialog for renaming the tag
   void renameTag(BuildContext context) {
-    Navigator.push(context, MaterialPageRoute(
-        builder: (context) => AlertDialog()
-    ));
+    TextEditingController controller = TextEditingController(text: fullName());
+    Future<String?> newName = showDialog<String>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Renaming Tag \"${fullName()}\""),
+          content: Stack(
+            children: [
+              TextField(
+                controller: controller,
+                autofocus: true,
+                autocorrect: false,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+                onPressed: () => Navigator.pop(context, null),
+                child: const Text("Cancel"),
+            ),
+            TextButton(
+                onPressed: () => Navigator.pop(context, controller.value.text),
+                child: const Text("Rename"),
+            ),
+          ],
+        ));
+    newName.then((value) async {
+      if (value == null) return;
+      sendTagRename(this, value);
+      Tag? parentTag = parent == null ? null : await getTag(parent!);
+      if (context.mounted) {
+        Navigator.pushReplacement(context, MaterialPageRoute(
+            builder: (context) => BrowseScreen(parent: parentTag,))
+        );
+      }
+    });
   }
 
   // opens the file browser to select a place to move it to?
@@ -42,6 +74,7 @@ class Tag implements Tileable {
     Future<bool?> deleted = showDialog<bool>(
         context: context,
         builder: (context) => AlertDialog(
+          title: const Text("Delete Tag"),
           content: Text("Are you sure you want to delete tag \"${fullName()}\"?"),
           actions: [
             TextButton(
