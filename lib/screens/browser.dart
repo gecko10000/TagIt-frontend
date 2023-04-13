@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tagit_frontend/screens/common.dart';
 
@@ -20,25 +19,26 @@ class BrowseScreen extends StatefulWidget {
 
 class _BrowseScreenState extends State<BrowseScreen> with RouteAware {
 
-  List<Tileable> tagsAndFiles = [];
+  List<Tileable>? tagsAndFiles;
 
   @override
   Widget build(BuildContext context) {
+    Widget body = tagsAndFiles?.isEmpty ?? true ?
+        Align(
+          alignment: Alignment.center,
+          child: tagsAndFiles == null ?
+          const CircularProgressIndicator() :
+          const Text("Nothing here.",
+              style: TextStyle(fontSize: 32),
+          )
+        ) :
+        ListView.builder(
+          itemCount: tagsAndFiles?.length,
+          itemBuilder: (context, i) => tagsAndFiles?[i].createTile(context: context, refreshCallback: refresh),
+        );
     return SimpleScaffold(
         title: widget.parent?.fullName() ?? "Browse Tags",
-        body: tagsAndFiles.isEmpty
-            ? const Align(
-                child: Text("Nothing here.",
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      fontSize: 32
-                  ),
-                )
-              )
-            : ListView.builder(
-                itemCount: tagsAndFiles.length,
-                itemBuilder: (context, i) => tagsAndFiles[i].createTile(context: context, refreshCallback: refresh),
-              ),
+        body: body,
         backButton: widget.parent != null,
     );
   }
@@ -50,6 +50,7 @@ class _BrowseScreenState extends State<BrowseScreen> with RouteAware {
     } catch (error, t) {
       print("ERROR: $error");
       print(t);
+      // TODO: exponential backoff reloading?
     }
   }
 
