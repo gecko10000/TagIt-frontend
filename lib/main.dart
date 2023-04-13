@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:tagit_frontend/routing.dart';
 import 'package:tagit_frontend/screens/browser.dart';
 
 void main() {
@@ -21,7 +20,6 @@ class TagIt extends StatelessWidget {
         colorScheme: const ColorScheme.dark(primary: Colors.blueAccent),
       ),
       home: const BrowseScreen(),
-      routes: routing(),
     );
   }
 }
