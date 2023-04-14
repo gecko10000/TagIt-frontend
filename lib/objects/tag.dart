@@ -27,7 +27,10 @@ class Tag implements Tileable {
 
   // opens the dialog for renaming the tag
   void renameTag(BuildContext context, void Function()? refreshCallback) {
-    TextEditingController controller = TextEditingController(text: fullName());
+    final tagName = fullName();
+    TextEditingController controller = TextEditingController(text: tagName);
+    // select to right after the slash (or start of string if there's no slash (-1 + 1 = 0)
+    controller.selection = TextSelection(baseOffset: tagName.length, extentOffset: tagName.lastIndexOf(RegExp(r'/')) + 1);
     Future<String?> newName = showDialog<String>(
         context: context,
         builder: (context) => AlertDialog(
