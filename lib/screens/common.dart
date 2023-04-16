@@ -14,12 +14,10 @@ class SimpleScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          // custom name set on the backend? make this stateful?
-          // if date is april 1, TaGit?
           title: Text(title),
           leading: backButton ? const BackButton() : null,
         ),
-        drawer: const SideDrawer(),
+        drawer: backButton ? const SideDrawer() : null,
         body: body
     );
   }

@@ -1,29 +1,43 @@
 import 'package:flutter/material.dart';
-import 'package:tagit_frontend/screens/common.dart';
 
 import '../main.dart';
 import '../objects/tag.dart';
 import '../objects/tileable.dart';
 import '../requests.dart';
 
-class BrowseScreen extends StatefulWidget {
-
-  final Tag? parent;
-
-  const BrowseScreen({super.key, this.parent});
+class TagBrowserNavigator extends StatelessWidget {
+  const TagBrowserNavigator({super.key});
 
   @override
-  State createState() => _BrowseScreenState();
+  Widget build(BuildContext context) {
+    return Navigator(
+      onGenerateRoute: (settings) {
+        return MaterialPageRoute(settings: settings, builder: (context) => const TagBrowser());
+      },
+    );
+  }
 
 }
 
-class _BrowseScreenState extends State<BrowseScreen> with RouteAware {
+class TagBrowser extends StatefulWidget {
+
+  final Tag? parent;
+  final bool showBackButton;
+
+  const TagBrowser({super.key, this.parent, this.showBackButton = false});
+
+  @override
+  State createState() => _TagBrowserState();
+
+}
+
+class _TagBrowserState extends State<TagBrowser> with RouteAware {
 
   List<Tileable>? tagsAndFiles;
 
   @override
   Widget build(BuildContext context) {
-    Widget body = tagsAndFiles?.isEmpty ?? true ?
+    return tagsAndFiles?.isEmpty ?? true ?
         Align(
           alignment: Alignment.center,
           child: tagsAndFiles == null ?
@@ -36,16 +50,17 @@ class _BrowseScreenState extends State<BrowseScreen> with RouteAware {
           itemCount: tagsAndFiles?.length,
           itemBuilder: (context, i) => tagsAndFiles?[i].createTile(context: context, refreshCallback: refresh),
         );
-    return SimpleScaffold(
+    /*return SimpleScaffold(
         title: widget.parent?.fullName() ?? "Browse Tags",
         body: body,
         backButton: widget.parent != null,
-    );
+    );*/
   }
 
   Future<void> _loadContents() async {
     try {
       final newItems = await retrieveChildren(widget.parent?.fullName());
+      if (widget.parent != null) newItems.insert(0, BackTile());
       setState(() => tagsAndFiles = newItems);
     } catch (error, t) {
       print("ERROR: $error");
@@ -79,4 +94,24 @@ class _BrowseScreenState extends State<BrowseScreen> with RouteAware {
     super.dispose();
     TagIt.browseObserver.unsubscribe(this);
   }
+}
+
+class BackTile extends Tileable {
+
+  @override
+  Widget createTile({required BuildContext context, void Function()? refreshCallback}) {
+    return Container(
+        padding: const EdgeInsets.all(5),
+        child: ListTile(
+          leading: const Icon(Icons.arrow_back),
+          title: const Text("Back",
+            style: TextStyle(
+              fontSize: 24,
+            ),
+          ),
+          onTap: () => Navigator.pop(context),
+        ),
+    );
+  }
+
 }

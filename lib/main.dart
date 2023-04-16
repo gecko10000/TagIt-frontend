@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:tagit_frontend/screens/browser.dart';
+import 'package:tagit_frontend/screens/home_page.dart';
 
 void main() {
   runApp(const TagIt());
@@ -19,7 +19,7 @@ class TagIt extends StatelessWidget {
       theme: ThemeData(
         colorScheme: const ColorScheme.dark(primary: Colors.blueAccent),
       ),
-      home: const BrowseScreen(),
+      home: const HomePage(),
     );
   }
 }

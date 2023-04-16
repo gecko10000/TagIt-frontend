@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:tagit_frontend/objects/tileable.dart';
 import 'package:tagit_frontend/requests.dart';
 
-import '../screens/browser.dart';
+import '../screens/tag_browser.dart';
 
 class Tag implements Tileable {
   final String name;
@@ -128,7 +128,7 @@ class Tag implements Tileable {
           //tileColor: CustomColor.paynesGray.withOpacity(0.9),
           onTap: () => Navigator.push(context,
               MaterialPageRoute(
-                  builder: (context) => BrowseScreen(parent: this)
+                  builder: (context) => TagBrowser(parent: this)
               )
           ),
         )
