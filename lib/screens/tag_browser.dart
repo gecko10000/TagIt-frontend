@@ -34,7 +34,7 @@ class TagBrowser extends ConsumerStatefulWidget {
 
 }
 
-class _TagBrowserState extends ConsumerState<TagBrowser> with RouteAware {
+class _TagBrowserState extends ConsumerState<TagBrowser> with RouteAware, AutomaticKeepAliveClientMixin {
 
   List<Tileable>? tagsAndFiles;
 
@@ -59,6 +59,9 @@ class _TagBrowserState extends ConsumerState<TagBrowser> with RouteAware {
         backButton: widget.parent != null,
     );*/
   }
+
+  @override
+  bool get wantKeepAlive => true;
 
   Future<void> _loadContents() async {
     try {
