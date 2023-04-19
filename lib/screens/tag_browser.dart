@@ -40,6 +40,7 @@ class _TagBrowserState extends ConsumerState<TagBrowser> with RouteAware, Automa
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return tagsAndFiles?.isEmpty ?? true ?
         Align(
           alignment: Alignment.center,

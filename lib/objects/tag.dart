@@ -1,6 +1,7 @@
 
 
 import 'package:flutter/material.dart';
+import 'package:tagit_frontend/objects/common.dart';
 import 'package:tagit_frontend/objects/tileable.dart';
 import 'package:tagit_frontend/requests.dart';
 
@@ -69,29 +70,7 @@ class Tag implements Tileable {
 
   // opens the confirmation for deletion
   void deleteTag(BuildContext context, void Function()? refreshCallback) {
-    Future<bool?> deleted = showDialog<bool>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: const Text("Delete Tag"),
-          content: Text("Are you sure you want to delete tag \"${fullName()}\"?"),
-          actions: [
-            TextButton(
-              child: const Text("Cancel"),
-              onPressed: () => Navigator.pop(context, false),
-            ),
-            TextButton(
-                child: const Text("Delete", style: TextStyle(color: Colors.red)),
-                onPressed: () => Navigator.pop(context, true),
-            ),
-          ],
-        ),
-    );
-    deleted.then((value) async {
-      if (!(value ?? false)) return;
-      await sendTagDeletion(this);
-      if (refreshCallback != null) refreshCallback();
-    });
-
+    deleteObject(context, "tag", fullName(), this, sendTagDeletion, refreshCallback);
   }
 
   @override

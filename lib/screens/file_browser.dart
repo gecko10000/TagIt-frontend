@@ -4,6 +4,8 @@ import 'package:tagit_frontend/objects/saved_file.dart';
 import 'package:tagit_frontend/requests.dart';
 
 class FileBrowser extends ConsumerStatefulWidget {
+  const FileBrowser({super.key});
+
   @override
   ConsumerState createState() => _FileBrowserState();
 
@@ -15,6 +17,7 @@ class _FileBrowserState extends ConsumerState<FileBrowser> with AutomaticKeepAli
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return files?.isEmpty ?? true ?
     Align(
         alignment: Alignment.center,

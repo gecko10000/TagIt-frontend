@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tagit_frontend/objects/common.dart';
 import 'package:tagit_frontend/objects/tileable.dart';
 
 import '../requests.dart';
@@ -28,29 +29,7 @@ class SavedFile implements Tileable {
   }
 
   void deleteFile(BuildContext context, void Function()? refreshCallback) {
-    Future<bool?> deleted = showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text("Delete File"),
-        content: Text("Are you sure you want to delete \"$name\"?"),
-        actions: [
-          TextButton(
-            child: const Text("Cancel"),
-            onPressed: () => Navigator.pop(context, false),
-          ),
-          TextButton(
-            child: const Text("Delete", style: TextStyle(color: Colors.red)),
-            onPressed: () => Navigator.pop(context, true),
-          ),
-        ],
-      ),
-    );
-    deleted.then((confirmed) async {
-      if (!(confirmed ?? false)) return;
-      await sendFileDeletion(this);
-      print(refreshCallback);
-      if (refreshCallback != null) refreshCallback();
-    });
+    deleteObject(context, "file", name, this, sendFileDeletion, refreshCallback);
   }
 
   @override
