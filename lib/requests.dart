@@ -58,3 +58,7 @@ Future<List<SavedFile>> getAllFiles({Order order = Order.dateModified, bool reve
   final files = jsonDecode(utf8.decode(response.bodyBytes)) as List;
   return files.map((j) => SavedFile.fromJson(j)).toList();
 }
+
+Future<void> sendFileDeletion(SavedFile file) async {
+  await _client.delete(url("file/${Uri.encodeComponent(file.name)}"));
+}
