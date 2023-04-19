@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 
+import 'misc/order.dart';
 import 'objects/saved_file.dart';
 import 'objects/tag.dart';
 import 'objects/tileable.dart';
@@ -52,8 +53,8 @@ Future<void> sendTagRename(Tag tag, String newName) async {
   );
 }
 
-Future<List<SavedFile>> getAllFiles() async {
-  final response = await _client.get(url("files/all"));
+Future<List<SavedFile>> getAllFiles({Order order = Order.dateModified, bool reversed = false}) async {
+  final response = await _client.get(url("files/all"), headers: {"order": order.apiName, "reversed": reversed.toString()});
   final files = jsonDecode(utf8.decode(response.bodyBytes)) as List;
   return files.map((j) => SavedFile.fromJson(j)).toList();
 }
