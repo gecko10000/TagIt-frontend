@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tagit_frontend/screens/home_page.dart';
 
 void main() {
@@ -12,14 +13,16 @@ class TagIt extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      navigatorObservers: [browseObserver],
-      debugShowCheckedModeBanner: false,
-      title: "TagIt",
-      theme: ThemeData(
-        colorScheme: const ColorScheme.dark(primary: Colors.blueAccent),
-      ),
-      home: const HomePage(),
+    return ProviderScope(
+        child: MaterialApp(
+          //navigatorObservers: [browseObserver],
+          debugShowCheckedModeBanner: false,
+          title: "TagIt",
+          theme: ThemeData(
+            colorScheme: const ColorScheme.dark(primary: Colors.blueAccent),
+          ),
+          home: const HomePage(),
+        )
     );
   }
 }

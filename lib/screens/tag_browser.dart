@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tagit_frontend/screens/home_page.dart';
 
 import '../main.dart';
 import '../objects/tag.dart';
@@ -11,6 +13,7 @@ class TagBrowserNavigator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Navigator(
+      observers: [TagIt.browseObserver],
       onGenerateRoute: (settings) {
         return MaterialPageRoute(settings: settings, builder: (context) => const TagBrowser());
       },
@@ -19,7 +22,7 @@ class TagBrowserNavigator extends StatelessWidget {
 
 }
 
-class TagBrowser extends StatefulWidget {
+class TagBrowser extends ConsumerStatefulWidget {
 
   final Tag? parent;
   final bool showBackButton;
@@ -27,11 +30,11 @@ class TagBrowser extends StatefulWidget {
   const TagBrowser({super.key, this.parent, this.showBackButton = false});
 
   @override
-  State createState() => _TagBrowserState();
+  ConsumerState createState() => _TagBrowserState();
 
 }
 
-class _TagBrowserState extends State<TagBrowser> with RouteAware {
+class _TagBrowserState extends ConsumerState<TagBrowser> with RouteAware {
 
   List<Tileable>? tagsAndFiles;
 
@@ -70,7 +73,10 @@ class _TagBrowserState extends State<TagBrowser> with RouteAware {
   }
 
   void refresh() {
-    _loadContents();
+    Future(() {
+      ref.read(appBarTitleProvider.notifier).set(widget.parent?.fullName() ?? "Tags");
+      _loadContents();
+    });
   }
 
   @override
