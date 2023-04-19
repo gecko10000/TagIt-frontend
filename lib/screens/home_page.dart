@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:tagit_frontend/screens/not_implemented.dart';
 import 'package:tagit_frontend/screens/tag_browser.dart';
 import 'package:tagit_frontend/widgets/drawer.dart';
+
+import 'file_browser.dart';
 
 part 'home_page.g.dart';
 
@@ -56,9 +57,9 @@ class HomePage extends ConsumerWidget {
               ],
             ),
           ),
-          body: const TabBarView(children: [
+          body: TabBarView(children: [
             TagBrowserNavigator(),
-            NotImplementedScreen(),
+            FileBrowser(),
           ]),
         ),
     );

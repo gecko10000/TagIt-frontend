@@ -83,14 +83,10 @@ class _TagBrowserState extends ConsumerState<TagBrowser> with RouteAware, Automa
   }
 
   @override
-  void didPush() => setState(() {
-    refresh();
-  });
+  void didPush() => refresh();
 
   @override
-  void didPopNext() => setState(() {
-    refresh();
-  });
+  void didPopNext() => refresh();
 
   @override
   void didChangeDependencies() {

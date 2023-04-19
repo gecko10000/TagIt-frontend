@@ -51,3 +51,9 @@ Future<void> sendTagRename(Tag tag, String newName) async {
       body: {"name": newName}
   );
 }
+
+Future<List<SavedFile>> getAllFiles() async {
+  final response = await _client.get(url("files/all"));
+  final files = jsonDecode(utf8.decode(response.bodyBytes)) as List;
+  return files.map((j) => SavedFile.fromJson(j)).toList();
+}
