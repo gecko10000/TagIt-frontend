@@ -77,7 +77,7 @@ class _TagBrowserState extends ConsumerState<TagBrowser> with RouteAware, Automa
 
   void refresh() {
     Future(() {
-      ref.read(appBarTitleProvider.notifier).set(widget.parent?.fullName() ?? "Tags");
+      ref.watch(appBarTitleProvider.notifier).set(widget.parent?.fullName() ?? "Tags");
       _loadContents();
     });
   }

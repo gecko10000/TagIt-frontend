@@ -7,15 +7,34 @@ import 'package:tagit_frontend/widgets/drawer.dart';
 
 part 'home_page.g.dart';
 
-final tabNames = ["Tags", "Files"];
 
 @riverpod
 class AppBarTitle extends _$AppBarTitle {
+  List<String> tabNames = ["Tags", "Files"];
+  int index = 0;
 
   @override
-  String build() => tabNames[0];
+  String build() => tabNames[index];
+  void _update() {
+    state = tabNames[index];
+  }
 
-  void set(String s) => state = s;
+  void set(String s) {
+    tabNames[index] = s;
+    _update();
+  }
+
+  void switchTab(int i) {
+    index = i;
+    _update();
+  }
+}
+
+class AppBarText extends ConsumerWidget {
+  const AppBarText({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => Text(ref.watch(appBarTitleProvider));
 }
 
 class HomePage extends ConsumerWidget {
@@ -28,12 +47,10 @@ class HomePage extends ConsumerWidget {
         child: Scaffold(
           drawer: const SideDrawer(),
           appBar: AppBar(
-            title: Text(ref.watch(appBarTitleProvider)),
+            title: const AppBarText(),
             bottom: TabBar(
-              onTap: (i) {
-                ref.read(appBarTitleProvider.notifier).set(tabNames[i]);
-              },
-              tabs: [
+              onTap: (i) => ref.read(appBarTitleProvider.notifier).switchTab(i),
+              tabs: const [
                 Tab(icon: Icon(Icons.tag)),
                 Tab(icon: Icon(Icons.file_copy)),
               ],

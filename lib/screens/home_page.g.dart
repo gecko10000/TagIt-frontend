@@ -6,7 +6,7 @@ part of 'home_page.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$appBarTitleHash() => r'476f82408a58431d126cb70f305b4f604a7301cd';
+String _$appBarTitleHash() => r'2e69e409af5ff56e0bd67ae5c7c5f165fdff4917';
 
 /// See also [AppBarTitle].
 @ProviderFor(AppBarTitle)
