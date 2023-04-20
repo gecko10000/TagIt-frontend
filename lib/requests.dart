@@ -62,3 +62,10 @@ Future<List<SavedFile>> getAllFiles({Order order = Order.dateModified, bool reve
 Future<void> sendFileDeletion(SavedFile file) async {
   await _client.delete(url("file/${Uri.encodeComponent(file.name)}"));
 }
+
+Future<void> sendFileRename(SavedFile file, String newName) async {
+  await _client.patch(
+    url("file/${Uri.encodeComponent(file.name)}"),
+    body: {"name": newName}
+  );
+}

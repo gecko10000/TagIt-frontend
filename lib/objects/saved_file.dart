@@ -21,11 +21,17 @@ class SavedFile implements Tileable {
   }
 
   void renameFile(BuildContext context, void Function()? refreshCallback) {
-
+    TextEditingController controller = TextEditingController(text: name);
+    // select everything before the period
+    var startIndex = name.lastIndexOf(RegExp(r'\.'));
+    startIndex = startIndex == -1 ? name.length : startIndex;
+    controller.selection = TextSelection(baseOffset: startIndex, extentOffset: 0);
+    renameObject(context, "name", name, this, sendFileRename, refreshCallback, controller);
   }
 
+  // TODO
   void manageFileTags(BuildContext context, void Function()? refreshCallback) {
-
+    throw UnimplementedError();
   }
 
   void deleteFile(BuildContext context, void Function()? refreshCallback) {

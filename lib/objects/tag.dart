@@ -32,35 +32,7 @@ class Tag implements Tileable {
     TextEditingController controller = TextEditingController(text: tagName);
     // select to right after the slash (or start of string if there's no slash since -1 + 1 = 0)
     controller.selection = TextSelection(baseOffset: tagName.length, extentOffset: tagName.lastIndexOf(RegExp(r'/')) + 1);
-    Future<String?> newName = showDialog<String>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text("Renaming Tag \"${fullName()}\""),
-          content: Stack(
-            children: [
-              TextField(
-                controller: controller,
-                autofocus: true,
-                autocorrect: false,
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-                onPressed: () => Navigator.pop(context, null),
-                child: const Text("Cancel"),
-            ),
-            TextButton(
-                onPressed: () => Navigator.pop(context, controller.value.text),
-                child: const Text("Rename"),
-            ),
-          ],
-        ));
-    newName.then((value) async {
-      if (value == null) return;
-      await sendTagRename(this, value);
-      if (refreshCallback != null) refreshCallback();
-    });
+    renameObject(context, "tag", fullName(), this, sendTagRename, refreshCallback, controller);
   }
 
   // opens the file browser to select a place to move it to?
