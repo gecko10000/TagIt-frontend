@@ -1,7 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tagit_frontend/objects/saved_file.dart';
 import 'package:tagit_frontend/requests.dart';
+
+part 'file_browser.g.dart';
+
+@riverpod
+class Files extends _$Files {
+  @override
+  FutureOr<List<SavedFile>> build() => getAllFiles();
+
+  void refresh() async => state = AsyncValue.data(await getAllFiles());
+
+}
 
 class FileBrowser extends ConsumerStatefulWidget {
   const FileBrowser({super.key});
@@ -13,12 +25,35 @@ class FileBrowser extends ConsumerStatefulWidget {
 
 class _FileBrowserState extends ConsumerState<FileBrowser> with AutomaticKeepAliveClientMixin {
 
-  List<SavedFile>? files;
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return files?.isEmpty ?? true ?
+    final fileFuture = ref.watch(filesProvider);
+    return fileFuture.when(
+        data: (files) {
+          if (files.isEmpty) {
+            return const Align(
+              alignment: Alignment.center,
+              child: Text("Nothing here.",
+                style: TextStyle(fontSize: 32),
+              ),
+            );
+          }
+          return ListView.builder(
+            itemCount: files.length,
+            itemBuilder: (context, i) => files[i].createTile(context: context, ref: ref),
+          );
+        },
+        error: (err, st) => Align(
+          alignment: Alignment.center,
+          child: Text("Error: $err"),
+        ),
+        loading: () => const Align(
+          alignment: Alignment.center,
+          child: CircularProgressIndicator(),
+        )
+    );
+    /*return files?.isEmpty ?? true ?
     Align(
         alignment: Alignment.center,
         child: files == null ?
@@ -30,13 +65,13 @@ class _FileBrowserState extends ConsumerState<FileBrowser> with AutomaticKeepAli
     ListView.builder(
       itemCount: files?.length,
       itemBuilder: (context, i) => files?[i].createTile(context: context, refreshCallback: _loadFiles),
-    );
+    );*/
   }
 
   @override
   bool get wantKeepAlive => true;
 
-  Future<void> _loadFiles() async {
+  /*Future<void> _loadFiles() async {
     try {
       final retrieved = await getAllFiles();
       setState(() => files = retrieved);
@@ -44,12 +79,12 @@ class _FileBrowserState extends ConsumerState<FileBrowser> with AutomaticKeepAli
       print("ERROR: $error");
       print(t);
     }
-  }
+  }*/
 
   @override
   void initState() {
     super.initState();
-    _loadFiles();
+    //_loadFiles();
   }
 
 }

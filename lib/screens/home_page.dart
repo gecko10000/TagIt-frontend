@@ -8,27 +8,25 @@ import 'file_browser.dart';
 
 part 'home_page.g.dart';
 
+@riverpod
+class TabBarIndex extends _$TabBarIndex {
+
+  @override
+  int build() => 0;
+  void set(int i) => state = i;
+}
 
 @riverpod
 class AppBarTitle extends _$AppBarTitle {
   List<String> tabNames = ["Tags", "Files"];
-  int index = 0;
 
   @override
-  String build() => tabNames[index];
-  void _update() {
-    state = tabNames[index];
-  }
+  String build() => tabNames[ref.watch(tabBarIndexProvider)];
 
   void set(String s) {
-    tabNames[index] = s;
-    _update();
+    state = tabNames[ref.watch(tabBarIndexProvider)] = s;
   }
 
-  void switchTab(int i) {
-    index = i;
-    _update();
-  }
 }
 
 class AppBarText extends ConsumerWidget {
@@ -50,7 +48,7 @@ class HomePage extends ConsumerWidget {
           appBar: AppBar(
             title: const AppBarText(),
             bottom: TabBar(
-              onTap: (i) => ref.read(appBarTitleProvider.notifier).switchTab(i),
+              onTap: (i) => ref.read(tabBarIndexProvider.notifier).set(i),
               tabs: const [
                 Tab(icon: Icon(Icons.tag)),
                 Tab(icon: Icon(Icons.file_copy)),

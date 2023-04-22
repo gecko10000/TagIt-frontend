@@ -1,6 +1,5 @@
-
-
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tagit_frontend/objects/common.dart';
 import 'package:tagit_frontend/objects/tileable.dart';
 import 'package:tagit_frontend/requests.dart';
@@ -27,26 +26,26 @@ class Tag implements Tileable {
   String fullName() => parent == null ? name : "$parent/$name";
 
   // opens the dialog for renaming the tag
-  void renameTag(BuildContext context, void Function()? refreshCallback) {
+  void renameTag(BuildContext context, WidgetRef ref) {
     final tagName = fullName();
     TextEditingController controller = TextEditingController(text: tagName);
     // select to right after the slash (or start of string if there's no slash since -1 + 1 = 0)
     controller.selection = TextSelection(baseOffset: tagName.length, extentOffset: tagName.lastIndexOf(RegExp(r'/')) + 1);
-    renameObject(context, "tag", fullName(), this, sendTagRename, refreshCallback, controller);
+    renameObject(context, "tag", fullName(), this, sendTagRename, controller);
   }
 
   // opens the file browser to select a place to move it to?
-  void moveTag(BuildContext context) {
+  void moveTag(BuildContext context, WidgetRef ref) {
 
   }
 
   // opens the confirmation for deletion
-  void deleteTag(BuildContext context, void Function()? refreshCallback) {
-    deleteObject(context, "tag", fullName(), this, sendTagDeletion, refreshCallback);
+  void deleteTag(BuildContext context, WidgetRef ref) {
+    //deleteObject(context, "tag", fullName(), this, sendTagDeletion, refreshCallback);
   }
 
   @override
-  Widget createTile({required BuildContext context, void Function()? refreshCallback}) {
+  Widget createTile({required BuildContext context, required WidgetRef ref}) {
     return Container(
         padding: const EdgeInsets.all(5),
         child: ListTile(
@@ -57,7 +56,7 @@ class Tag implements Tileable {
               fontSize: 24,
             ),
           ),
-          trailing: PopupMenuButton<void Function(BuildContext, void Function()?)>(
+          trailing: PopupMenuButton<void Function(BuildContext, WidgetRef)>(
             itemBuilder: (context) => [
               PopupMenuItem(
                 value: renameTag,
@@ -72,7 +71,7 @@ class Tag implements Tileable {
                 child: const Text("Delete", style: TextStyle(color: Colors.red)),
               ),
             ],
-            onSelected: (func) => func(context, refreshCallback),
+            onSelected: (func) => func(context, ref),
           ),
           //splashColor: Colors.green,
           //hoverColor: CustomColor.paynesGray,

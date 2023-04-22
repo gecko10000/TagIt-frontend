@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tagit_frontend/objects/common.dart';
 import 'package:tagit_frontend/screens/home_page.dart';
 
 import '../main.dart';
 import '../objects/tag.dart';
 import '../objects/tileable.dart';
-import '../requests.dart';
 
 class TagBrowserNavigator extends StatelessWidget {
   const TagBrowserNavigator({super.key});
@@ -36,12 +36,31 @@ class TagBrowser extends ConsumerStatefulWidget {
 
 class _TagBrowserState extends ConsumerState<TagBrowser> with RouteAware, AutomaticKeepAliveClientMixin {
 
-  List<Tileable>? tagsAndFiles;
-
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return tagsAndFiles?.isEmpty ?? true ?
+    final tagsAndFiles = ref.watch(tileableChildrenListProvider(parent: widget.parent?.fullName()));
+    return tagsAndFiles.when(
+        data: (tagsAndFiles) {
+          if (tagsAndFiles.isEmpty) {
+            return const Align(
+              alignment: Alignment.center,
+                child: Text("Nothing here.",
+              style: TextStyle(fontSize: 32),
+            ));
+          }
+          return ListView.builder(
+            itemCount: tagsAndFiles.length,
+            itemBuilder: (context, i) => tagsAndFiles[i].createTile(context: context, ref: ref),
+          );
+        },
+        error: (err, stack) => Text("Error: $err"),
+        loading: () => const Align(
+            alignment: Alignment.center,
+            child: CircularProgressIndicator()
+        ),
+      );
+    /*return tagsAndFiles.isEmpty ?? true ?
         Align(
           alignment: Alignment.center,
           child: tagsAndFiles == null ?
@@ -54,7 +73,7 @@ class _TagBrowserState extends ConsumerState<TagBrowser> with RouteAware, Automa
           itemCount: tagsAndFiles?.length,
           itemBuilder: (context, i) => tagsAndFiles?[i].createTile(context: context, refreshCallback: refresh),
         );
-    /*return SimpleScaffold(
+    return SimpleScaffold(
         title: widget.parent?.fullName() ?? "Browse Tags",
         body: body,
         backButton: widget.parent != null,
@@ -64,7 +83,7 @@ class _TagBrowserState extends ConsumerState<TagBrowser> with RouteAware, Automa
   @override
   bool get wantKeepAlive => true;
 
-  Future<void> _loadContents() async {
+  /*Future<void> _loadContents() async {
     try {
       final newItems = await retrieveChildren(widget.parent?.fullName());
       if (widget.parent != null) newItems.insert(0, BackTile());
@@ -74,12 +93,11 @@ class _TagBrowserState extends ConsumerState<TagBrowser> with RouteAware, Automa
       print(t);
       // TODO: exponential backoff reloading?
     }
-  }
+  }*/
 
   void refresh() {
     Future(() {
       ref.watch(appBarTitleProvider.notifier).set(widget.parent?.fullName() ?? "Tags");
-      _loadContents();
     });
   }
 
@@ -105,7 +123,7 @@ class _TagBrowserState extends ConsumerState<TagBrowser> with RouteAware, Automa
 class BackTile extends Tileable {
 
   @override
-  Widget createTile({required BuildContext context, void Function()? refreshCallback}) {
+  Widget createTile({required BuildContext context, required WidgetRef ref}) {
     return Container(
         padding: const EdgeInsets.all(5),
         child: ListTile(
