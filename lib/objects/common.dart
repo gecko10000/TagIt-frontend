@@ -1,39 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tagit_frontend/misc/strings.dart';
-import 'package:tagit_frontend/objects/tileable.dart';
-import 'package:tagit_frontend/requests.dart';
-import 'package:tagit_frontend/screens/tag_browser.dart';
-
-part 'common.g.dart';
-
-@riverpod
-final childrenList = FutureProviderFamily<List<Tileable>, String?>(
-    (ref, parent) => retrieveChildren(parent));
-
-@riverpod
-class TileableChildrenList extends _$TileableChildrenList {
-  late String? _parent;
-
-  Future<List<Tileable>> addBackButton(
-      Future<List<Tileable>> list, String? parent) {
-    if (parent != null) {
-      list.then((l) => l.insert(0, BackTile()));
-    }
-    return list;
-  }
-
-  @override
-  FutureOr<List<Tileable>> build({String? parent}) async {
-    return addBackButton(retrieveChildren(parent), parent);
-  }
-
-  void refresh({String? parent}) async {
-    state =
-        AsyncValue.data(await addBackButton(retrieveChildren(parent), parent));
-  }
-}
 
 void renameObject<T>(
     BuildContext context,

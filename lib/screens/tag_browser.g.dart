@@ -1,13 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'common.dart';
+part of 'tag_browser.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$tileableChildrenListHash() =>
-    r'f23262187a4f99f31286e7fb0cbb8c71de14c9b7';
+String _$tagBrowserListHash() => r'e9fd1da0f1f24be03b78a4a24baf19dfa39cdbf9';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,7 +29,7 @@ class _SystemHash {
   }
 }
 
-abstract class _$TileableChildrenList
+abstract class _$TagBrowserList
     extends BuildlessAutoDisposeAsyncNotifier<List<Tileable>> {
   late final String? parent;
 
@@ -39,27 +38,27 @@ abstract class _$TileableChildrenList
   });
 }
 
-/// See also [TileableChildrenList].
-@ProviderFor(TileableChildrenList)
-const tileableChildrenListProvider = TileableChildrenListFamily();
+/// See also [TagBrowserList].
+@ProviderFor(TagBrowserList)
+const tagBrowserListProvider = TagBrowserListFamily();
 
-/// See also [TileableChildrenList].
-class TileableChildrenListFamily extends Family<AsyncValue<List<Tileable>>> {
-  /// See also [TileableChildrenList].
-  const TileableChildrenListFamily();
+/// See also [TagBrowserList].
+class TagBrowserListFamily extends Family<AsyncValue<List<Tileable>>> {
+  /// See also [TagBrowserList].
+  const TagBrowserListFamily();
 
-  /// See also [TileableChildrenList].
-  TileableChildrenListProvider call({
+  /// See also [TagBrowserList].
+  TagBrowserListProvider call({
     String? parent,
   }) {
-    return TileableChildrenListProvider(
+    return TagBrowserListProvider(
       parent: parent,
     );
   }
 
   @override
-  TileableChildrenListProvider getProviderOverride(
-    covariant TileableChildrenListProvider provider,
+  TagBrowserListProvider getProviderOverride(
+    covariant TagBrowserListProvider provider,
   ) {
     return call(
       parent: provider.parent,
@@ -78,33 +77,33 @@ class TileableChildrenListFamily extends Family<AsyncValue<List<Tileable>>> {
       _allTransitiveDependencies;
 
   @override
-  String? get name => r'tileableChildrenListProvider';
+  String? get name => r'tagBrowserListProvider';
 }
 
-/// See also [TileableChildrenList].
-class TileableChildrenListProvider extends AutoDisposeAsyncNotifierProviderImpl<
-    TileableChildrenList, List<Tileable>> {
-  /// See also [TileableChildrenList].
-  TileableChildrenListProvider({
+/// See also [TagBrowserList].
+class TagBrowserListProvider extends AutoDisposeAsyncNotifierProviderImpl<
+    TagBrowserList, List<Tileable>> {
+  /// See also [TagBrowserList].
+  TagBrowserListProvider({
     this.parent,
   }) : super.internal(
-          () => TileableChildrenList()..parent = parent,
-          from: tileableChildrenListProvider,
-          name: r'tileableChildrenListProvider',
+          () => TagBrowserList()..parent = parent,
+          from: tagBrowserListProvider,
+          name: r'tagBrowserListProvider',
           debugGetCreateSourceHash:
               const bool.fromEnvironment('dart.vm.product')
                   ? null
-                  : _$tileableChildrenListHash,
-          dependencies: TileableChildrenListFamily._dependencies,
+                  : _$tagBrowserListHash,
+          dependencies: TagBrowserListFamily._dependencies,
           allTransitiveDependencies:
-              TileableChildrenListFamily._allTransitiveDependencies,
+              TagBrowserListFamily._allTransitiveDependencies,
         );
 
   final String? parent;
 
   @override
   bool operator ==(Object other) {
-    return other is TileableChildrenListProvider && other.parent == parent;
+    return other is TagBrowserListProvider && other.parent == parent;
   }
 
   @override
@@ -117,7 +116,7 @@ class TileableChildrenListProvider extends AutoDisposeAsyncNotifierProviderImpl<
 
   @override
   FutureOr<List<Tileable>> runNotifierBuild(
-    covariant TileableChildrenList notifier,
+    covariant TagBrowserList notifier,
   ) {
     return notifier.build(
       parent: parent,

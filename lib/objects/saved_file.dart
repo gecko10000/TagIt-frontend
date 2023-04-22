@@ -55,7 +55,7 @@ class SavedFile implements Tileable {
     newNameFuture.then((newName) async {
       if (newName == null) return;
       await sendFileRename(this, newName);
-      ref.read(filesProvider.notifier).refresh();
+      ref.read(fileBrowserListProvider.notifier).refresh();
     });
   }
 

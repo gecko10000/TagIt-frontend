@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tagit_frontend/objects/common.dart';
 import 'package:tagit_frontend/objects/tileable.dart';
 import 'package:tagit_frontend/requests.dart';
 
@@ -31,7 +30,36 @@ class Tag implements Tileable {
     TextEditingController controller = TextEditingController(text: tagName);
     // select to right after the slash (or start of string if there's no slash since -1 + 1 = 0)
     controller.selection = TextSelection(baseOffset: tagName.length, extentOffset: tagName.lastIndexOf(RegExp(r'/')) + 1);
-    renameObject(context, "tag", fullName(), this, sendTagRename, controller);
+    Future<String?> newNameFuture = showDialog<String>(
+        context: context,
+        builder: (context) => AlertDialog(
+          title: Text("Renaming File \"$name\""),
+          content: Stack(
+            children: [
+              TextField(
+                onSubmitted: ((name) => Navigator.pop(context, name)),
+                controller: controller,
+                autofocus: true,
+                autocorrect: false,
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context, null),
+              child: const Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context, controller.value.text),
+              child: const Text("Rename"),
+            ),
+          ],
+        ));
+    newNameFuture.then((newName) async {
+      if (newName == null) return;
+      await sendTagRename(this, newName);
+      ref.read(tagBrowserListProvider(parent: parent).notifier).refresh(parent: parent);
+    });
   }
 
   // opens the file browser to select a place to move it to?

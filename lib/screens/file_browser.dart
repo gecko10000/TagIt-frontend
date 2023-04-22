@@ -7,7 +7,7 @@ import 'package:tagit_frontend/requests.dart';
 part 'file_browser.g.dart';
 
 @riverpod
-class Files extends _$Files {
+class FileBrowserList extends _$FileBrowserList {
   @override
   FutureOr<List<SavedFile>> build() => getAllFiles();
 
@@ -28,7 +28,7 @@ class _FileBrowserState extends ConsumerState<FileBrowser> with AutomaticKeepAli
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final fileFuture = ref.watch(filesProvider);
+    final fileFuture = ref.watch(fileBrowserListProvider);
     return fileFuture.when(
         data: (files) {
           if (files.isEmpty) {
@@ -53,38 +53,9 @@ class _FileBrowserState extends ConsumerState<FileBrowser> with AutomaticKeepAli
           child: CircularProgressIndicator(),
         )
     );
-    /*return files?.isEmpty ?? true ?
-    Align(
-        alignment: Alignment.center,
-        child: files == null ?
-        const CircularProgressIndicator() :
-        const Text("Nothing here.",
-          style: TextStyle(fontSize: 32),
-        )
-    ) :
-    ListView.builder(
-      itemCount: files?.length,
-      itemBuilder: (context, i) => files?[i].createTile(context: context, refreshCallback: _loadFiles),
-    );*/
   }
 
   @override
   bool get wantKeepAlive => true;
-
-  /*Future<void> _loadFiles() async {
-    try {
-      final retrieved = await getAllFiles();
-      setState(() => files = retrieved);
-    } catch (error, t) {
-      print("ERROR: $error");
-      print(t);
-    }
-  }*/
-
-  @override
-  void initState() {
-    super.initState();
-    //_loadFiles();
-  }
 
 }

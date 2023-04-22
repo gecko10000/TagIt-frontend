@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tagit_frontend/objects/common.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tagit_frontend/screens/home_page.dart';
 
 import '../main.dart';
 import '../objects/tag.dart';
 import '../objects/tileable.dart';
+import '../requests.dart';
+
+part 'tag_browser.g.dart';
 
 class TagBrowserNavigator extends StatelessWidget {
   const TagBrowserNavigator({super.key});
@@ -20,6 +23,30 @@ class TagBrowserNavigator extends StatelessWidget {
     );
   }
 
+}
+
+@riverpod
+class TagBrowserList extends _$TagBrowserList {
+  Future<List<Tileable>> addBackButton(
+      Future<List<Tileable>> list, String? parent) {
+    if (parent != null) {
+      list.then((l) => l.insert(0, BackTile()));
+    }
+    return list;
+  }
+
+  @override
+  FutureOr<List<Tileable>> build({String? parent}) async {
+    // don't need to return anything here
+    // because refresh is called immediately
+    // from didPush
+    return [];
+  }
+
+  void refresh({String? parent}) async {
+    state =
+        AsyncValue.data(await addBackButton(retrieveChildren(parent), parent));
+  }
 }
 
 class TagBrowser extends ConsumerStatefulWidget {
@@ -39,7 +66,7 @@ class _TagBrowserState extends ConsumerState<TagBrowser> with RouteAware, Automa
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final tagsAndFiles = ref.watch(tileableChildrenListProvider(parent: widget.parent?.fullName()));
+    final tagsAndFiles = ref.watch(tagBrowserListProvider(parent: widget.parent?.fullName()));
     return tagsAndFiles.when(
         data: (tagsAndFiles) {
           if (tagsAndFiles.isEmpty) {
@@ -97,7 +124,9 @@ class _TagBrowserState extends ConsumerState<TagBrowser> with RouteAware, Automa
 
   void refresh() {
     Future(() {
-      ref.watch(appBarTitleProvider.notifier).set(widget.parent?.fullName() ?? "Tags");
+      String? fullName = widget.parent?.fullName();
+      ref.watch(tagBrowserListProvider(parent: fullName).notifier).refresh(parent: fullName);
+      ref.watch(appBarTitleProvider.notifier).set(fullName ?? "Tags");
     });
   }
 
