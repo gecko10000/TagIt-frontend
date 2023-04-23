@@ -60,9 +60,8 @@ class TagBrowserList extends _$TagBrowserList {
 
 class TagBrowser extends ConsumerStatefulWidget {
   final Tag? parent;
-  final bool showBackButton;
 
-  const TagBrowser({super.key, this.parent, this.showBackButton = false});
+  const TagBrowser({super.key, this.parent});
 
   @override
   ConsumerState createState() => _TagBrowserState();
