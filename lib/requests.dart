@@ -6,21 +6,9 @@ import 'misc/order.dart';
 import 'objects/common.dart';
 import 'objects/saved_file.dart';
 import 'objects/tag.dart';
+// TODO: handle errors properly
 
-class _APIClient extends BaseClient {
-
-  final Client _client;
-
-  _APIClient(this._client);
-
-  @override
-  Future<StreamedResponse> send(BaseRequest request) {
-    return _client.send(request);
-  }
-
-}
-
-_APIClient _client = _APIClient(Client());
+Client _client = Client();
 
 Uri url(String endpoint) => Uri(scheme: 'http', host: "localhost", port: 10000, path: endpoint);
 
