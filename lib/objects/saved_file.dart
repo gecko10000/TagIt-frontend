@@ -43,8 +43,13 @@ class SavedFile implements Tileable {
     throw UnimplementedError();
   }
 
+  Future<void> _deleteCallback(WidgetRef ref) async {
+    await sendFileDeletion(this);
+    ref.read(fileBrowserListProvider.notifier).refresh();
+  }
+
   void deleteFile(BuildContext context, WidgetRef ref) {
-    //deleteObject(context, "file", name, this, sendFileDeletion, refreshCallback);
+    deleteObject(context, "file", name, _deleteCallback, ref);
   }
 
   @override

@@ -44,9 +44,14 @@ class Tag implements Tileable {
 
   }
 
+  Future<void> _deleteCallback(WidgetRef ref) async {
+    await sendTagDeletion(this);
+    ref.read(tagBrowserListProvider(parent: parent).notifier).refresh(parent: parent);
+  }
+
   // opens the confirmation for deletion
   void deleteTag(BuildContext context, WidgetRef ref) {
-    //deleteObject(context, "tag", fullName(), this, sendTagDeletion, refreshCallback);
+    deleteObject(context, "tag", fullName(), _deleteCallback, ref);
   }
 
   @override

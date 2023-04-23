@@ -8,7 +8,7 @@ void renameObject<T extends Tileable>(
     BuildContext context,
     String objectType,
     String objectName,
-    Future<void> Function(String, WidgetRef) renamingFunction,
+    Future<void> Function(String, WidgetRef) renameCallback,
     TextEditingController controller,
     WidgetRef ref) {
   Future<String?> newName = showDialog<String>(
@@ -38,17 +38,16 @@ void renameObject<T extends Tileable>(
           ));
   newName.then((value) async {
     if (value == null) return;
-    await renamingFunction(value, ref);
+    await renameCallback(value, ref);
   });
 }
 
-void deleteObject<T>(
+void deleteObject<T extends Tileable>(
     BuildContext context,
     String objectType,
     String objectName,
-    T object,
-    Future<void> Function(T) deletionFunction,
-    void Function()? refreshCallback) {
+    Future<void> Function(WidgetRef) deleteCallback,
+    WidgetRef ref) {
   Future<bool?> deleted = showDialog<bool>(
     context: context,
     // listener so that pressing enter confirms deletion
@@ -79,7 +78,6 @@ void deleteObject<T>(
   );
   deleted.then((value) async {
     if (!(value ?? false)) return;
-    await deletionFunction(object);
-    if (refreshCallback != null) refreshCallback();
+    await deleteCallback(ref);
   });
 }
