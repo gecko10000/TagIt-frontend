@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tagit_frontend/objects/common.dart';
 import 'package:tagit_frontend/objects/tileable.dart';
-import 'package:tagit_frontend/screens/browsers/file_browser.dart';
 
 import '../requests.dart';
+import '../widgets/browsers/file_browser.dart';
 
 class SavedFile implements Tileable {
   final String name;

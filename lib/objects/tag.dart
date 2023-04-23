@@ -4,7 +4,7 @@ import 'package:tagit_frontend/objects/common.dart';
 import 'package:tagit_frontend/objects/tileable.dart';
 import 'package:tagit_frontend/requests.dart';
 
-import '../screens/browsers/tag_browser.dart';
+import '../widgets/browsers/tag_browser.dart';
 
 class Tag implements Tileable {
   final String name;

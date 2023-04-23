@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:tagit_frontend/screens/browsers/tag_browser.dart';
 import 'package:tagit_frontend/widgets/drawer.dart';
 
-import 'browsers/file_browser.dart';
+import '../widgets/browsers/file_browser.dart';
+import '../widgets/browsers/tag_browser.dart';
 
 part 'home_page.g.dart';
 
