@@ -50,8 +50,6 @@ class SavedFile implements Tileable {
     deleteObject(context, "file", name, deleteCallback, ref);
   }
 
-  void onTap() {}
-
   @override
   Widget createTile({required BuildContext context, required WidgetRef ref, required void Function() onTap}) {
     return Container(

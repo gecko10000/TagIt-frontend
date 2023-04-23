@@ -31,8 +31,8 @@ class TabBarName extends _$TabBarName {
   }
 }
 
-class AppBarText extends ConsumerWidget {
-  const AppBarText({super.key});
+class _AppBarText extends ConsumerWidget {
+  const _AppBarText({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => Text(ref.watch(tabBarNameProvider));
@@ -48,7 +48,7 @@ class HomePage extends ConsumerWidget {
       child: Scaffold(
         drawer: const SideDrawer(),
         appBar: AppBar(
-          title: const AppBarText(),
+          title: const _AppBarText(),
           bottom: TabBar(
             onTap: (i) {
               ref.read(tabBarIndexProvider.notifier).set(i);
