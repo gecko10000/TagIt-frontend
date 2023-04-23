@@ -18,12 +18,16 @@ class TabBarIndex extends _$TabBarIndex {
 @riverpod
 class AppBarTitle extends _$AppBarTitle {
   List<String> tabNames = ["Tags", "Files"];
+  late int tab;
 
   @override
-  String build() => tabNames[ref.watch(tabBarIndexProvider)];
+  String build() {
+    tab = ref.watch(tabBarIndexProvider);
+    return tabNames[tab];
+  }
 
   void set(String s) {
-    state = tabNames[ref.watch(tabBarIndexProvider)] = s;
+    state = tabNames[tab] = s;
   }
 }
 
@@ -31,8 +35,7 @@ class AppBarText extends ConsumerWidget {
   const AppBarText({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) =>
-      Text(ref.watch(appBarTitleProvider));
+  Widget build(BuildContext context, WidgetRef ref) => Text(ref.watch(appBarTitleProvider));
 }
 
 class HomePage extends ConsumerWidget {
@@ -51,7 +54,6 @@ class HomePage extends ConsumerWidget {
               ref.read(tabBarIndexProvider.notifier).set(i);
               if (i == 0) {
                 final current = ref.read(currentTagProvider)?.fullName();
-                print("Current is $current");
                 ref.read(tagBrowserListProvider(parent: current).notifier).refresh(parent: current);
               } else if (i == 1) {
                 ref.read(fileBrowserListProvider.notifier).refresh();

@@ -21,7 +21,7 @@ final tabBarIndexProvider =
 );
 
 typedef _$TabBarIndex = AutoDisposeNotifier<int>;
-String _$appBarTitleHash() => r'c2def9410f744914585d749af8bf5678e446f0e7';
+String _$appBarTitleHash() => r'153d3e70d7fd1de29f78c2996ba13f60510a9eed';
 
 /// See also [AppBarTitle].
 @ProviderFor(AppBarTitle)

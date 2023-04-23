@@ -25,12 +25,11 @@ class TagBrowserNavigator extends StatelessWidget {
   }
 }
 
-@riverpod
+@Riverpod(keepAlive: true)
 class CurrentTag extends _$CurrentTag {
   @override
   Tag? build() => null;
   void set(Tag? tag) {
-    print("setting to ${tag?.fullName()}");
     state = tag;
   }
 }
@@ -54,7 +53,6 @@ class TagBrowserList extends _$TagBrowserList {
   }
 
   void refresh({String? parent}) async {
-    print("Refreshed $parent");
     state =
         AsyncValue.data(await addBackButton(retrieveChildren(parent), parent));
   }
@@ -136,10 +134,10 @@ class _TagBrowserState extends ConsumerState<TagBrowser>
     Future(() {
       String? fullName = widget.parent?.fullName();
       ref
-          .watch(tagBrowserListProvider(parent: fullName).notifier)
+          .read(tagBrowserListProvider(parent: fullName).notifier)
           .refresh(parent: fullName);
-      ref.watch(appBarTitleProvider.notifier).set(fullName ?? "Tags");
-      ref.watch(currentTagProvider.notifier).set(widget.parent);
+      ref.read(appBarTitleProvider.notifier).set(fullName ?? "Tags");
+      ref.read(currentTagProvider.notifier).set(widget.parent);
     });
   }
 

@@ -6,12 +6,11 @@ part of 'tag_browser.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$currentTagHash() => r'16af23238fd42f5164580f00c3fbef2e5b96f4ea';
+String _$currentTagHash() => r'3660ae09da7e97b57c07502168e455d6b13915ce';
 
 /// See also [CurrentTag].
 @ProviderFor(CurrentTag)
-final currentTagProvider =
-    AutoDisposeNotifierProvider<CurrentTag, Tag?>.internal(
+final currentTagProvider = NotifierProvider<CurrentTag, Tag?>.internal(
   CurrentTag.new,
   name: r'currentTagProvider',
   debugGetCreateSourceHash:
@@ -20,8 +19,8 @@ final currentTagProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$CurrentTag = AutoDisposeNotifier<Tag?>;
-String _$tagBrowserListHash() => r'1db56cf9731970b7888b2fb1dc7161d8bc9d9a46';
+typedef _$CurrentTag = Notifier<Tag?>;
+String _$tagBrowserListHash() => r'e9fd1da0f1f24be03b78a4a24baf19dfa39cdbf9';
 
 /// Copied from Dart SDK
 class _SystemHash {
