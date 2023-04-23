@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tagit_frontend/screens/browsers/tag_browser.dart';
 import 'package:tagit_frontend/screens/common.dart';
-import 'package:tagit_frontend/screens/tag_browser.dart';
 
 import '../screens/not_implemented.dart';
 

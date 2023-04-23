@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:tagit_frontend/screens/tag_browser.dart';
+import 'package:tagit_frontend/screens/browsers/tag_browser.dart';
 import 'package:tagit_frontend/widgets/drawer.dart';
 
-import 'file_browser.dart';
+import 'browsers/file_browser.dart';
 
 part 'home_page.g.dart';
 
@@ -16,7 +16,7 @@ class TabBarIndex extends _$TabBarIndex {
 }
 
 @riverpod
-class AppBarTitle extends _$AppBarTitle {
+class HomeAppBarTitle extends _$HomeAppBarTitle {
   List<String> tabNames = ["Tags", "Files"];
   late int tab;
 
@@ -35,7 +35,7 @@ class AppBarText extends ConsumerWidget {
   const AppBarText({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Text(ref.watch(appBarTitleProvider));
+  Widget build(BuildContext context, WidgetRef ref) => Text(ref.watch(homeAppBarTitleProvider));
 }
 
 class HomePage extends ConsumerWidget {

@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tagit_frontend/screens/home_page.dart';
 
-import '../main.dart';
-import '../objects/tag.dart';
-import '../objects/tileable.dart';
-import '../requests.dart';
+import '../../main.dart';
+import '../../objects/tag.dart';
+import '../../objects/tileable.dart';
+import '../../requests.dart';
 
 part 'tag_browser.g.dart';
 
@@ -135,7 +135,7 @@ class _TagBrowserState extends ConsumerState<TagBrowser>
       ref
           .read(tagBrowserListProvider(parent: fullName).notifier)
           .refresh(parent: fullName);
-      ref.read(appBarTitleProvider.notifier).set(fullName ?? "Tags");
+      ref.read(homeAppBarTitleProvider.notifier).set(fullName ?? "Tags");
       ref.read(currentTagProvider.notifier).set(widget.parent);
     });
   }

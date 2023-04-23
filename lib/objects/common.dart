@@ -1,14 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tagit_frontend/misc/strings.dart';
+import 'package:tagit_frontend/objects/tileable.dart';
 
-void renameObject<T>(
+void renameObject<T extends Tileable>(
     BuildContext context,
     String objectType,
     String objectName,
-    T object,
-    Future<void> Function(T, String) renamingFunction,
-    TextEditingController controller) {
+    Future<void> Function(String, WidgetRef) renamingFunction,
+    TextEditingController controller,
+    WidgetRef ref) {
   Future<String?> newName = showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
@@ -36,9 +38,7 @@ void renameObject<T>(
           ));
   newName.then((value) async {
     if (value == null) return;
-    await renamingFunction(object, value);
-    //ref.read(tileableChildrenListProvider(parent: "").notifier).refresh();
-    //ref.read(tileableChildrenListProvider)
+    await renamingFunction(value, ref);
   });
 }
 

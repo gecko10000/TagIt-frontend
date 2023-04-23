@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tagit_frontend/objects/common.dart';
 import 'package:tagit_frontend/objects/tileable.dart';
-import 'package:tagit_frontend/screens/file_browser.dart';
+import 'package:tagit_frontend/screens/browsers/file_browser.dart';
 
 import '../requests.dart';
 
@@ -21,42 +22,20 @@ class SavedFile implements Tileable {
     this.tags.addAll(tags);
   }
 
+  Future<void> _renameCallback(String newName, WidgetRef ref) async {
+    await sendFileRename(this, newName);
+    ref.read(fileBrowserListProvider.notifier).refresh();
+  }
+
   void renameFile(BuildContext context, WidgetRef ref) {
     TextEditingController controller = TextEditingController(text: name);
     // select everything before the period
     var startIndex = name.lastIndexOf(RegExp(r'\.'));
     startIndex = startIndex == -1 ? name.length : startIndex;
-    controller.selection = TextSelection(baseOffset: startIndex, extentOffset: 0);
-    Future<String?> newNameFuture = showDialog<String>(
-        context: context,
-        builder: (context) => AlertDialog(
-          title: Text("Renaming File \"$name\""),
-          content: Stack(
-            children: [
-              TextField(
-                onSubmitted: ((name) => Navigator.pop(context, name)),
-                controller: controller,
-                autofocus: true,
-                autocorrect: false,
-              ),
-            ],
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, null),
-              child: const Text("Cancel"),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, controller.value.text),
-              child: const Text("Rename"),
-            ),
-          ],
-        ));
-    newNameFuture.then((newName) async {
-      if (newName == null) return;
-      await sendFileRename(this, newName);
-      ref.read(fileBrowserListProvider.notifier).refresh();
-    });
+
+    controller.selection = TextSelection(baseOffset: startIndex, extentOffset: startIndex);
+
+    renameObject(context, "file", name, _renameCallback, controller, ref);
   }
 
   // TODO
