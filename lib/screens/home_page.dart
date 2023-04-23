@@ -16,7 +16,7 @@ class TabBarIndex extends _$TabBarIndex {
 }
 
 @riverpod
-class HomeAppBarTitle extends _$HomeAppBarTitle {
+class TabBarName extends _$TabBarName {
   List<String> tabNames = ["Tags", "Files"];
   late int tab;
 
@@ -35,7 +35,7 @@ class AppBarText extends ConsumerWidget {
   const AppBarText({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Text(ref.watch(homeAppBarTitleProvider));
+  Widget build(BuildContext context, WidgetRef ref) => Text(ref.watch(tabBarNameProvider));
 }
 
 class HomePage extends ConsumerWidget {
@@ -65,9 +65,9 @@ class HomePage extends ConsumerWidget {
             ],
           ),
         ),
-        body: const TabBarView(children: [
-          TagBrowserNavigator(),
-          FileBrowser(),
+        body: TabBarView(children: [
+          TagBrowserNavigator(scaffoldNameNotifier: tabBarNameProvider.notifier),
+          const FileBrowser(),
         ]),
       ),
     );

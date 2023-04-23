@@ -21,20 +21,19 @@ final tabBarIndexProvider =
 );
 
 typedef _$TabBarIndex = AutoDisposeNotifier<int>;
-String _$homeAppBarTitleHash() => r'6fcb59d8e373714ba1e0d2790680b45c278cd708';
+String _$tabBarNameHash() => r'7e970c500445c13342a3723514f47377b8295958';
 
-/// See also [HomeAppBarTitle].
-@ProviderFor(HomeAppBarTitle)
-final homeAppBarTitleProvider =
-    AutoDisposeNotifierProvider<HomeAppBarTitle, String>.internal(
-  HomeAppBarTitle.new,
-  name: r'homeAppBarTitleProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$homeAppBarTitleHash,
+/// See also [TabBarName].
+@ProviderFor(TabBarName)
+final tabBarNameProvider =
+    AutoDisposeNotifierProvider<TabBarName, String>.internal(
+  TabBarName.new,
+  name: r'tabBarNameProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$tabBarNameHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$HomeAppBarTitle = AutoDisposeNotifier<String>;
+typedef _$TabBarName = AutoDisposeNotifier<String>;
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

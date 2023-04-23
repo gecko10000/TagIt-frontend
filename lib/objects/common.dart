@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tagit_frontend/misc/strings.dart';
-import 'package:tagit_frontend/objects/tileable.dart';
+
+abstract class Tileable {
+  Widget createTile({required BuildContext context, required WidgetRef ref, required void Function() onTap});
+}
 
 void renameObject<T extends Tileable>(
     BuildContext context,

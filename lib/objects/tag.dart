@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tagit_frontend/objects/common.dart';
-import 'package:tagit_frontend/objects/tileable.dart';
 import 'package:tagit_frontend/requests.dart';
 
 import '../widgets/browsers/tag_browser.dart';
@@ -25,37 +24,36 @@ class Tag implements Tileable {
 
   String fullName() => parent == null ? name : "$parent/$name";
 
-  Future<void> _renameCallback(String newName, WidgetRef ref) async {
-    await sendTagRename(this, newName);
-    ref.read(tagBrowserListProvider(parent: parent).notifier).refresh(parent: parent);
-  }
-
   // opens the dialog for renaming the tag
   void renameTag(BuildContext context, WidgetRef ref) {
     final tagName = fullName();
     TextEditingController controller = TextEditingController(text: tagName);
     //controller.selection = TextSelection(baseOffset: tagName.length, extentOffset: tagName.length);
 
-    renameObject(context, "tag", fullName(), _renameCallback, controller, ref);
+    Future<void> renameCallback(String newName, WidgetRef ref) async {
+      await sendTagRename(this, newName);
+      ref.read(tagBrowserListProvider(parent: parent).notifier).refresh(parent: parent);
+    }
+    renameObject(context, "tag", fullName(), renameCallback, controller, ref);
   }
 
   // opens the file browser to select a place to move it to?
   void moveTag(BuildContext context, WidgetRef ref) {
-
-  }
-
-  Future<void> _deleteCallback(WidgetRef ref) async {
-    await sendTagDeletion(this);
-    ref.read(tagBrowserListProvider(parent: parent).notifier).refresh(parent: parent);
+    throw UnimplementedError();
   }
 
   // opens the confirmation for deletion
   void deleteTag(BuildContext context, WidgetRef ref) {
-    deleteObject(context, "tag", fullName(), _deleteCallback, ref);
+
+    Future<void> deleteCallback(WidgetRef ref) async {
+      await sendTagDeletion(this);
+      ref.read(tagBrowserListProvider(parent: parent).notifier).refresh(parent: parent);
+    }
+    deleteObject(context, "tag", fullName(), deleteCallback, ref);
   }
 
   @override
-  Widget createTile({required BuildContext context, required WidgetRef ref}) {
+  Widget createTile({required BuildContext context, required WidgetRef ref, required void Function() onTap}) {
     return Container(
         padding: const EdgeInsets.all(5),
         child: ListTile(
@@ -73,7 +71,7 @@ class Tag implements Tileable {
                 child: const Text("Rename"),
               ),
               PopupMenuItem(
-                value: renameTag,
+                value: moveTag,
                 child: const Text("Move"),
               ),
               PopupMenuItem(
@@ -86,11 +84,7 @@ class Tag implements Tileable {
           //splashColor: Colors.green,
           //hoverColor: CustomColor.paynesGray,
           //tileColor: CustomColor.paynesGray.withOpacity(0.9),
-          onTap: () => Navigator.push(context,
-              MaterialPageRoute(
-                  builder: (context) => TagBrowser(parent: this)
-              )
-          ),
+          onTap: onTap,
         )
 
     );

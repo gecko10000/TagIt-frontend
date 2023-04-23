@@ -1,23 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../widgets/drawer.dart';
+part 'common.g.dart';
 
-class SimpleScaffold extends StatelessWidget {
+@riverpod
+class BackScaffoldTitle extends _$BackScaffoldTitle {
+  @override
+  String build() => "Tags";
+  void set(String s) => state = s;
+}
+
+class _AppBarTitle extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) => Text(ref.watch(backScaffoldTitleProvider));
+}
+
+class BackScaffold extends StatelessWidget {
 
   final String title;
   final Widget body;
-  final bool backButton;
 
-  const SimpleScaffold({super.key, required this.body, required this.title, this.backButton = false});
+  const BackScaffold({super.key, required this.body, required this.title});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text(title),
-          leading: backButton ? const BackButton() : null,
+          title: _AppBarTitle(),
+          leading: const BackButton(),
         ),
-        drawer: backButton ? const SideDrawer() : null,
         body: body
     );
   }

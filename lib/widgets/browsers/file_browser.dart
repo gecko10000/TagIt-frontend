@@ -41,7 +41,7 @@ class _FileBrowserState extends ConsumerState<FileBrowser> with AutomaticKeepAli
           }
           return ListView.builder(
             itemCount: files.length,
-            itemBuilder: (context, i) => files[i].createTile(context: context, ref: ref),
+            itemBuilder: (context, i) => files[i].createTile(context: context, ref: ref, onTap: () {}),
           );
         },
         error: (err, st) => Align(

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:tagit_frontend/screens/common.dart';
+import 'package:tagit_frontend/widgets/browsers/tag_browser.dart';
 
 import '../screens/not_implemented.dart';
-import 'browsers/tag_browser.dart';
 
 class SideDrawer extends StatelessWidget {
 
@@ -14,10 +14,11 @@ class SideDrawer extends StatelessWidget {
 
         child: ListView(
           children: [
-            DrawerTile(Icons.file_copy, "Tags", (context) => const SimpleScaffold(
-              body: TagBrowserNavigator(), // TODO: update name in AppBar somehow (callback?) remove SimpleScaffold entirely, maybe
+            DrawerTile(Icons.file_copy, "Tags", (context) => BackScaffold(
+              body: TagBrowserNavigator(
+                  scaffoldNameNotifier: backScaffoldTitleProvider.notifier
+              ), // TODO: update name in AppBar somehow (callback?) remove SimpleScaffold entirely, maybe
               title: "Tags",
-              backButton: true,
             )),
             //DrawerTile(Icons.file_copy, "Files", (context) => const FileScreen()),
             DrawerTile(Icons.search, "Search", (context) => const NotImplementedScreen()),

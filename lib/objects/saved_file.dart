@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tagit_frontend/objects/common.dart';
-import 'package:tagit_frontend/objects/tileable.dart';
 
 import '../requests.dart';
 import '../widgets/browsers/file_browser.dart';
@@ -22,20 +21,18 @@ class SavedFile implements Tileable {
     this.tags.addAll(tags);
   }
 
-  Future<void> _renameCallback(String newName, WidgetRef ref) async {
-    await sendFileRename(this, newName);
-    ref.read(fileBrowserListProvider.notifier).refresh();
-  }
-
   void renameFile(BuildContext context, WidgetRef ref) {
     TextEditingController controller = TextEditingController(text: name);
-    // select everything before the period
+    // put cursor at the end of the filename but before the last period
     var startIndex = name.lastIndexOf(RegExp(r'\.'));
     startIndex = startIndex == -1 ? name.length : startIndex;
-
     controller.selection = TextSelection(baseOffset: startIndex, extentOffset: startIndex);
 
-    renameObject(context, "file", name, _renameCallback, controller, ref);
+    Future<void> renameCallback(String newName, WidgetRef ref) async {
+      await sendFileRename(this, newName);
+      ref.read(fileBrowserListProvider.notifier).refresh();
+    }
+    renameObject(context, "file", name, renameCallback, controller, ref);
   }
 
   // TODO
@@ -43,17 +40,20 @@ class SavedFile implements Tileable {
     throw UnimplementedError();
   }
 
-  Future<void> _deleteCallback(WidgetRef ref) async {
-    await sendFileDeletion(this);
-    ref.read(fileBrowserListProvider.notifier).refresh();
-  }
+
 
   void deleteFile(BuildContext context, WidgetRef ref) {
-    deleteObject(context, "file", name, _deleteCallback, ref);
+    Future<void> deleteCallback(WidgetRef ref) async {
+      await sendFileDeletion(this);
+      ref.read(fileBrowserListProvider.notifier).refresh();
+    }
+    deleteObject(context, "file", name, deleteCallback, ref);
   }
 
+  void onTap() {}
+
   @override
-  Widget createTile({required BuildContext context, required WidgetRef ref}) {
+  Widget createTile({required BuildContext context, required WidgetRef ref, required void Function() onTap}) {
     return Container(
         padding: const EdgeInsets.all(5),
         child: ListTile(
@@ -64,10 +64,7 @@ class SavedFile implements Tileable {
               fontSize: 24,
             ),
           ),
-          //splashColor: Colors.green,
-          //hoverColor: CustomColor.paynesGray,
-          //tileColor: CustomColor.paynesGray.withOpacity(0.9),
-          onTap: () => {}, // without an onTap, hoverColor does not work
+          onTap: onTap,
           trailing: PopupMenuButton<void Function(BuildContext, WidgetRef ref)>(
             itemBuilder: (context) => [
               PopupMenuItem(

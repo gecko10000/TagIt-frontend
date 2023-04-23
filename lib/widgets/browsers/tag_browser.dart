@@ -1,25 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:tagit_frontend/objects/saved_file.dart';
 import 'package:tagit_frontend/screens/home_page.dart';
 
-import '../../main.dart';
+import '../../objects/common.dart';
 import '../../objects/tag.dart';
-import '../../objects/tileable.dart';
 import '../../requests.dart';
 
 part 'tag_browser.g.dart';
 
-class TagBrowserNavigator extends StatelessWidget {
-  const TagBrowserNavigator({super.key});
+class TagBrowserNavigator extends StatefulWidget {
+  final Refreshable scaffoldNameNotifier;
+
+  const TagBrowserNavigator({super.key, required this.scaffoldNameNotifier});
+
+  @override
+  State createState() => _TagBrowserNavigatorState();
+}
+
+class _TagBrowserNavigatorState extends State<TagBrowserNavigator> {
+
+  final RouteObserver _browseObserver = RouteObserver<MaterialPageRoute>();
 
   @override
   Widget build(BuildContext context) {
     return Navigator(
-      observers: [TagIt.browseObserver],
+      observers: [_browseObserver],
       onGenerateRoute: (settings) {
         return MaterialPageRoute(
-            settings: settings, builder: (context) => const TagBrowser());
+            settings: settings, builder: (context) => TagBrowser(
+          observer: _browseObserver,
+          scaffoldNameNotifier: widget.scaffoldNameNotifier,
+        ));
       },
     );
   }
@@ -60,8 +73,10 @@ class TagBrowserList extends _$TagBrowserList {
 
 class TagBrowser extends ConsumerStatefulWidget {
   final Tag? parent;
+  final RouteObserver observer;
+  final Refreshable scaffoldNameNotifier;
 
-  const TagBrowser({super.key, this.parent});
+  const TagBrowser({super.key, this.parent, required this.observer, required this.scaffoldNameNotifier});
 
   @override
   ConsumerState createState() => _TagBrowserState();
@@ -86,56 +101,45 @@ class _TagBrowserState extends ConsumerState<TagBrowser>
         }
         return ListView.builder(
           itemCount: tagsAndFiles.length,
-          itemBuilder: (context, i) =>
-              tagsAndFiles[i].createTile(context: context, ref: ref),
+          itemBuilder: (context, i) {
+            void Function() onTap;
+            final Tileable item = tagsAndFiles[i];
+            if (item is Tag) {
+              onTap = () => Navigator.push(context,
+                  MaterialPageRoute(
+                      builder: (context) => TagBrowser(
+                        parent: item,
+                        observer: widget.observer,
+                        scaffoldNameNotifier: widget.scaffoldNameNotifier,
+                      )
+                  )
+              );
+            } else if (item is SavedFile) {
+              onTap = () {}; // without an onTap, hoverColor does not work
+            } else {
+              onTap = () => Navigator.pop(context);
+            }
+            return tagsAndFiles[i].createTile(context: context, ref: ref, onTap: onTap);
+          }
         );
       },
       error: (err, stack) => Text("Error: $err"),
       loading: () => const Align(
           alignment: Alignment.center, child: CircularProgressIndicator()),
     );
-    /*return tagsAndFiles.isEmpty ?? true ?
-        Align(
-          alignment: Alignment.center,
-          child: tagsAndFiles == null ?
-          const CircularProgressIndicator() :
-          const Text("Nothing here.",
-              style: TextStyle(fontSize: 32),
-          )
-        ) :
-        ListView.builder(
-          itemCount: tagsAndFiles?.length,
-          itemBuilder: (context, i) => tagsAndFiles?[i].createTile(context: context, refreshCallback: refresh),
-        );
-    return SimpleScaffold(
-        title: widget.parent?.fullName() ?? "Browse Tags",
-        body: body,
-        backButton: widget.parent != null,
-    );*/
   }
 
   @override
   bool get wantKeepAlive => true;
 
-  /*Future<void> _loadContents() async {
-    try {
-      final newItems = await retrieveChildren(widget.parent?.fullName());
-      if (widget.parent != null) newItems.insert(0, BackTile());
-      setState(() => tagsAndFiles = newItems);
-    } catch (error, t) {
-      print("ERROR: $error");
-      print(t);
-      // TODO: exponential backoff reloading?
-    }
-  }*/
-
+  // TODO: fix this updating AppBar name when opened from drawer
   void refresh() {
     Future(() {
       String? fullName = widget.parent?.fullName();
       ref
           .read(tagBrowserListProvider(parent: fullName).notifier)
           .refresh(parent: fullName);
-      ref.read(homeAppBarTitleProvider.notifier).set(fullName ?? "Tags");
+      ref.read(widget.scaffoldNameNotifier).set(fullName ?? "Tags");
       ref.read(currentTagProvider.notifier).set(widget.parent);
     });
   }
@@ -149,19 +153,19 @@ class _TagBrowserState extends ConsumerState<TagBrowser>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    TagIt.browseObserver.subscribe(this, ModalRoute.of(context) as PageRoute);
+    widget.observer.subscribe(this, ModalRoute.of(context) as PageRoute);
   }
 
   @override
   void dispose() {
     super.dispose();
-    TagIt.browseObserver.unsubscribe(this);
+    widget.observer.unsubscribe(this);
   }
 }
 
 class BackTile extends Tileable {
   @override
-  Widget createTile({required BuildContext context, required WidgetRef ref}) {
+  Widget createTile({required BuildContext context, required WidgetRef ref, required void Function() onTap}) {
     return Container(
       padding: const EdgeInsets.all(5),
       child: ListTile(
@@ -172,7 +176,7 @@ class BackTile extends Tileable {
             fontSize: 24,
           ),
         ),
-        onTap: () => Navigator.pop(context),
+        onTap: onTap,
       ),
     );
   }
