@@ -18,11 +18,21 @@ class TagBrowserNavigator extends StatelessWidget {
     return Navigator(
       observers: [TagIt.browseObserver],
       onGenerateRoute: (settings) {
-        return MaterialPageRoute(settings: settings, builder: (context) => const TagBrowser());
+        return MaterialPageRoute(
+            settings: settings, builder: (context) => const TagBrowser());
       },
     );
   }
+}
 
+@riverpod
+class CurrentTag extends _$CurrentTag {
+  @override
+  Tag? build() => null;
+  void set(Tag? tag) {
+    print("setting to ${tag?.fullName()}");
+    state = tag;
+  }
 }
 
 @riverpod
@@ -44,13 +54,13 @@ class TagBrowserList extends _$TagBrowserList {
   }
 
   void refresh({String? parent}) async {
+    print("Refreshed $parent");
     state =
         AsyncValue.data(await addBackButton(retrieveChildren(parent), parent));
   }
 }
 
 class TagBrowser extends ConsumerStatefulWidget {
-
   final Tag? parent;
   final bool showBackButton;
 
@@ -58,35 +68,35 @@ class TagBrowser extends ConsumerStatefulWidget {
 
   @override
   ConsumerState createState() => _TagBrowserState();
-
 }
 
-class _TagBrowserState extends ConsumerState<TagBrowser> with RouteAware, AutomaticKeepAliveClientMixin {
-
+class _TagBrowserState extends ConsumerState<TagBrowser>
+    with RouteAware, AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final tagsAndFiles = ref.watch(tagBrowserListProvider(parent: widget.parent?.fullName()));
+    final tagsAndFiles =
+        ref.watch(tagBrowserListProvider(parent: widget.parent?.fullName()));
     return tagsAndFiles.when(
-        data: (tagsAndFiles) {
-          if (tagsAndFiles.isEmpty) {
-            return const Align(
+      data: (tagsAndFiles) {
+        if (tagsAndFiles.isEmpty) {
+          return const Align(
               alignment: Alignment.center,
-                child: Text("Nothing here.",
-              style: TextStyle(fontSize: 32),
-            ));
-          }
-          return ListView.builder(
-            itemCount: tagsAndFiles.length,
-            itemBuilder: (context, i) => tagsAndFiles[i].createTile(context: context, ref: ref),
-          );
-        },
-        error: (err, stack) => Text("Error: $err"),
-        loading: () => const Align(
-            alignment: Alignment.center,
-            child: CircularProgressIndicator()
-        ),
-      );
+              child: Text(
+                "Nothing here.",
+                style: TextStyle(fontSize: 32),
+              ));
+        }
+        return ListView.builder(
+          itemCount: tagsAndFiles.length,
+          itemBuilder: (context, i) =>
+              tagsAndFiles[i].createTile(context: context, ref: ref),
+        );
+      },
+      error: (err, stack) => Text("Error: $err"),
+      loading: () => const Align(
+          alignment: Alignment.center, child: CircularProgressIndicator()),
+    );
     /*return tagsAndFiles.isEmpty ?? true ?
         Align(
           alignment: Alignment.center,
@@ -125,8 +135,11 @@ class _TagBrowserState extends ConsumerState<TagBrowser> with RouteAware, Automa
   void refresh() {
     Future(() {
       String? fullName = widget.parent?.fullName();
-      ref.watch(tagBrowserListProvider(parent: fullName).notifier).refresh(parent: fullName);
+      ref
+          .watch(tagBrowserListProvider(parent: fullName).notifier)
+          .refresh(parent: fullName);
       ref.watch(appBarTitleProvider.notifier).set(fullName ?? "Tags");
+      ref.watch(currentTagProvider.notifier).set(widget.parent);
     });
   }
 
@@ -150,21 +163,20 @@ class _TagBrowserState extends ConsumerState<TagBrowser> with RouteAware, Automa
 }
 
 class BackTile extends Tileable {
-
   @override
   Widget createTile({required BuildContext context, required WidgetRef ref}) {
     return Container(
-        padding: const EdgeInsets.all(5),
-        child: ListTile(
-          leading: const Icon(Icons.arrow_back),
-          title: const Text("Back",
-            style: TextStyle(
-              fontSize: 24,
-            ),
+      padding: const EdgeInsets.all(5),
+      child: ListTile(
+        leading: const Icon(Icons.arrow_back),
+        title: const Text(
+          "Back",
+          style: TextStyle(
+            fontSize: 24,
           ),
-          onTap: () => Navigator.pop(context),
         ),
+        onTap: () => Navigator.pop(context),
+      ),
     );
   }
-
 }
