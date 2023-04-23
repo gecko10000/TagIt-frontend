@@ -5,16 +5,11 @@ class NotImplementedScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Align(
-          child: Text("Not implemented",
-            textAlign: TextAlign.center,
-            style: TextStyle(
-                fontSize: 32
-            ),
-          )
-      )
-    );
+    return const Align(
+        child: Text(
+      "Not implemented",
+      textAlign: TextAlign.center,
+      style: TextStyle(fontSize: 32),
+    ));
   }
-
 }

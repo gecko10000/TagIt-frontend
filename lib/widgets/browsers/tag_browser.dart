@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tagit_frontend/objects/saved_file.dart';
-import 'package:tagit_frontend/screens/home_page.dart';
 
 import '../../objects/common.dart';
 import '../../objects/tag.dart';
@@ -125,14 +124,14 @@ class _TagBrowserState extends ConsumerState<TagBrowser>
       },
       error: (err, stack) => Text("Error: $err"),
       loading: () => const Align(
-          alignment: Alignment.center, child: CircularProgressIndicator()),
+          alignment: Alignment.center, child: CircularProgressIndicator()
+      ),
     );
   }
 
   @override
   bool get wantKeepAlive => true;
 
-  // TODO: fix this updating AppBar name when opened from drawer
   void refresh() {
     Future(() {
       String? fullName = widget.parent?.fullName();
