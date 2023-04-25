@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tagit_frontend/screens/common.dart';
+import 'package:tagit_frontend/screens/search.dart';
 import 'package:tagit_frontend/widgets/browsers/file_browser.dart';
 import 'package:tagit_frontend/widgets/browsers/tag_browser.dart';
 
@@ -15,17 +16,33 @@ class SideDrawer extends StatelessWidget {
         child: ListView(
       children: [
         DrawerTile(
-            Icons.file_copy,
+            Icons.tag,
             "Tags",
-            (context) => TagBrowserNavigator(
-                scaffoldNameNotifier: backScaffoldTitleProvider.notifier)),
-        DrawerTile(Icons.file_copy, "Files", (context) => const FileBrowser()),
+            (context) => BackScaffold(
+                  body: TagBrowserNavigator(
+                      scaffoldNameNotifier: backScaffoldNameProvider.notifier),
+                  title: "Tags",
+                )),
         DrawerTile(
-            Icons.search, "Search", (context) => const NotImplementedScreen()),
+            Icons.file_copy,
+            "Files",
+            (context) => const BackScaffold(
+                  body: FileBrowser(),
+                  title: "Files",
+                )),
+        DrawerTile(Icons.search, "Search", (context) => const SearchScreen()),
         DrawerTile(
-            Icons.upload, "Upload", (context) => const NotImplementedScreen()),
-        DrawerTile(Icons.settings, "Settings",
-            (context) => const NotImplementedScreen()),
+            Icons.upload,
+            "Upload",
+            (context) => const BackScaffold(
+                  body: NotImplementedScreen(),
+                  title: "Upload",
+                )),
+        DrawerTile(
+            Icons.settings,
+            "Settings",
+            (context) => const BackScaffold(
+                body: NotImplementedScreen(), title: "Settings")),
       ],
     ));
   }
@@ -49,8 +66,8 @@ class DrawerTile extends ConsumerWidget {
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           // cannot modify the provider while the widget is building
           WidgetsBinding.instance.addPostFrameCallback(
-              (_) => ref.read(backScaffoldTitleProvider.notifier).set(title));
-          return BackScaffold(body: callback(context), title: title);
+              (_) => ref.read(backScaffoldNameProvider.notifier).set(title));
+          return callback(context);
         }));
       },
     ));

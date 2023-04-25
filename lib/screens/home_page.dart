@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:tagit_frontend/screens/search.dart';
 import 'package:tagit_frontend/widgets/drawer.dart';
 
 import '../widgets/browsers/file_browser.dart';
@@ -32,10 +33,11 @@ class TabBarName extends _$TabBarName {
 }
 
 class _AppBarText extends ConsumerWidget {
-  const _AppBarText({super.key});
+  const _AppBarText();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Text(ref.watch(tabBarNameProvider));
+  Widget build(BuildContext context, WidgetRef ref) =>
+      Text(ref.watch(tabBarNameProvider));
 }
 
 class HomePage extends ConsumerWidget {
@@ -54,7 +56,9 @@ class HomePage extends ConsumerWidget {
               ref.read(tabBarIndexProvider.notifier).set(i);
               if (i == 0) {
                 final current = ref.read(currentTagProvider)?.fullName();
-                ref.read(tagBrowserListProvider(parent: current).notifier).refresh(parent: current);
+                ref
+                    .read(tagBrowserListProvider(parent: current).notifier)
+                    .refresh(parent: current);
               } else if (i == 1) {
                 ref.read(fileBrowserListProvider.notifier).refresh();
               }
@@ -64,9 +68,18 @@ class HomePage extends ConsumerWidget {
               Tab(icon: Icon(Icons.file_copy)),
             ],
           ),
+          actions: [
+            IconButton(
+                onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const SearchScreen())),
+                icon: const Icon(Icons.search)),
+          ],
         ),
         body: TabBarView(children: [
-          TagBrowserNavigator(scaffoldNameNotifier: tabBarNameProvider.notifier),
+          TagBrowserNavigator(
+              scaffoldNameNotifier: tabBarNameProvider.notifier),
           const FileBrowser(),
         ]),
       ),

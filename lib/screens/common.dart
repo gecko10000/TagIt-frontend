@@ -5,15 +5,17 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'common.g.dart';
 
 @riverpod
-class BackScaffoldTitle extends _$BackScaffoldTitle {
+class BackScaffoldName extends _$BackScaffoldName {
   @override
   String build() => "Tags";
   void set(String s) => state = s;
 }
 
-class _AppBarTitle extends ConsumerWidget {
+class _BackScaffoldTitle extends ConsumerWidget {
+  const _BackScaffoldTitle();
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) => Text(ref.watch(backScaffoldTitleProvider));
+  Widget build(BuildContext context, WidgetRef ref) => Text(ref.watch(backScaffoldNameProvider));
 }
 
 class BackScaffold extends StatelessWidget {
@@ -27,7 +29,7 @@ class BackScaffold extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: _AppBarTitle(),
+          title: const _BackScaffoldTitle(),
           leading: const BackButton(),
         ),
         body: body
