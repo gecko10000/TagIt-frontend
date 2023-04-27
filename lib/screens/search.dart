@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tagit_frontend/requests.dart';
 
 import '../objects/common.dart';
+import '../objects/saved_file.dart';
 
 part 'search.g.dart';
 
@@ -14,11 +15,20 @@ class SearchResults extends _$SearchResults {
   @override
   FutureOr<List<Tileable>> build() => [];
 
+  String currentQuery = "";
+
   void search(String query) async {
+    currentQuery = query;
+    state = const AsyncValue.loading();
     try {
-      state = AsyncValue.data(await sendSearchQuery(query));
+      List<SavedFile> files = await sendSearchQuery(query);
+      if (currentQuery == query) {
+        state = AsyncValue.data(files);
+      }
     } on SearchFormatException catch (ex, st) {
-      state = AsyncValue.error(ex, st);
+      if (currentQuery == query) {
+        state = AsyncValue.error(ex, st);
+      }
     }
   }
 }
