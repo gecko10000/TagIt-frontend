@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
+import 'package:tagit_frontend/screens/search.dart';
 
 import 'misc/order.dart';
 import 'objects/common.dart';
@@ -10,7 +11,7 @@ import 'objects/tag.dart';
 
 Client _client = Client();
 
-Uri url(String endpoint) => Uri(scheme: 'http', host: "localhost", port: 10000, path: endpoint);
+Uri url(String endpoint, {Map<String, dynamic>? queryParameters}) => Uri(scheme: 'http', host: "localhost", port: 10000, path: endpoint, queryParameters: queryParameters);
 
 Future<List<Tileable>> retrieveChildren(String? parent) async {
   var response = await _client.get(url(parent == null ? "tag" : "tag/${Uri.encodeComponent(parent)}/list"));
@@ -56,4 +57,16 @@ Future<void> sendFileRename(SavedFile file, String newName) async {
     url("file/${Uri.encodeComponent(file.name)}"),
     body: {"name": newName}
   );
+}
+
+Future<List<SavedFile>> sendSearchQuery(String query) async {
+  Response response = await _client.get(url("search", queryParameters: {"q": query}));
+  final json = jsonDecode(utf8.decode(response.bodyBytes));
+  if (response.statusCode == 422) {
+    // TODO: find a better way to bubble the index up
+    // `json` is an int here
+    throw SearchFormatException(json);
+  }
+  List files = json["files"];
+  return files.map((j) => SavedFile.fromJson(j)).toList();
 }
