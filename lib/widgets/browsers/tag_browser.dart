@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -65,8 +67,13 @@ class TagBrowserList extends _$TagBrowserList {
   }
 
   void refresh({String? parent}) async {
-    state =
-        AsyncValue.data(await addBackButton(retrieveChildren(parent), parent));
+    try {
+      state =
+          AsyncValue.data(
+              await addBackButton(retrieveChildren(parent), parent));
+    } on SocketException catch (ex, st) {
+      state = AsyncValue.error(ex, st);
+    }
   }
 }
 
@@ -122,9 +129,13 @@ class _TagBrowserState extends ConsumerState<TagBrowser>
           }
         );
       },
-      error: (err, stack) => Text("Error: $err"),
+      error: (err, stack) => Align(
+          alignment: Alignment.center,
+          child: Text("Error: $err")
+      ),
       loading: () => const Align(
-          alignment: Alignment.center, child: CircularProgressIndicator()
+          alignment: Alignment.center,
+          child: CircularProgressIndicator(),
       ),
     );
   }

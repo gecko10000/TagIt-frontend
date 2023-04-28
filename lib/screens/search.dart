@@ -27,7 +27,7 @@ class SearchResults extends _$SearchResults {
       }
     } on SearchFormatException catch (ex, st) {
       if (currentQuery == query) {
-        state = AsyncValue.error(ex, st);
+        state = currentQuery == "" ? const AsyncValue.data([]) : AsyncValue.error(ex, st);
       }
     }
   }
