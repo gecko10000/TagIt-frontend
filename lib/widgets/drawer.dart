@@ -7,11 +7,11 @@ import 'package:tagit_frontend/widgets/browsers/tag_browser.dart';
 
 import '../screens/not_implemented.dart';
 
-class SideDrawer extends StatelessWidget {
+class SideDrawer extends ConsumerWidget {
   const SideDrawer({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Drawer(
         child: ListView(
       children: [
@@ -22,27 +22,31 @@ class SideDrawer extends StatelessWidget {
                   body: TagBrowserNavigator(
                       scaffoldNameNotifier: backScaffoldNameProvider.notifier),
                   title: "Tags",
+              ref: ref,
                 )),
         DrawerTile(
             Icons.file_copy,
             "Files",
-            (context) => const BackScaffold(
-                  body: FileBrowser(),
+            (context) => BackScaffold(
+                  body: const FileBrowser(),
                   title: "Files",
+              ref: ref,
                 )),
         DrawerTile(Icons.search, "Search", (context) => const SearchScreen()),
         DrawerTile(
             Icons.upload,
             "Upload",
-            (context) => const BackScaffold(
-                  body: NotImplementedScreen(),
+            (context) => BackScaffold(
+                  body: const NotImplementedScreen(),
                   title: "Upload",
+              ref: ref,
                 )),
         DrawerTile(
             Icons.settings,
             "Settings",
-            (context) => const BackScaffold(
-                body: NotImplementedScreen(), title: "Settings")),
+            (context) => BackScaffold(
+                body: const NotImplementedScreen(), title: "Settings",
+              ref: ref,)),
       ],
     ));
   }

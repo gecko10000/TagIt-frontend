@@ -142,6 +142,7 @@ class SavedFile implements Tileable {
               parent: tag,
             ),
             title: tagName,
+            ref: ref,
           ),
         ));
       } else {
