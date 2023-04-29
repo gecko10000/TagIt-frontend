@@ -17,7 +17,7 @@ class TagIt extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: "TagIt",
           theme: ThemeData(
-            colorScheme: const ColorScheme.dark(primary: Colors.blueAccent),
+            colorScheme: const ColorScheme.dark(primary: Colors.blue),
           ),
           home: const HomePage(),
         )

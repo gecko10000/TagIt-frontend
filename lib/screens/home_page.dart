@@ -52,6 +52,8 @@ class HomePage extends ConsumerWidget {
         appBar: AppBar(
           title: const _AppBarText(),
           bottom: TabBar(
+            labelColor: Colors.blue,
+            indicatorColor: Colors.blue.withOpacity(0.6),
             onTap: (i) {
               ref.read(tabBarIndexProvider.notifier).set(i);
               if (i == 0) {
