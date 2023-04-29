@@ -21,7 +21,6 @@ class APIClient extends BaseClient {
   Future<StreamedResponse> send(BaseRequest request) async {
     StreamedResponse response = await _client.send(request);
     // response code not 2XX
-    print(response.statusCode);
     if (response.statusCode != 422 && response.statusCode ~/ 100 != 2) {
       throw RequestException(await response.stream.bytesToString());
     }

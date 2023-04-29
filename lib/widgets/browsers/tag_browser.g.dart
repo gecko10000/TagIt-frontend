@@ -20,7 +20,7 @@ final currentTagProvider = NotifierProvider<CurrentTag, Tag?>.internal(
 );
 
 typedef _$CurrentTag = Notifier<Tag?>;
-String _$tagBrowserListHash() => r'e9fd1da0f1f24be03b78a4a24baf19dfa39cdbf9';
+String _$tagBrowserListHash() => r'80938eafef76a810790fe43dec0963c938036d10';
 
 /// Copied from Dart SDK
 class _SystemHash {

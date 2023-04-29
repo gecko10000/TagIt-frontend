@@ -131,6 +131,7 @@ class SavedFile implements Tileable {
             child: Text("Remove", style: TextStyle(color: Colors.red)),
           )
         ]).then((value) async {
+          if (value == null) return;
       if (value == "view") {
         Tag tag = await getTag(tagName);
         if (!context.mounted) return;
