@@ -57,7 +57,43 @@ class SavedFile implements Tileable {
     deleteObject(context, "file", name, deleteCallback, ref);
   }
 
-  TextButton _tagButton(String tag, {void Function()? onPressed}) {
+  void _showTagMenu(BuildContext context, Offset offset) {
+    showMenu<String>(
+        context: context,
+        position:
+            RelativeRect.fromLTRB(offset.dx, offset.dy, offset.dx, offset.dy),
+        items: const [
+          PopupMenuItem(value: "view", child: Text("View Tag")),
+          PopupMenuItem(
+            value: "remove",
+            child: Text("Remove", style: TextStyle(color: Colors.red)),
+          )
+        ]);
+  }
+
+  Widget _tagButton(BuildContext context, String tag,
+      {void Function()? onPressed}) {
+    return Container(
+      //color: Colors.blue.withOpacity(0.1),
+      decoration: BoxDecoration(
+          color: Colors.blue.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(100)),
+      child: InkWell(
+          // without this, the hover color does not respect the Container shape it's in
+          borderRadius: BorderRadius.circular(100),
+          hoverColor: Colors.blue.withOpacity(0.3),
+          onTapDown: (details) => _showTagMenu(context, details.globalPosition),
+          child: Padding(
+              padding: const EdgeInsets.all(10),
+              child: Text(tag,
+                  style: const TextStyle(
+                    fontSize: 16,
+                  )))),
+    );
+    return GestureDetector(
+      onTapDown: (details) => _showTagMenu(context, details.globalPosition),
+      child: Container(),
+    );
     return TextButton(
         style: ButtonStyle(
             minimumSize: MaterialStateProperty.all(
@@ -104,7 +140,7 @@ class SavedFile implements Tileable {
                           // generates each tag with 5-pixel spaces in-between
                           for (int i = 0; i < tags.length * 2; i++) {
                             if (i % 2 == 0) {
-                              yield _tagButton(tags.elementAt(i ~/ 2));
+                              yield _tagButton(context, tags.elementAt(i ~/ 2));
                             } else {
                               yield const SizedBox(
                                 width: 5,
@@ -112,7 +148,7 @@ class SavedFile implements Tileable {
                             }
                           }
                           // finally, gives a plus button to add more tags
-                          yield _tagButton("+", onPressed: () {});
+                          yield _tagButton(context, "+", onPressed: () {});
                         }()
                             .toList(),
                       )))
@@ -120,6 +156,7 @@ class SavedFile implements Tileable {
           ),
           onTap: onTap,
           trailing: PopupMenuButton<void Function(BuildContext, WidgetRef ref)>(
+            tooltip: "Actions",
             itemBuilder: (context) => [
               PopupMenuItem(
                 value: renameFile,
