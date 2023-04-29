@@ -22,7 +22,7 @@ class APIClient extends BaseClient {
     StreamedResponse response = await _client.send(request);
     // response code not 2XX
     if (response.statusCode != 422 && response.statusCode ~/ 100 != 2) {
-      throw RequestException(await response.stream.bytesToString());
+      throw RequestException("${response.statusCode}: ${await response.stream.bytesToString()}");
     }
     return response;
   }
