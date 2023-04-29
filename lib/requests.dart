@@ -83,21 +83,26 @@ Future<void> sendFileRename(SavedFile file, String newName) async {
       body: {"name": newName});
 }
 
-Future<List<SavedFile>> sendSearchQuery(String query) async {
+Future<List<SavedFile>> sendFileSearch(String query) async {
   Response response =
-      await _client.get(url("search", queryParameters: {"q": query}));
+      await _client.get(url("search/files", queryParameters: {"q": query}));
   final json = jsonDecode(utf8.decode(response.bodyBytes));
   if (response.statusCode == 422) {
     // TODO: find a better way to bubble the index up
     // `json` is an int here
     throw SearchFormatException(json);
   }
-  List files = json["files"];
-  return files.map((j) => SavedFile.fromJson(j)).toList();
+  return (json as List).map((j) => SavedFile.fromJson(j)).toList();
 }
 
 Future<void> sendPatchTag(String file, String tag, bool add) async {
   await _client.patch(
       url("file/${Uri.encodeComponent(file)}/${add ? "add" : "remove"}"),
       body: {"tags": jsonEncode([tag]) });
+}
+
+Future<List<Tag>> sendTagSearch(String substring) async {
+  Response response = await _client.get(url("search/tags", queryParameters: {"q": substring}));
+  final json = jsonDecode(utf8.decode(response.bodyBytes));
+  return (json as List).map((j) => Tag.fromJson(j)).toList();
 }

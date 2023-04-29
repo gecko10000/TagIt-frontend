@@ -56,7 +56,7 @@ class TagBrowserList extends _$TagBrowserList {
   Future<List<Tileable>> addBackButton(
       Future<List<Tileable>> list, String? parent) {
     if (parent != null) {
-      list.then((l) => l.insert(0, BackTile()));
+      list.then((l) => l.insert(0, UpTile()));
     }
     return list;
   }
@@ -191,7 +191,7 @@ class _TagBrowserState extends ConsumerState<TagBrowser>
   }
 }
 
-class BackTile extends Tileable {
+class UpTile extends Tileable {
   @override
   Widget createTile(
       {required BuildContext context,
@@ -202,7 +202,7 @@ class BackTile extends Tileable {
       child: ListTile(
         leading: const Icon(Icons.arrow_upward),
         title: const Text(
-          "Back",
+          "Up",
           style: TextStyle(
             fontSize: 24,
           ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tagit_frontend/misc/extensions.dart';
 import 'package:tagit_frontend/objects/common.dart';
@@ -64,20 +65,29 @@ class SavedFile implements Tileable {
   }
 
   void _addTag(BuildContext context, WidgetRef ref) {
-    TextEditingController controller = TextEditingController();
+    late TextEditingController textController;
     Future<String?> dialogReturn = showDialog(
         context: context,
         builder: (context) => AlertDialog(
               title: Text("Adding Tag to \"$name\""),
-              content: Stack(
-                children: [
-                  TextField(
-                    onSubmitted: ((name) => Navigator.pop(context, name)),
+              content: Autocomplete(
+                fieldViewBuilder: (context, controller, node, func) {
+                  textController = controller;
+                  return TextField(
+                    // TODO: somehow detect when user selects autocompletion vs pressing enter to confirm
+                    onSubmitted: ((name) {
+                      func();
+                      // stay in the text field
+                      node.requestFocus();
+                    }),
+                    focusNode: node,
                     controller: controller,
                     autofocus: true,
                     autocorrect: false,
-                  ),
-                ],
+                  );
+                },
+                displayStringForOption: (tag) => tag.fullName(),
+                optionsBuilder: (input) => input.text.isEmpty ? Future.value(<Tag>[]) : sendTagSearch(input.text),
               ),
               actions: [
                 TextButton(
@@ -86,7 +96,7 @@ class SavedFile implements Tileable {
                 ),
                 TextButton(
                   onPressed: () =>
-                      Navigator.pop(context, controller.value.text),
+                      Navigator.pop(context, textController.value.text),
                   child: const Text("Add"),
                 ),
               ],
@@ -95,22 +105,36 @@ class SavedFile implements Tileable {
       if (value == null) return;
       await _patchTag(context, value, true);
       ref.read(fileBrowserListProvider.notifier).refresh();
-
     });
   }
 
   void _removeTag(BuildContext context, String tagName, WidgetRef ref) {
+    FocusNode focusNode = FocusNode();
+    // for some reason, key event is called twice for enter
+    bool done = false;
     Future<bool?> dialogReturn = showDialog(
         context: context,
-        builder: (context) => AlertDialog(
+        builder: (context) => RawKeyboardListener(
+            focusNode: focusNode,
+            autofocus: true,
+            onKey: (value) {
+              if (done) return;
+              done = true;
+              if (value.logicalKey == LogicalKeyboardKey.enter) {
+                Navigator.pop(context, true);
+              }
+            },
+            child: AlertDialog(
               title: Text("Remove tag $tagName from \"$name\"?"),
               actions: [
                 TextButton(
                     onPressed: () => Navigator.pop(context, false),
                     child: const Text("Cancel")),
-                TextButton(onPressed: () => Navigator.pop(context, true), child: const Text("Remove")),
+                TextButton(
+                    onPressed: () => Navigator.pop(context, true),
+                    child: const Text("Remove")),
               ],
-            ));
+            )));
     dialogReturn.then((value) async {
       if (value ?? false) {
         await _patchTag(context, tagName, false);
@@ -119,7 +143,8 @@ class SavedFile implements Tileable {
     });
   }
 
-  void _showTagMenu(BuildContext context, String tagName, Offset offset, WidgetRef ref) {
+  void _showTagMenu(
+      BuildContext context, String tagName, Offset offset, WidgetRef ref) {
     showMenu<String>(
         context: context,
         position:
@@ -131,7 +156,7 @@ class SavedFile implements Tileable {
             child: Text("Remove", style: TextStyle(color: Colors.red)),
           )
         ]).then((value) async {
-          if (value == null) return;
+      if (value == null) return;
       if (value == "view") {
         Tag tag = await getTag(tagName);
         if (!context.mounted) return;
@@ -163,7 +188,8 @@ class SavedFile implements Tileable {
           borderRadius: BorderRadius.circular(100),
           hoverColor: Colors.blue.withOpacity(0.3),
           onTapDown: onTapDown ??
-              (details) => _showTagMenu(context, tag, details.globalPosition, ref),
+              (details) =>
+                  _showTagMenu(context, tag, details.globalPosition, ref),
           child: Padding(
               padding: const EdgeInsets.all(10),
               child: Text(tag,
@@ -201,7 +227,8 @@ class SavedFile implements Tileable {
                           // generates each tag with 5-pixel spaces in-between
                           for (int i = 0; i < tags.length * 2; i++) {
                             if (i % 2 == 0) {
-                              yield _tagButton(context, tags.elementAt(i ~/ 2), ref);
+                              yield _tagButton(
+                                  context, tags.elementAt(i ~/ 2), ref);
                             } else {
                               yield const SizedBox(
                                 width: 5,

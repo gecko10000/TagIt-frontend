@@ -21,7 +21,7 @@ class SearchResults extends _$SearchResults {
     currentQuery = query;
     state = const AsyncValue.loading();
     try {
-      List<SavedFile> files = await sendSearchQuery(query);
+      List<SavedFile> files = await sendFileSearch(query);
       if (currentQuery == query) {
         state = AsyncValue.data(files);
       }
