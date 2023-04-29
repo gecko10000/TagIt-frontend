@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tagit_frontend/misc/extensions.dart';
 import 'package:tagit_frontend/objects/common.dart';
 
 import '../requests.dart';
@@ -27,7 +28,11 @@ class SavedFile implements Tileable {
         TextSelection(baseOffset: startIndex, extentOffset: startIndex);
 
     Future<void> renameCallback(String newName, WidgetRef ref) async {
-      await sendFileRename(this, newName);
+      try {
+        await sendFileRename(this, newName);
+      } on RequestException catch (ex, _) {
+        context.showSnackBar(ex.message);
+      }
       ref.read(fileBrowserListProvider.notifier).refresh();
     }
 
@@ -41,7 +46,11 @@ class SavedFile implements Tileable {
 
   void deleteFile(BuildContext context, WidgetRef ref) {
     Future<void> deleteCallback(WidgetRef ref) async {
-      await sendFileDeletion(this);
+      try {
+        await sendFileDeletion(this);
+      } on RequestException catch (ex, _) {
+        context.showSnackBar(ex.message);
+      }
       ref.read(fileBrowserListProvider.notifier).refresh();
     }
 

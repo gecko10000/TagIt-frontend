@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tagit_frontend/misc/extensions.dart';
 import 'package:tagit_frontend/objects/common.dart';
 import 'package:tagit_frontend/requests.dart';
 
@@ -31,7 +32,11 @@ class Tag implements Tileable {
     //controller.selection = TextSelection(baseOffset: tagName.length, extentOffset: tagName.length);
 
     Future<void> renameCallback(String newName, WidgetRef ref) async {
-      await sendTagRename(this, newName);
+      try {
+        await sendTagRename(this, newName);
+      } on RequestException catch (ex, st) {
+        context.showSnackBar(ex.message);
+      }
       ref.read(tagBrowserListProvider(parent: parent).notifier).refresh(parent: parent);
     }
     renameObject(context, "tag", fullName(), renameCallback, controller, ref);
@@ -46,7 +51,11 @@ class Tag implements Tileable {
   void deleteTag(BuildContext context, WidgetRef ref) {
 
     Future<void> deleteCallback(WidgetRef ref) async {
-      await sendTagDeletion(this);
+      try {
+        await sendTagDeletion(this);
+      } on RequestException catch (ex, st) {
+        context.showSnackBar(ex.message);
+      }
       ref.read(tagBrowserListProvider(parent: parent).notifier).refresh(parent: parent);
     }
     deleteObject(context, "tag", fullName(), deleteCallback, ref);
