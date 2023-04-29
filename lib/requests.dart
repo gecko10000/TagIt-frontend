@@ -21,7 +21,8 @@ class APIClient extends BaseClient {
   Future<StreamedResponse> send(BaseRequest request) async {
     StreamedResponse response = await _client.send(request);
     // response code not 2XX
-    if (response.statusCode ~/ 100 != 2) {
+    print(response.statusCode);
+    if (response.statusCode != 422 && response.statusCode ~/ 100 != 2) {
       throw RequestException(await response.stream.bytesToString());
     }
     return response;
@@ -94,4 +95,10 @@ Future<List<SavedFile>> sendSearchQuery(String query) async {
   }
   List files = json["files"];
   return files.map((j) => SavedFile.fromJson(j)).toList();
+}
+
+Future<void> sendPatchTag(String file, String tag, bool add) async {
+  await _client.patch(
+      url("file/${Uri.encodeComponent(file)}/${add ? "add" : "remove"}"),
+      body: {"tags": jsonEncode([tag]) });
 }

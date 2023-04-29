@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tagit_frontend/misc/extensions.dart';
 import 'package:tagit_frontend/objects/common.dart';
+import 'package:tagit_frontend/objects/tag.dart';
+import 'package:tagit_frontend/screens/common.dart';
+import 'package:tagit_frontend/widgets/browsers/tag_browser.dart';
 
 import '../requests.dart';
 import '../widgets/browsers/file_browser.dart';
@@ -39,11 +42,6 @@ class SavedFile implements Tileable {
     renameObject(context, "file", name, renameCallback, controller, ref);
   }
 
-  // TODO
-  void manageFileTags(BuildContext context, WidgetRef ref) {
-    throw UnimplementedError();
-  }
-
   void deleteFile(BuildContext context, WidgetRef ref) {
     Future<void> deleteCallback(WidgetRef ref) async {
       try {
@@ -57,7 +55,71 @@ class SavedFile implements Tileable {
     deleteObject(context, "file", name, deleteCallback, ref);
   }
 
-  void _showTagMenu(BuildContext context, Offset offset) {
+  Future<void> _patchTag(BuildContext context, String tag, bool add) async {
+    try {
+      await sendPatchTag(name, tag, add);
+    } on RequestException catch (ex, st) {
+      context.showSnackBar(ex.message);
+    }
+  }
+
+  void _addTag(BuildContext context, WidgetRef ref) {
+    TextEditingController controller = TextEditingController();
+    Future<String?> dialogReturn = showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text("Adding Tag to \"$name\""),
+              content: Stack(
+                children: [
+                  TextField(
+                    onSubmitted: ((name) => Navigator.pop(context, name)),
+                    controller: controller,
+                    autofocus: true,
+                    autocorrect: false,
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, null),
+                  child: const Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () =>
+                      Navigator.pop(context, controller.value.text),
+                  child: const Text("Add"),
+                ),
+              ],
+            ));
+    dialogReturn.then((value) async {
+      if (value == null) return;
+      await _patchTag(context, value, true);
+      ref.read(fileBrowserListProvider.notifier).refresh();
+
+    });
+  }
+
+  void _removeTag(BuildContext context, String tagName, WidgetRef ref) {
+    Future<bool?> dialogReturn = showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+              title: Text("Remove tag $tagName from \"$name\"?"),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.pop(context, false),
+                    child: const Text("Cancel")),
+                TextButton(onPressed: () => Navigator.pop(context, true), child: const Text("Remove")),
+              ],
+            ));
+    dialogReturn.then((value) async {
+      if (value ?? false) {
+        await _patchTag(context, tagName, false);
+        ref.read(fileBrowserListProvider.notifier).refresh();
+      }
+    });
+  }
+
+  void _showTagMenu(BuildContext context, String tagName, Offset offset, WidgetRef ref) {
     showMenu<String>(
         context: context,
         position:
@@ -68,21 +130,38 @@ class SavedFile implements Tileable {
             value: "remove",
             child: Text("Remove", style: TextStyle(color: Colors.red)),
           )
-        ]);
+        ]).then((value) async {
+      if (value == "view") {
+        Tag tag = await getTag(tagName);
+        if (!context.mounted) return;
+        Navigator.of(context, rootNavigator: true).push(MaterialPageRoute(
+          builder: (context) => BackScaffold(
+            body: TagBrowserNavigator(
+              scaffoldNameNotifier: backScaffoldNameProvider.notifier,
+              parent: tag,
+            ),
+            title: tagName,
+          ),
+        ));
+      } else {
+        _removeTag(context, tagName, ref);
+      }
+    });
   }
 
-  Widget _tagButton(BuildContext context, String tag,
-      {void Function()? onPressed}) {
+  Widget _tagButton(BuildContext context, String tag, WidgetRef ref,
+      {void Function(TapDownDetails)? onTapDown}) {
     return Container(
-      //color: Colors.blue.withOpacity(0.1),
       decoration: BoxDecoration(
           color: Colors.blue.withOpacity(0.1),
           borderRadius: BorderRadius.circular(100)),
       child: InkWell(
           // without this, the hover color does not respect the Container shape it's in
+          // not sure if this is a bug or not
           borderRadius: BorderRadius.circular(100),
           hoverColor: Colors.blue.withOpacity(0.3),
-          onTapDown: (details) => _showTagMenu(context, details.globalPosition),
+          onTapDown: onTapDown ??
+              (details) => _showTagMenu(context, tag, details.globalPosition, ref),
           child: Padding(
               padding: const EdgeInsets.all(10),
               child: Text(tag,
@@ -90,26 +169,6 @@ class SavedFile implements Tileable {
                     fontSize: 16,
                   )))),
     );
-    return GestureDetector(
-      onTapDown: (details) => _showTagMenu(context, details.globalPosition),
-      child: Container(),
-    );
-    return TextButton(
-        style: ButtonStyle(
-            minimumSize: MaterialStateProperty.all(
-                const Size(36, 36)), // maybe find a better way to do this
-            shape: MaterialStateProperty.all(const RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(100)))),
-            backgroundColor: MaterialStateProperty.resolveWith((states) =>
-                Colors.blue.withOpacity(
-                    states.contains(MaterialState.hovered) ? 0.3 : 0.1))),
-        onPressed: onPressed ?? () {},
-        child: Text(
-          tag,
-          style: const TextStyle(
-            fontSize: 16,
-          ),
-        ));
   }
 
   @override
@@ -140,7 +199,7 @@ class SavedFile implements Tileable {
                           // generates each tag with 5-pixel spaces in-between
                           for (int i = 0; i < tags.length * 2; i++) {
                             if (i % 2 == 0) {
-                              yield _tagButton(context, tags.elementAt(i ~/ 2));
+                              yield _tagButton(context, tags.elementAt(i ~/ 2), ref);
                             } else {
                               yield const SizedBox(
                                 width: 5,
@@ -148,7 +207,8 @@ class SavedFile implements Tileable {
                             }
                           }
                           // finally, gives a plus button to add more tags
-                          yield _tagButton(context, "+", onPressed: () {});
+                          yield _tagButton(context, "+", ref,
+                              onTapDown: (details) => _addTag(context, ref));
                         }()
                             .toList(),
                       )))
@@ -161,10 +221,6 @@ class SavedFile implements Tileable {
               PopupMenuItem(
                 value: renameFile,
                 child: const Text("Rename"),
-              ),
-              PopupMenuItem(
-                value: manageFileTags,
-                child: const Text("Manage Tags"),
               ),
               PopupMenuItem(
                 value: deleteFile,

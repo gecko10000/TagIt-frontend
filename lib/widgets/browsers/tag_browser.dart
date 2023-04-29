@@ -13,15 +13,16 @@ part 'tag_browser.g.dart';
 
 class TagBrowserNavigator extends StatefulWidget {
   final Refreshable scaffoldNameNotifier;
+  final Tag? parent;
 
-  const TagBrowserNavigator({super.key, required this.scaffoldNameNotifier});
+  const TagBrowserNavigator(
+      {super.key, required this.scaffoldNameNotifier, this.parent});
 
   @override
   State createState() => _TagBrowserNavigatorState();
 }
 
 class _TagBrowserNavigatorState extends State<TagBrowserNavigator> {
-
   final RouteObserver _browseObserver = RouteObserver<MaterialPageRoute>();
 
   @override
@@ -30,10 +31,12 @@ class _TagBrowserNavigatorState extends State<TagBrowserNavigator> {
       observers: [_browseObserver],
       onGenerateRoute: (settings) {
         return MaterialPageRoute(
-            settings: settings, builder: (context) => TagBrowser(
-          observer: _browseObserver,
-          scaffoldNameNotifier: widget.scaffoldNameNotifier,
-        ));
+            settings: settings,
+            builder: (context) => TagBrowser(
+                  parent: widget.parent,
+                  observer: _browseObserver,
+                  scaffoldNameNotifier: widget.scaffoldNameNotifier,
+                ));
       },
     );
   }
@@ -68,9 +71,8 @@ class TagBrowserList extends _$TagBrowserList {
 
   void refresh({String? parent}) async {
     try {
-      state =
-          AsyncValue.data(
-              await addBackButton(retrieveChildren(parent), parent));
+      state = AsyncValue.data(
+          await addBackButton(retrieveChildren(parent), parent));
     } on SocketException catch (ex, st) {
       state = AsyncValue.error(ex, st);
     }
@@ -82,7 +84,11 @@ class TagBrowser extends ConsumerStatefulWidget {
   final RouteObserver observer;
   final Refreshable scaffoldNameNotifier;
 
-  const TagBrowser({super.key, this.parent, required this.observer, required this.scaffoldNameNotifier});
+  const TagBrowser(
+      {super.key,
+      this.parent,
+      required this.observer,
+      required this.scaffoldNameNotifier});
 
   @override
   ConsumerState createState() => _TagBrowserState();
@@ -106,36 +112,48 @@ class _TagBrowserState extends ConsumerState<TagBrowser>
               ));
         }
         return ListView.builder(
-          itemCount: tagsAndFiles.length,
-          itemBuilder: (context, i) {
-            void Function() onTap;
-            final Tileable item = tagsAndFiles[i];
-            if (item is Tag) {
-              onTap = () => Navigator.push(context,
-                  MaterialPageRoute(
-                      builder: (context) => TagBrowser(
-                        parent: item,
-                        observer: widget.observer,
-                        scaffoldNameNotifier: widget.scaffoldNameNotifier,
-                      )
-                  )
-              );
-            } else if (item is SavedFile) {
-              onTap = () {}; // without an onTap, hoverColor does not work
-            } else {
-              onTap = () => Navigator.pop(context);
-            }
-            return tagsAndFiles[i].createTile(context: context, ref: ref, onTap: onTap);
-          }
-        );
+            itemCount: tagsAndFiles.length,
+            itemBuilder: (context, i) {
+              void Function() onTap;
+              final Tileable item = tagsAndFiles[i];
+              if (item is Tag) {
+                onTap = () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => TagBrowser(
+                              parent: item,
+                              observer: widget.observer,
+                              scaffoldNameNotifier: widget.scaffoldNameNotifier,
+                            )));
+              } else if (item is SavedFile) {
+                onTap = () {}; // without an onTap, hoverColor does not work
+              } else {
+                // back tile
+                onTap = () async {
+                  String? grandparentName = widget.parent?.parent;
+                  Tag? grandparent = grandparentName == null
+                      ? null
+                      : await getTag(grandparentName);
+                  if (!context.mounted) return;
+                  Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => TagBrowser(
+                              parent: grandparent,
+                              observer: widget.observer,
+                              scaffoldNameNotifier:
+                                  widget.scaffoldNameNotifier)));
+                };
+              }
+              return tagsAndFiles[i]
+                  .createTile(context: context, ref: ref, onTap: onTap);
+            });
       },
-      error: (err, stack) => Align(
-          alignment: Alignment.center,
-          child: Text("Error: $err")
-      ),
+      error: (err, stack) =>
+          Align(alignment: Alignment.center, child: Text("Error: $err")),
       loading: () => const Align(
-          alignment: Alignment.center,
-          child: CircularProgressIndicator(),
+        alignment: Alignment.center,
+        child: CircularProgressIndicator(),
       ),
     );
   }
@@ -175,11 +193,14 @@ class _TagBrowserState extends ConsumerState<TagBrowser>
 
 class BackTile extends Tileable {
   @override
-  Widget createTile({required BuildContext context, required WidgetRef ref, required void Function() onTap}) {
+  Widget createTile(
+      {required BuildContext context,
+      required WidgetRef ref,
+      required void Function() onTap}) {
     return Container(
       padding: const EdgeInsets.all(5),
       child: ListTile(
-        leading: const Icon(Icons.arrow_back),
+        leading: const Icon(Icons.arrow_upward),
         title: const Text(
           "Back",
           style: TextStyle(
