@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -29,6 +31,8 @@ class SearchResults extends _$SearchResults {
       if (currentQuery == query) {
         state = currentQuery == "" ? const AsyncValue.data([]) : AsyncValue.error(ex, st);
       }
+    } on SocketException catch (ex, st) {
+      state = AsyncValue.error(ex, st);
     }
   }
 }

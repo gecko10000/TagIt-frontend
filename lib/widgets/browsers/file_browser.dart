@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -11,7 +13,14 @@ class FileBrowserList extends _$FileBrowserList {
   @override
   FutureOr<List<SavedFile>> build() => getAllFiles();
 
-  void refresh() async => state = AsyncValue.data(await getAllFiles());
+  void refresh() async {
+    try {
+      state = AsyncValue.data(
+          await getAllFiles());
+    } on SocketException catch (ex, st) {
+      state = AsyncValue.error(ex, st);
+    }
+  }
 
 }
 
