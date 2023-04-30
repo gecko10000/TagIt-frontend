@@ -7,6 +7,7 @@ Future<void> openContentView(BuildContext context, SavedFile file) async {
   return showDialog(
     context: context,
     builder: (context) {
+      // add share button https://pub.dev/packages/share_plus
       return Center(
         child: ContentViewer(
           file: file,
@@ -36,6 +37,7 @@ class ContentViewer extends StatelessWidget {
       case ContentType.text:
         return const Text("Text viewer/editor not implemented yet");
       case ContentType.other:
+        // should we allow the user to view it as text?
         return const Material(
           child: Icon(Icons.file_copy, size: 100),
         );
