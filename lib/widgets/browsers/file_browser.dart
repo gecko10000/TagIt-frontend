@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tagit_frontend/objects/saved_file.dart';
 import 'package:tagit_frontend/requests.dart';
+import 'package:tagit_frontend/widgets/content_viewer.dart';
 
 part 'file_browser.g.dart';
 
@@ -50,7 +51,7 @@ class _FileBrowserState extends ConsumerState<FileBrowser> with AutomaticKeepAli
           }
           return ListView.builder(
             itemCount: files.length,
-            itemBuilder: (context, i) => files[i].createTile(context: context, ref: ref, onTap: () {}),
+            itemBuilder: (context, i) => files[i].createTile(context: context, ref: ref, onTap: () => openContentView(context, files[i])),
           );
         },
         error: (err, st) => Align(

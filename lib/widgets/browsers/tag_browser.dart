@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tagit_frontend/objects/saved_file.dart';
+import 'package:tagit_frontend/widgets/content_viewer.dart';
 
 import '../../objects/common.dart';
 import '../../objects/tag.dart';
@@ -126,7 +127,7 @@ class _TagBrowserState extends ConsumerState<TagBrowser>
                               scaffoldNameNotifier: widget.scaffoldNameNotifier,
                             )));
               } else if (item is SavedFile) {
-                onTap = () {}; // without an onTap, hoverColor does not work
+                onTap = () => openContentView(context, item); // without an onTap, hoverColor does not work
               } else {
                 // back tile
                 onTap = () async {
