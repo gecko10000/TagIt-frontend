@@ -98,9 +98,7 @@ Future<void> uploadFiles(BuildContext context, {String? initialTag}) async {
   for (final PlatformFile file in result.files) {
     uploads.add(uploadFile(file.name, file.size, file.readStream!));
   }
-  for (Future upload in uploads) {
-    await upload;
-  }
+  Future.wait(uploads);
   if (!context.mounted) return;
   int files = uploads.length;
   context.showSnackBar("Uploaded $files file${files.smartS()}");
