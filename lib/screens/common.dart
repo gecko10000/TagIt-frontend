@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tagit_frontend/misc/stack.dart' as my;
+import 'package:tagit_frontend/requests.dart';
 
 part 'common.g.dart';
 
@@ -58,4 +59,27 @@ class BackScaffold extends ConsumerWidget {
         body: body
     );
   }
+}
+
+Future<void> createTag(BuildContext context, {String? leading}) {
+  TextEditingController controller = TextEditingController(text: leading == null ? null : "$leading/");
+  Future<String?> response = showDialog(context: context, builder: (context) {
+    return AlertDialog(
+      title: const Text("Creating New Tag"),
+      content: TextField(
+        onSubmitted: ((name) => Navigator.pop(context, name)),
+        controller: controller,
+        autofocus: true,
+        autocorrect: false,
+      ),
+      actions: [
+        TextButton(onPressed: () => Navigator.pop(context, null), child: const Text("Cancel")),
+        TextButton(onPressed: () => Navigator.pop(context, controller.value.text), child: const Text("Create")),
+      ],
+    );
+  });
+  return response.then((name) async {
+    if (name == null) return;
+    await sendTagCreation(name);
+  });
 }

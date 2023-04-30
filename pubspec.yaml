@@ -37,6 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   http: ^0.13.5
   flutter_riverpod: ^2.3.4
+  flutter_speed_dial: ^6.2.0
   riverpod_annotation: ^2.0.4
 
 dev_dependencies:

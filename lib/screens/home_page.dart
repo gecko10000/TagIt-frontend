@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tagit_frontend/screens/search.dart';
 import 'package:tagit_frontend/widgets/drawer.dart';
 
 import '../widgets/browsers/file_browser.dart';
 import '../widgets/browsers/tag_browser.dart';
+import 'common.dart';
 
 part 'home_page.g.dart';
 
@@ -84,6 +86,26 @@ class HomePage extends ConsumerWidget {
               scaffoldNameNotifier: tabBarNameProvider.notifier),
           const FileBrowser(),
         ]),
+        floatingActionButton: SpeedDial(
+          icon: Icons.add,
+          activeIcon: Icons.close,
+          children: [
+            SpeedDialChild(
+              child: const Icon(Icons.upload),
+              label: "Upload",
+            ),
+            SpeedDialChild(
+              child: const Icon(Icons.tag),
+              label: "Create Tag",
+              onTap: () async {
+                await createTag(context,
+                    leading: ref.read(currentTagProvider)?.fullName());
+                String? parent = ref.read(currentTagProvider)?.fullName();
+                ref.read(tagBrowserListProvider(parent: parent).notifier).refresh(parent: parent);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
