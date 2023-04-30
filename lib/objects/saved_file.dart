@@ -12,14 +12,16 @@ import '../widgets/browsers/file_browser.dart';
 
 class SavedFile implements Tileable {
   final String name;
+  final String mimeType;
   final Set<String> tags = {};
 
   factory SavedFile.fromJson(Map<String, dynamic> json) {
     return SavedFile(json["name"],
+        mimeType: json["mimeType"],
         tags: (json["tags"] as List?)?.map((e) => e as String).toList() ?? []);
   }
 
-  SavedFile(this.name, {List<String> tags = const []}) {
+  SavedFile(this.name, {required this.mimeType, List<String> tags = const []}) {
     this.tags.addAll(tags);
   }
 
