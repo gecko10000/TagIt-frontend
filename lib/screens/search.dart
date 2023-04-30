@@ -12,7 +12,6 @@ part 'search.g.dart';
 
 @riverpod
 class SearchResults extends _$SearchResults {
-  // TODO: cancel current search if there is one
 
   @override
   FutureOr<List<Tileable>> build() => [];
