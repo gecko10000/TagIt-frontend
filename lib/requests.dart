@@ -22,7 +22,8 @@ class APIClient extends BaseClient {
     StreamedResponse response = await _client.send(request);
     // response code not 2XX
     if (response.statusCode != 422 && response.statusCode ~/ 100 != 2) {
-      throw RequestException("${response.statusCode}: ${await response.stream.bytesToString()}");
+      throw RequestException(
+          "${response.statusCode}: ${await response.stream.bytesToString()}");
     }
     return response;
   }
@@ -98,15 +99,29 @@ Future<List<SavedFile>> sendFileSearch(String query) async {
 Future<void> sendPatchTag(String file, String tag, bool add) async {
   await _client.patch(
       url("file/${Uri.encodeComponent(file)}/${add ? "add" : "remove"}"),
-      body: {"tags": jsonEncode([tag]) });
+      body: {
+        "tags": jsonEncode([tag])
+      });
 }
 
 Future<List<Tag>> sendTagSearch(String substring) async {
-  Response response = await _client.get(url("search/tags", queryParameters: {"q": substring}));
+  Response response =
+      await _client.get(url("search/tags", queryParameters: {"q": substring}));
   final json = jsonDecode(utf8.decode(response.bodyBytes));
   return (json as List).map((j) => Tag.fromJson(j)).toList();
 }
 
 Future<void> sendTagCreation(String name) async {
   await _client.post(url("tag/${Uri.encodeComponent(name)}"));
+}
+
+Future<void> uploadFile(
+    String name, int size, Stream<List<int>> contents) async {
+  final request =
+      StreamedRequest("POST", url("file/${Uri.encodeComponent(name)}"));
+  request.contentLength = size;
+  contents.listen((chunk) => request.sink.add(chunk),
+      onDone: () => request.sink.close(),
+      onError: (e) => throw RequestException("Could not upload $name: $e"));
+  await _client.send(request);
 }

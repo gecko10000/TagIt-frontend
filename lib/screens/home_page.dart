@@ -93,6 +93,7 @@ class HomePage extends ConsumerWidget {
             SpeedDialChild(
               child: const Icon(Icons.upload),
               label: "Upload",
+              onTap: () => uploadFiles(context, initialTag: ref.read(currentTagProvider)?.fullName())
             ),
             SpeedDialChild(
               child: const Icon(Icons.tag),

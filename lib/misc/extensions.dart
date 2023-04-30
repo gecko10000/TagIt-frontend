@@ -25,3 +25,7 @@ extension BuildContextMethods on BuildContext {
     ScaffoldMessenger.of(this).showSnackBar(bar);
   }
 }
+
+extension IntMethods on int {
+  String smartS() => this == 1 ? "" : "s";
+}

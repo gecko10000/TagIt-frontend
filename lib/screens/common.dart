@@ -1,6 +1,8 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:tagit_frontend/misc/extensions.dart';
 import 'package:tagit_frontend/misc/stack.dart' as my;
 import 'package:tagit_frontend/requests.dart';
 
@@ -82,4 +84,24 @@ Future<void> createTag(BuildContext context, {String? leading}) {
     if (name == null) return;
     await sendTagCreation(name);
   });
+}
+
+Future<void> uploadFiles(BuildContext context, {String? initialTag}) async {
+  FilePickerResult? result = await FilePicker.platform.pickFiles(
+    allowMultiple: true,
+    allowCompression: false,
+    dialogTitle: "Choose Files to Upload",
+    withReadStream: true,
+  );
+  if (result == null) return;
+  List<Future> uploads = [];
+  for (final PlatformFile file in result.files) {
+    uploads.add(uploadFile(file.name, file.size, file.readStream!));
+  }
+  for (Future upload in uploads) {
+    await upload;
+  }
+  if (!context.mounted) return;
+  int files = uploads.length;
+  context.showSnackBar("Uploaded $files file${files.smartS()}");
 }
