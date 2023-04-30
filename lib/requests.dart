@@ -106,3 +106,7 @@ Future<List<Tag>> sendTagSearch(String substring) async {
   final json = jsonDecode(utf8.decode(response.bodyBytes));
   return (json as List).map((j) => Tag.fromJson(j)).toList();
 }
+
+Future<void> sendTagCreation(String name) async {
+  await _client.post(url("tag/${Uri.encodeComponent(name)}"));
+}

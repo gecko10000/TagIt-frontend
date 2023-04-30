@@ -70,7 +70,7 @@ class SavedFile implements Tileable {
         context: context,
         builder: (context) => AlertDialog(
               title: Text("Adding Tag to \"$name\""),
-              content: Autocomplete(
+              content: Autocomplete<Tag>(
                 fieldViewBuilder: (context, controller, node, func) {
                   textController = controller;
                   return TextField(
@@ -87,7 +87,9 @@ class SavedFile implements Tileable {
                   );
                 },
                 displayStringForOption: (tag) => tag.fullName(),
-                optionsBuilder: (input) => input.text.isEmpty ? Future.value(<Tag>[]) : sendTagSearch(input.text),
+                optionsBuilder: (input) => input.text.isEmpty
+                    ? Future.value(<Tag>[])
+                    : sendTagSearch(input.text).then((tags) => tags.take(4)),
               ),
               actions: [
                 TextButton(
