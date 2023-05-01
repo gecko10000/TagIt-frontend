@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:tagit_frontend/misc/colors.dart';
 import 'package:tagit_frontend/screens/search.dart';
 import 'package:tagit_frontend/widgets/drawer.dart';
 
@@ -54,8 +55,7 @@ class HomePage extends ConsumerWidget {
         appBar: AppBar(
           title: const _AppBarText(),
           bottom: TabBar(
-            labelColor: Colors.blue,
-            indicatorColor: Colors.blue.withOpacity(0.6),
+            indicatorColor: Colors.white70,
             onTap: (i) {
               ref.read(tabBarIndexProvider.notifier).set(i);
               if (i == 0) {
@@ -68,8 +68,8 @@ class HomePage extends ConsumerWidget {
               }
             },
             tabs: const [
-              Tab(icon: Icon(Icons.tag)),
-              Tab(icon: Icon(Icons.file_copy)),
+              Tab(icon: Icon(Icons.tag, color: CustomColor.tag)),
+              Tab(icon: Icon(Icons.file_copy, color: CustomColor.file)),
             ],
           ),
           actions: [
@@ -91,10 +91,10 @@ class HomePage extends ConsumerWidget {
           activeIcon: Icons.close,
           children: [
             SpeedDialChild(
-              child: const Icon(Icons.upload),
-              label: "Upload",
-              onTap: () => uploadFiles(context, initialTag: ref.read(currentTagProvider)?.fullName())
-            ),
+                child: const Icon(Icons.upload),
+                label: "Upload",
+                onTap: () => uploadFiles(context,
+                    initialTag: ref.read(currentTagProvider)?.fullName())),
             SpeedDialChild(
               child: const Icon(Icons.tag),
               label: "Create Tag",
@@ -102,7 +102,9 @@ class HomePage extends ConsumerWidget {
                 await createTag(context,
                     leading: ref.read(currentTagProvider)?.fullName());
                 String? parent = ref.read(currentTagProvider)?.fullName();
-                ref.read(tagBrowserListProvider(parent: parent).notifier).refresh(parent: parent);
+                ref
+                    .read(tagBrowserListProvider(parent: parent).notifier)
+                    .refresh(parent: parent);
               },
             ),
           ],
