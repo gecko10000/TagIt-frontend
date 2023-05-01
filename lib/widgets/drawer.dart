@@ -22,31 +22,31 @@ class SideDrawer extends ConsumerWidget {
                   body: TagBrowserNavigator(
                       scaffoldNameNotifier: backScaffoldNameProvider.notifier),
                   title: "Tags",
-              ref: ref,
+                  ref: ref,
                 )),
         DrawerTile(
             Icons.file_copy,
             "Files",
-            (context) => BackScaffold(
-                  body: const FileBrowser(),
-                  title: "Files",
-              ref: ref,
-                )),
+            (context) {
+              return BackScaffold(
+                body: const FileBrowser(),
+                title: "Files",
+                ref: ref,
+              );
+            }),
         DrawerTile(Icons.search, "Search", (context) => const SearchScreen()),
-        DrawerTile(
-            Icons.upload,
-            "Upload",
-            (context) => BackScaffold(
-                  body: const NotImplementedScreen(),
-                  title: "Upload",
-              ref: ref,
-                )),
+        DrawerTile(Icons.upload, "Upload", (context) {
+          uploadFiles(context);
+          return null;
+        }),
         DrawerTile(
             Icons.settings,
             "Settings",
             (context) => BackScaffold(
-                body: const NotImplementedScreen(), title: "Settings",
-              ref: ref,)),
+                  body: const NotImplementedScreen(),
+                  title: "Settings",
+                  ref: ref,
+                )),
       ],
     ));
   }
@@ -55,7 +55,7 @@ class SideDrawer extends ConsumerWidget {
 class DrawerTile extends ConsumerWidget {
   final IconData icon;
   final String title;
-  final Widget Function(BuildContext) callback;
+  final Widget? Function(BuildContext) callback;
 
   const DrawerTile(this.icon, this.title, this.callback, {super.key});
 
@@ -67,11 +67,13 @@ class DrawerTile extends ConsumerWidget {
       title: Text(title),
       onTap: () {
         Navigator.pop(context);
+        Widget? result = callback(context);
+        if (result == null) return;
         Navigator.push(context, MaterialPageRoute(builder: (context) {
           // cannot modify the provider while the widget is building
           WidgetsBinding.instance.addPostFrameCallback(
               (_) => ref.read(backScaffoldNameProvider.notifier).set(title));
-          return callback(context);
+          return result;
         }));
       },
     ));

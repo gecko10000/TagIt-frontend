@@ -70,22 +70,17 @@ class Tag implements Tileable {
     deleteObject(context, "tag", fullName(), deleteCallback, ref);
   }
 
-  Widget _numIcon(IconData icon, int amount, Color borderColor) {
+  Widget _numIcon(IconData icon, int amount, Color color) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(5, 0, 5, 0),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(width: 1, color: borderColor),
-        ),
-        child: Padding(
-            padding: const EdgeInsets.all(5),
-            child: Row(
-              children: [
-                Icon(icon),
-                Text("$amount"),
-              ],
-            )),
-      ),
+      child: Padding(
+          padding: const EdgeInsets.all(5),
+          child: Row(
+            children: [
+              Icon(icon, color: color, size: 16),
+              Text(" $amount", style: TextStyle(fontSize: 20, color: color)),
+            ],
+          )),
     );
   }
 
@@ -97,7 +92,7 @@ class Tag implements Tileable {
     return Container(
         padding: const EdgeInsets.all(5),
         child: ListTile(
-          leading: const Icon(Icons.tag),
+          leading: const Icon(Icons.tag, color: CustomColor.tag),
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10))),
           title: Row(children: [

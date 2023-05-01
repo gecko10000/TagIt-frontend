@@ -23,7 +23,7 @@ class BackScaffoldName extends _$BackScaffoldName {
     state = _stack.peek();
   }
   void pop() {
-    _stack.pop();
+    ;
     state = _stack.peek();
   }
 }
@@ -96,7 +96,11 @@ Future<void> uploadFiles(BuildContext context, {String? initialTag}) async {
   if (result == null) return;
   List<Future> uploads = [];
   for (final PlatformFile file in result.files) {
-    uploads.add(uploadFile(file.name, file.size, file.readStream!));
+    Future<void> upload = uploadFile(file.name, file.size, file.readStream!)
+    .catchError((ex, st) async {
+      context.showSnackBar(ex.message);
+    });
+    uploads.add(upload);
   }
   Future.wait(uploads);
   if (!context.mounted) return;

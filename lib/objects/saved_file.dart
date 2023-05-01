@@ -7,6 +7,7 @@ import 'package:tagit_frontend/objects/tag.dart';
 import 'package:tagit_frontend/screens/common.dart';
 import 'package:tagit_frontend/widgets/browsers/tag_browser.dart';
 
+import '../misc/colors.dart';
 import '../requests.dart';
 import '../widgets/browsers/file_browser.dart';
 
@@ -184,13 +185,13 @@ class SavedFile implements Tileable {
       {void Function(TapDownDetails)? onTapDown}) {
     return Container(
       decoration: BoxDecoration(
-          color: Colors.blue.withOpacity(0.1),
+          color: CustomColor.tag.withOpacity(0.1),
           borderRadius: BorderRadius.circular(100)),
       child: InkWell(
           // without this, the hover color does not respect the Container shape it's in
           // not sure if this is a bug or not
           borderRadius: BorderRadius.circular(100),
-          hoverColor: Colors.blue.withOpacity(0.3),
+          hoverColor: CustomColor.tag.withOpacity(0.3),
           onTapDown: onTapDown ??
               (details) =>
                   _showTagMenu(context, tag, details.globalPosition, ref),
@@ -211,7 +212,7 @@ class SavedFile implements Tileable {
     return Container(
         padding: const EdgeInsets.all(5),
         child: ListTile(
-          leading: const Icon(Icons.file_copy),
+          leading: const Icon(Icons.file_copy, color: CustomColor.file),
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10))),
           title: Row(
