@@ -86,6 +86,7 @@ Future<void> createTag(BuildContext context, {String? leading}) {
   });
 }
 
+// TODO: make a proper screen for this
 Future<void> uploadFiles(BuildContext context, {String? initialTag}) async {
   print(context.mounted);
   FilePickerResult? result = await FilePicker.platform.pickFiles(
