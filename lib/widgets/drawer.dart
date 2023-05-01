@@ -36,7 +36,7 @@ class SideDrawer extends ConsumerWidget {
             }),
         DrawerTile(Icons.search, "Search", (context) => const SearchScreen()),
         DrawerTile(Icons.upload, "Upload", (context) {
-          uploadFiles(context);
+          //uploadFiles(context);
           return null;
         }),
         DrawerTile(

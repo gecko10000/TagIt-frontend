@@ -87,6 +87,7 @@ Future<void> createTag(BuildContext context, {String? leading}) {
 }
 
 Future<void> uploadFiles(BuildContext context, {String? initialTag}) async {
+  print(context.mounted);
   FilePickerResult? result = await FilePicker.platform.pickFiles(
     allowMultiple: true,
     allowCompression: false,
@@ -95,15 +96,22 @@ Future<void> uploadFiles(BuildContext context, {String? initialTag}) async {
   );
   if (result == null) return;
   List<Future> uploads = [];
+  int failed = 0;
+  Set<String> errors = {};
   for (final PlatformFile file in result.files) {
     Future<void> upload = uploadFile(file.name, file.size, file.readStream!)
     .catchError((ex, st) async {
-      context.showSnackBar(ex.message);
+      failed++;
+      errors.add(ex.message);
     });
     uploads.add(upload);
   }
-  Future.wait(uploads);
+  await Future.wait(uploads);
   if (!context.mounted) return;
   int files = uploads.length;
-  context.showSnackBar("Uploaded $files file${files.smartS()}");
+  if (failed == 0) {
+    context.showSnackBar("Uploaded $files file${files.smartS()}");
+  } else {
+    context.showSnackBar("$failed/$files upload${files.smartS()} failed due to: ${errors.join(", ")}");
+  }
 }
