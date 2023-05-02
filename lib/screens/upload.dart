@@ -6,7 +6,7 @@ import 'package:tagit_frontend/screens/common.dart';
 
 import '../requests.dart';
 
-Future<void> _uploadFiles(BuildContext context, {String? initialTag}) async {
+Future<void> _uploadFiles(BuildContext context) async {
   FilePickerResult? result = await FilePicker.platform.pickFiles(
     allowMultiple: true,
     allowCompression: false,
@@ -31,7 +31,8 @@ Future<void> _uploadFiles(BuildContext context, {String? initialTag}) async {
   if (failed == 0) {
     context.showSnackBar("Uploaded $files file${files.smartS()}");
   } else {
-    context.showSnackBar("$failed/$files upload${files.smartS()} failed due to: ${errors.join(", ")}");
+    context.showSnackBar(
+        "$failed/$files upload${files.smartS()} failed due to: ${errors.join(", ")}");
   }
 }
 
@@ -40,7 +41,12 @@ class UploadScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return BackScaffold(body: TextButton(child: const Text("Upload"), onPressed: () => _uploadFiles(context),), title: "Upload", ref: ref);
+    return BackScaffold(
+        body: TextButton(
+          child: const Text("Upload"),
+          onPressed: () => _uploadFiles(context),
+        ),
+        title: "Upload",
+        ref: ref);
   }
-
 }
