@@ -6,6 +6,7 @@ import 'package:tagit_frontend/widgets/browsers/file_browser.dart';
 import 'package:tagit_frontend/widgets/browsers/tag_browser.dart';
 
 import '../screens/not_implemented.dart';
+import '../screens/upload.dart';
 
 class SideDrawer extends ConsumerWidget {
   const SideDrawer({super.key});
@@ -35,10 +36,7 @@ class SideDrawer extends ConsumerWidget {
               );
             }),
         DrawerTile(Icons.search, "Search", (context) => const SearchScreen()),
-        DrawerTile(Icons.upload, "Upload", (context) {
-          //uploadFiles(context);
-          return null;
-        }),
+        DrawerTile(Icons.upload, "Upload", (context) => const UploadScreen()),
         DrawerTile(
             Icons.settings,
             "Settings",

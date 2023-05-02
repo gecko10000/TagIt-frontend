@@ -4,6 +4,7 @@ import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tagit_frontend/misc/colors.dart';
 import 'package:tagit_frontend/screens/search.dart';
+import 'package:tagit_frontend/screens/upload.dart';
 import 'package:tagit_frontend/widgets/drawer.dart';
 
 import '../widgets/browsers/file_browser.dart';
@@ -93,8 +94,8 @@ class HomePage extends ConsumerWidget {
             SpeedDialChild(
                 child: const Icon(Icons.upload),
                 label: "Upload",
-                onTap: () => uploadFiles(context,
-                    initialTag: ref.read(currentTagProvider)?.fullName())),
+                onTap: () => Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => UploadScreen()))),
             SpeedDialChild(
               child: const Icon(Icons.tag),
               label: "Create Tag",
