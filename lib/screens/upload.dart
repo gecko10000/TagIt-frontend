@@ -56,7 +56,7 @@ class _FileUploadTile extends ConsumerWidget {
       leading: const Icon(Icons.error, color: Colors.red),
       isThreeLine: true,
       title: Text(upload.file.name),
-      subtitle: Text(upload.error!),
+      subtitle: Text("Failed: ${upload.error!}"),
     );
   }
 
@@ -120,7 +120,7 @@ class _UploadScreenState extends ConsumerState {
       final uploadIndex = previousAmount + i;
       // declare as late so it can be used within the closures
       late StreamSubscription subscription;
-      subscription = uploadFile(file, (progress) {
+      subscription = uploadFile(file, onProgress: (progress) {
         if (!mounted) {
           subscription.cancel();
           return;
@@ -128,7 +128,7 @@ class _UploadScreenState extends ConsumerState {
         ref
             .read(_fileUploadsProvider.notifier)
             .modify(uploadIndex, (u) => u.progress = progress);
-      }, (error) {
+      }, onError: (error) {
         if (!mounted) {
           subscription.cancel();
           return;
@@ -137,7 +137,7 @@ class _UploadScreenState extends ConsumerState {
           u.completed = false;
           u.error = error;
         });
-      }, () {
+      }, onComplete: () {
         ref
             .read(_fileUploadsProvider.notifier)
             .modify(uploadIndex, (u) => u.completed = true);
