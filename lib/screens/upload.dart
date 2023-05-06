@@ -46,6 +46,8 @@ class FileUpload {
   FileUpload({required this.file, required this.subscription});
 }
 
+// stateful because we use initState
+// to open the file selector
 class UploadScreen extends ConsumerStatefulWidget {
   const UploadScreen({super.key});
 
@@ -57,46 +59,44 @@ class _UploadScreenState extends ConsumerState {
   @override
   Widget build(BuildContext context) {
     return BackScaffold(
-        body: ListView.builder(
-            itemCount: ref.watch(_fileUploadsProvider).length,
-            itemBuilder: (context, i) {
-              final upload = ref.watch(_fileUploadsProvider)[i];
-              return ListTile(
-                title: Row(children: [
-                  Text(upload.file.name),
-                  const SizedBox(width: 10),
-                  upload.error == null
+      body: ListView.builder(
+          itemCount: ref.watch(_fileUploadsProvider).length,
+          itemBuilder: (context, i) {
+            final upload = ref.watch(_fileUploadsProvider)[i];
+            return ListTile(
+              leading: Container(
+                  color: Colors.yellow,
+                  child: upload.error == null
                       ? upload.completed
-                          ? const Icon(Icons.check_circle, color: Colors.green)
-                          : Expanded(
-                              child: LinearProgressIndicator(
+                          ? const Icon(
+                              Icons.check_circle,
+                              color: Colors.green,
+                            )
+                          : CircularProgressIndicator(
                               value: upload.progress / upload.file.size,
-                            ))
+                            )
                       : Tooltip(
                           message: upload.error,
-                          child: const Icon(Icons.error, color: Colors.red)),
-                ]),
-                // don't show cancellation button
-                // if there's already an error
-                trailing: upload.error != null || upload.completed
-                    ? null
-                    : IconButton(
-                        onPressed: () {
-                          // stop the subscription
-                          ref
-                              .read(_fileUploadsProvider)[i]
-                              .subscription
-                              .cancel();
-                          // set the upload as cancelled
-                          ref
-                              .read(_fileUploadsProvider.notifier)
-                              .modify(i, (u) => u.error = "Cancelled");
-                        },
-                        icon: const Icon(Icons.close)),
-              );
-            }),
-        title: "Upload",
-        ref: ref);
+                          child: const Icon(Icons.error, color: Colors.red))),
+              title: Text(upload.file.name),
+              // don't show cancellation button
+              // if there's already an error
+              trailing: upload.error != null || upload.completed
+                  ? null
+                  : IconButton(
+                      onPressed: () {
+                        // stop the subscription
+                        ref.read(_fileUploadsProvider)[i].subscription.cancel();
+                        // set the upload as cancelled
+                        ref
+                            .read(_fileUploadsProvider.notifier)
+                            .modify(i, (u) => u.error = "Cancelled");
+                      },
+                      icon: const Icon(Icons.close)),
+            );
+          }),
+      title: "Upload",
+    );
   }
 
   void showInitialPrompt() async {

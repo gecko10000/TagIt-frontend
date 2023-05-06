@@ -23,27 +23,21 @@ class SideDrawer extends ConsumerWidget {
                   body: TagBrowserNavigator(
                       scaffoldNameNotifier: backScaffoldNameProvider.notifier),
                   title: "Tags",
-                  ref: ref,
                 )),
-        DrawerTile(
-            Icons.file_copy,
-            "Files",
-            (context) {
-              return BackScaffold(
-                body: const FileBrowser(),
-                title: "Files",
-                ref: ref,
-              );
-            }),
+        DrawerTile(Icons.file_copy, "Files", (context) {
+          return const BackScaffold(
+            body: FileBrowser(),
+            title: "Files",
+          );
+        }),
         DrawerTile(Icons.search, "Search", (context) => const SearchScreen()),
         DrawerTile(Icons.upload, "Upload", (context) => const UploadScreen()),
         DrawerTile(
             Icons.settings,
             "Settings",
-            (context) => BackScaffold(
-                  body: const NotImplementedScreen(),
+            (context) => const BackScaffold(
+                  body: NotImplementedScreen(),
                   title: "Settings",
-                  ref: ref,
                 )),
       ],
     ));
@@ -67,12 +61,8 @@ class DrawerTile extends ConsumerWidget {
         Navigator.pop(context);
         Widget? result = callback(context);
         if (result == null) return;
-        Navigator.push(context, MaterialPageRoute(builder: (context) {
-          // cannot modify the provider while the widget is building
-          WidgetsBinding.instance.addPostFrameCallback(
-              (_) => ref.read(backScaffoldNameProvider.notifier).set(title));
-          return result;
-        }));
+        Navigator.push(
+            context, MaterialPageRoute(builder: (context) => result));
       },
     ));
   }
