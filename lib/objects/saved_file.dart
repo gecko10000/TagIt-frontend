@@ -27,7 +27,11 @@ class SavedFile implements Tileable {
         tags: (json["tags"] as List?)?.map((e) => e as String).toList() ?? []);
   }
 
-  SavedFile(this.name, {required this.mimeType, required this.modificationDate, required this.fileSize, List<String> tags = const []}) {
+  SavedFile(this.name,
+      {required this.mimeType,
+      required this.modificationDate,
+      required this.fileSize,
+      List<String> tags = const []}) {
     this.tags.addAll(tags);
   }
 
@@ -219,15 +223,23 @@ class SavedFile implements Tileable {
           leading: const Icon(Icons.file_copy, color: CustomColor.file),
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(10))),
-          isThreeLine: true,
           title: Row(
             children: [
-              Text(
-                name,
-                style: const TextStyle(
-                  fontSize: 24,
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(
+                  name,
+                  style: const TextStyle(
+                    fontSize: 24,
+                  ),
                 ),
-              ),
+                Text(
+                  fileSize.toByteUnits(),
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey[500],
+                  ),
+                ),
+              ]),
               Expanded(
                   child: Align(
                       alignment: Alignment.centerRight,
@@ -253,7 +265,6 @@ class SavedFile implements Tileable {
                       )))
             ],
           ),
-          subtitle: Text(fileSize.toByteUnits()),
           onTap: onTap,
           trailing: PopupMenuButton<void Function(BuildContext, WidgetRef ref)>(
             tooltip: "Actions",
