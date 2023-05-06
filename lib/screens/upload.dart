@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:tagit_frontend/misc/extensions.dart';
 import 'package:tagit_frontend/requests.dart';
 import 'package:tagit_frontend/screens/common.dart';
 
@@ -64,21 +65,24 @@ class _UploadScreenState extends ConsumerState {
           itemBuilder: (context, i) {
             final upload = ref.watch(_fileUploadsProvider)[i];
             return ListTile(
-              leading: Container(
-                  color: Colors.yellow,
-                  child: upload.error == null
-                      ? upload.completed
-                          ? const Icon(
-                              Icons.check_circle,
-                              color: Colors.green,
-                            )
-                          : CircularProgressIndicator(
-                              value: upload.progress / upload.file.size,
-                            )
-                      : Tooltip(
-                          message: upload.error,
-                          child: const Icon(Icons.error, color: Colors.red))),
+              isThreeLine: true,
+              leading: upload.error == null
+                  ? upload.completed
+                      ? const Icon(
+                          Icons.check_circle,
+                          color: Colors.green,
+                        )
+                      : CircularProgressIndicator(
+                          value: upload.progress / upload.file.size,
+                        )
+                  : Tooltip(
+                      message: upload.error,
+                      child: const Icon(Icons.error, color: Colors.red)),
               title: Text(upload.file.name),
+              // show file size only when it's done
+              subtitle: Text(upload.completed
+                  ? upload.file.size.toByteUnits()
+                  : "${upload.progress.toByteUnits()}/${upload.file.size.toByteUnits()}"),
               // don't show cancellation button
               // if there's already an error
               trailing: upload.error != null || upload.completed
