@@ -47,16 +47,48 @@ class FileUpload {
   FileUpload({required this.file, required this.subscription});
 }
 
+void _startUpload(
+    BuildContext context, WidgetRef ref, PlatformFile file, int index) {
+  // declare as late so it can be used within the closures
+  late StreamSubscription subscription;
+  subscription = uploadFile(file, onProgress: (progress) {
+    if (!context.mounted) {
+      subscription.cancel();
+      return;
+    }
+    ref
+        .read(_fileUploadsProvider.notifier)
+        .modify(index, (u) => u.progress = progress);
+  }, onError: (error) {
+    if (!context.mounted) {
+      subscription.cancel();
+      return;
+    }
+    ref.read(_fileUploadsProvider.notifier).modify(index, (u) {
+      u.completed = false;
+      u.error = error;
+    });
+  }, onComplete: () {
+    ref
+        .read(_fileUploadsProvider.notifier)
+        .modify(index, (u) => u.completed = true);
+  });
+  final uploadsNotifier = ref.read(_fileUploadsProvider.notifier);
+  final newUpload = FileUpload(file: file, subscription: subscription);
+  uploadsNotifier.add(newUpload);
+}
+
 class _FileUploadTile extends ConsumerWidget {
   final FileUpload upload;
-  const _FileUploadTile(this.upload);
+  final int index;
+  const _FileUploadTile(this.upload, {required this.index});
 
-  Widget errorTile() {
+  Widget errorTile(BuildContext context, WidgetRef ref) {
     return ListTile(
       leading: const Icon(Icons.error, color: Colors.red),
       isThreeLine: true,
       title: Text(upload.file.name),
-      subtitle: Text("Failed: ${upload.error!}"),
+      subtitle: Text(upload.error!),
     );
   }
 
@@ -69,22 +101,33 @@ class _FileUploadTile extends ConsumerWidget {
     );
   }
 
-  Widget inProgressTile() {
+  Widget inProgressTile(WidgetRef ref) {
     return ListTile(
-      leading: CircularProgressIndicator(value: upload.progress / upload.file.size),
+      leading:
+          CircularProgressIndicator(value: upload.progress / upload.file.size),
       isThreeLine: true,
       title: Text(upload.file.name),
-      subtitle: Text("${upload.progress.toByteUnits()}/${upload.file.size.toByteUnits()}"),
+      subtitle: Text(
+          "${upload.progress.toByteUnits()}/${upload.file.size.toByteUnits()}"),
+      trailing: IconButton(
+        icon: const Icon(Icons.close),
+        color: Colors.red,
+        onPressed: () {
+          FileUpload upload = ref.read(_fileUploadsProvider)[index];
+          upload.error = "Cancelled";
+          upload.subscription.cancel();
+        },
+      ),
     );
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return upload.error != null
-        ? errorTile()
+        ? errorTile(context, ref)
         : upload.completed
             ? completedTile()
-            : inProgressTile();
+            : inProgressTile(ref);
   }
 }
 
@@ -105,7 +148,7 @@ class _UploadScreenState extends ConsumerState {
           itemCount: ref.watch(_fileUploadsProvider).length,
           itemBuilder: (context, i) {
             final upload = ref.watch(_fileUploadsProvider)[i];
-            return _FileUploadTile(upload);
+            return _FileUploadTile(upload, index: i);
           }),
       title: "Upload",
     );
@@ -114,37 +157,12 @@ class _UploadScreenState extends ConsumerState {
   void showInitialPrompt() async {
     final newFiles = await _showUploadDialog(context);
     final previousAmount = ref.read(_fileUploadsProvider).length;
+    if (!context.mounted) return;
     for (int i = 0; i < newFiles.length; i++) {
       final file = newFiles[i];
       // offset in the total list
       final uploadIndex = previousAmount + i;
-      // declare as late so it can be used within the closures
-      late StreamSubscription subscription;
-      subscription = uploadFile(file, onProgress: (progress) {
-        if (!mounted) {
-          subscription.cancel();
-          return;
-        }
-        ref
-            .read(_fileUploadsProvider.notifier)
-            .modify(uploadIndex, (u) => u.progress = progress);
-      }, onError: (error) {
-        if (!mounted) {
-          subscription.cancel();
-          return;
-        }
-        ref.read(_fileUploadsProvider.notifier).modify(uploadIndex, (u) {
-          u.completed = false;
-          u.error = error;
-        });
-      }, onComplete: () {
-        ref
-            .read(_fileUploadsProvider.notifier)
-            .modify(uploadIndex, (u) => u.completed = true);
-      });
-      ref
-          .read(_fileUploadsProvider.notifier)
-          .add(FileUpload(file: file, subscription: subscription));
+      _startUpload(context, ref, file, uploadIndex);
     }
   }
 
