@@ -118,6 +118,19 @@ Future<void> sendTagCreation(String name) async {
   await _client.post(url("tag/${Uri.encodeComponent(name)}"));
 }
 
+Future<bool> fileExists(String name) async {
+  try {
+    await _client.get(url("file/${Uri.encodeComponent(name)}/tags"));
+    return true;
+    // no file = 404
+  } on RequestException catch (ex) {
+    if (ex.statusCode == 404) {
+      return false;
+    }
+    rethrow;
+  }
+}
+
 StreamSubscription uploadFile(PlatformFile file,
     {required void Function(int) onProgress,
     required void Function(String) onError,

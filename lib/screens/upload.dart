@@ -124,7 +124,7 @@ class _UploadScreenState extends ConsumerState {
   }
 
   void startUpload(
-      BuildContext context, WidgetRef ref, PlatformFile file, int index) {
+      BuildContext context, WidgetRef ref, PlatformFile file, int index) async {
     // declare as late so it can be used within the closures
     late StreamSubscription subscription;
     subscription = uploadFile(file, onProgress: (progress) {
@@ -152,6 +152,10 @@ class _UploadScreenState extends ConsumerState {
     final uploadsNotifier = ref.read(_fileUploadsProvider.notifier);
     final newUpload = FileUpload(file: file, subscription: subscription);
     uploadsNotifier.add(newUpload);
+    if (await fileExists(file.name)) {
+      uploadsNotifier.modify(index, (u) => u.error = "File already exists.");
+      subscription.cancel();
+    }
   }
 
   void showInitialPrompt() async {
