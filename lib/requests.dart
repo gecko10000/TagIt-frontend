@@ -133,9 +133,11 @@ StreamSubscription uploadFile(
         progress += chunk.length;
         onProgress(progress);
       },
+      // don't call onComplete here
+      // we do this when we can confirm that
+      // the request went through properly
       onDone: () {
         request.sink.close();
-        onComplete();
       },
       onError: (e) {
         request.sink.addError(e);
@@ -145,7 +147,7 @@ StreamSubscription uploadFile(
   // use .then to ignore the StreamedResponse
   // this makes it so onError does not expect
   // a StreamedResponse as a return value
-  _client.send(request).then((_) {}).onError((error, _) {
+  _client.send(request).then((_) => onComplete()).onError((error, _) {
     if (error is RequestException) {
       onError(error.message);
     }

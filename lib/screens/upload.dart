@@ -47,6 +47,47 @@ class FileUpload {
   FileUpload({required this.file, required this.subscription});
 }
 
+class _FileUploadTile extends ConsumerWidget {
+  final FileUpload upload;
+  const _FileUploadTile(this.upload);
+
+  Widget errorTile() {
+    return ListTile(
+      leading: const Icon(Icons.error, color: Colors.red),
+      isThreeLine: true,
+      title: Text(upload.file.name),
+      subtitle: Text(upload.error!),
+    );
+  }
+
+  Widget completedTile() {
+    return ListTile(
+      leading: const Icon(Icons.check_circle, color: Colors.green),
+      isThreeLine: true,
+      title: Text(upload.file.name),
+      subtitle: Text(upload.file.size.toByteUnits()),
+    );
+  }
+
+  Widget inProgressTile() {
+    return ListTile(
+      leading: CircularProgressIndicator(value: upload.progress / upload.file.size),
+      isThreeLine: true,
+      title: Text(upload.file.name),
+      subtitle: Text("${upload.progress.toByteUnits()}/${upload.file.size.toByteUnits()}"),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return upload.error != null
+        ? errorTile()
+        : upload.completed
+            ? completedTile()
+            : inProgressTile();
+  }
+}
+
 // stateful because we use initState
 // to open the file selector
 class UploadScreen extends ConsumerStatefulWidget {
@@ -64,40 +105,7 @@ class _UploadScreenState extends ConsumerState {
           itemCount: ref.watch(_fileUploadsProvider).length,
           itemBuilder: (context, i) {
             final upload = ref.watch(_fileUploadsProvider)[i];
-            return ListTile(
-              isThreeLine: true,
-              leading: upload.error == null
-                  ? upload.completed
-                      ? const Icon(
-                          Icons.check_circle,
-                          color: Colors.green,
-                        )
-                      : CircularProgressIndicator(
-                          value: upload.progress / upload.file.size,
-                        )
-                  : Tooltip(
-                      message: upload.error,
-                      child: const Icon(Icons.error, color: Colors.red)),
-              title: Text(upload.file.name),
-              // show file size only when it's done
-              subtitle: Text(upload.completed
-                  ? upload.file.size.toByteUnits()
-                  : "${upload.progress.toByteUnits()}/${upload.file.size.toByteUnits()}"),
-              // don't show cancellation button
-              // if there's already an error
-              trailing: upload.error != null || upload.completed
-                  ? null
-                  : IconButton(
-                      onPressed: () {
-                        // stop the subscription
-                        ref.read(_fileUploadsProvider)[i].subscription.cancel();
-                        // set the upload as cancelled
-                        ref
-                            .read(_fileUploadsProvider.notifier)
-                            .modify(i, (u) => u.error = "Cancelled");
-                      },
-                      icon: const Icon(Icons.close)),
-            );
+            return _FileUploadTile(upload);
           }),
       title: "Upload",
     );
@@ -125,9 +133,10 @@ class _UploadScreenState extends ConsumerState {
           subscription.cancel();
           return;
         }
-        ref
-            .read(_fileUploadsProvider.notifier)
-            .modify(uploadIndex, (u) => u.error = error);
+        ref.read(_fileUploadsProvider.notifier).modify(uploadIndex, (u) {
+          u.completed = false;
+          u.error = error;
+        });
       }, () {
         ref
             .read(_fileUploadsProvider.notifier)
