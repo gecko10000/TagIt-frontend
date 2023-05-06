@@ -47,37 +47,6 @@ class FileUpload {
   FileUpload({required this.file, required this.subscription});
 }
 
-void _startUpload(
-    BuildContext context, WidgetRef ref, PlatformFile file, int index) {
-  // declare as late so it can be used within the closures
-  late StreamSubscription subscription;
-  subscription = uploadFile(file, onProgress: (progress) {
-    if (!context.mounted) {
-      subscription.cancel();
-      return;
-    }
-    ref
-        .read(_fileUploadsProvider.notifier)
-        .modify(index, (u) => u.progress = progress);
-  }, onError: (error) {
-    if (!context.mounted) {
-      subscription.cancel();
-      return;
-    }
-    ref.read(_fileUploadsProvider.notifier).modify(index, (u) {
-      u.completed = false;
-      u.error = error;
-    });
-  }, onComplete: () {
-    ref
-        .read(_fileUploadsProvider.notifier)
-        .modify(index, (u) => u.completed = true);
-  });
-  final uploadsNotifier = ref.read(_fileUploadsProvider.notifier);
-  final newUpload = FileUpload(file: file, subscription: subscription);
-  uploadsNotifier.add(newUpload);
-}
-
 class _FileUploadTile extends ConsumerWidget {
   final FileUpload upload;
   final int index;
@@ -154,6 +123,37 @@ class _UploadScreenState extends ConsumerState {
     );
   }
 
+  void startUpload(
+      BuildContext context, WidgetRef ref, PlatformFile file, int index) {
+    // declare as late so it can be used within the closures
+    late StreamSubscription subscription;
+    subscription = uploadFile(file, onProgress: (progress) {
+      if (!context.mounted) {
+        subscription.cancel();
+        return;
+      }
+      ref
+          .read(_fileUploadsProvider.notifier)
+          .modify(index, (u) => u.progress = progress);
+    }, onError: (error) {
+      if (!context.mounted) {
+        subscription.cancel();
+        return;
+      }
+      ref.read(_fileUploadsProvider.notifier).modify(index, (u) {
+        u.completed = false;
+        u.error = error;
+      });
+    }, onComplete: () {
+      ref
+          .read(_fileUploadsProvider.notifier)
+          .modify(index, (u) => u.completed = true);
+    });
+    final uploadsNotifier = ref.read(_fileUploadsProvider.notifier);
+    final newUpload = FileUpload(file: file, subscription: subscription);
+    uploadsNotifier.add(newUpload);
+  }
+
   void showInitialPrompt() async {
     final newFiles = await _showUploadDialog(context);
     final previousAmount = ref.read(_fileUploadsProvider).length;
@@ -162,7 +162,7 @@ class _UploadScreenState extends ConsumerState {
       final file = newFiles[i];
       // offset in the total list
       final uploadIndex = previousAmount + i;
-      _startUpload(context, ref, file, uploadIndex);
+      startUpload(context, ref, file, uploadIndex);
     }
   }
 
