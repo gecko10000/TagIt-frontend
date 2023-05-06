@@ -121,7 +121,8 @@ Future<void> sendTagCreation(String name) async {
 StreamSubscription uploadFile(
     PlatformFile file,
     void Function(int) onProgress,
-    void Function(String) onError) {
+    void Function(String) onError,
+    void Function() onComplete) {
   final request =
       StreamedRequest("POST", url("file/${Uri.encodeComponent(file.name)}"));
   request.contentLength = file.size;
@@ -132,7 +133,10 @@ StreamSubscription uploadFile(
         progress += chunk.length;
         onProgress(progress);
       },
-      onDone: () => request.sink.close(),
+      onDone: () {
+        request.sink.close();
+        onComplete();
+      },
       onError: (e) {
         request.sink.addError(e);
         request.sink.close();

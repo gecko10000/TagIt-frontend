@@ -42,6 +42,7 @@ class FileUpload {
   final StreamSubscription subscription;
   int progress = 0;
   String? error;
+  bool completed = false;
   FileUpload({required this.file, required this.subscription});
 }
 
@@ -65,17 +66,19 @@ class _UploadScreenState extends ConsumerState {
                   Text(upload.file.name),
                   const SizedBox(width: 10),
                   upload.error == null
-                      ? Expanded(
-                          child: LinearProgressIndicator(
-                          value: upload.progress / upload.file.size,
-                        ))
+                      ? upload.completed
+                          ? const Icon(Icons.check_circle, color: Colors.green)
+                          : Expanded(
+                              child: LinearProgressIndicator(
+                              value: upload.progress / upload.file.size,
+                            ))
                       : Tooltip(
                           message: upload.error,
                           child: const Icon(Icons.error, color: Colors.red)),
                 ]),
                 // don't show cancellation button
                 // if there's already an error
-                trailing: upload.error != null
+                trailing: upload.error != null || upload.completed
                     ? null
                     : IconButton(
                         onPressed: () {
@@ -121,6 +124,10 @@ class _UploadScreenState extends ConsumerState {
         ref
             .read(_fileUploadsProvider.notifier)
             .modify(uploadIndex, (u) => u.error = error);
+      }, () {
+        ref
+            .read(_fileUploadsProvider.notifier)
+            .modify(uploadIndex, (u) => u.completed = true);
       });
       ref
           .read(_fileUploadsProvider.notifier)
