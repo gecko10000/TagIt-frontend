@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart';
 import 'package:tagit_frontend/screens/search.dart';
 
@@ -9,8 +11,9 @@ import 'objects/saved_file.dart';
 import 'objects/tag.dart';
 
 class RequestException implements Exception {
+  final int statusCode;
   final String message;
-  const RequestException(this.message);
+  const RequestException(this.statusCode, this.message);
 }
 
 class APIClient extends BaseClient {
@@ -23,7 +26,7 @@ class APIClient extends BaseClient {
     // response code not 2XX
     if (response.statusCode != 422 && response.statusCode ~/ 100 != 2) {
       throw RequestException(
-          "${response.statusCode}: ${await response.stream.bytesToString()}");
+          response.statusCode, await response.stream.bytesToString());
     }
     return response;
   }
@@ -115,13 +118,33 @@ Future<void> sendTagCreation(String name) async {
   await _client.post(url("tag/${Uri.encodeComponent(name)}"));
 }
 
-Future<void> uploadFile(
-    String name, int size, Stream<List<int>> contents) async {
+StreamSubscription uploadFile(
+    PlatformFile file,
+    void Function(int) onProgress,
+    void Function(String) onError) {
   final request =
-      StreamedRequest("POST", url("file/${Uri.encodeComponent(name)}"));
-  request.contentLength = size;
-  contents.listen((chunk) => request.sink.add(chunk),
+      StreamedRequest("POST", url("file/${Uri.encodeComponent(file.name)}"));
+  request.contentLength = file.size;
+  int progress = 0;
+  final subscription = file.readStream!.listen(
+      (chunk) {
+        request.sink.add(chunk);
+        progress += chunk.length;
+        onProgress(progress);
+      },
       onDone: () => request.sink.close(),
-      onError: (e) => throw RequestException("Could not upload $name: $e"));
-  await _client.send(request);
+      onError: (e) {
+        request.sink.addError(e);
+        request.sink.close();
+        onError(e.toString());
+      });
+  // use .then to ignore the StreamedResponse
+  // this makes it so onError does not expect
+  // a StreamedResponse as a return value
+  _client.send(request).then((_) {}).onError((error, _) {
+    if (error is RequestException) {
+      onError(error.message);
+    }
+  });
+  return subscription;
 }

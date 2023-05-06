@@ -6,7 +6,7 @@ part of 'common.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$backScaffoldNameHash() => r'77ff0f0002143974adc0dd56a81d49e2ccba2496';
+String _$backScaffoldNameHash() => r'73aa727aed844748149d58419403a25dcb73a989';
 
 /// See also [BackScaffoldName].
 @ProviderFor(BackScaffoldName)

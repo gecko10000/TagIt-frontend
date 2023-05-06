@@ -6,7 +6,7 @@ part of 'file_browser.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$fileBrowserListHash() => r'f60949ecafc4365d71d5a6b540b269c92b6e07a1';
+String _$fileBrowserListHash() => r'e0edd623bd70dd080d35a09595dc71d60c51d847';
 
 /// See also [FileBrowserList].
 @ProviderFor(FileBrowserList)
