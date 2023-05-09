@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:tagit_frontend/misc/extensions.dart';
 import 'package:tagit_frontend/misc/stack.dart' as my;
 import 'package:tagit_frontend/requests.dart';
 
@@ -96,6 +97,10 @@ Future<void> createTag(BuildContext context, {String? leading}) {
       });
   return response.then((name) async {
     if (name == null) return;
-    await sendTagCreation(name);
+    try {
+      await sendTagCreation(name);
+    } on Exception catch (ex) {
+      context.showSnackBar(ex.toString());
+    }
   });
 }

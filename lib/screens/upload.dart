@@ -152,8 +152,13 @@ class _UploadScreenState extends ConsumerState {
     final uploadsNotifier = ref.read(_fileUploadsProvider.notifier);
     final newUpload = FileUpload(file: file, subscription: subscription);
     uploadsNotifier.add(newUpload);
-    if (await fileExists(file.name)) {
-      uploadsNotifier.modify(index, (u) => u.error = "File already exists.");
+    try {
+      if (await fileExists(file.name)) {
+        uploadsNotifier.modify(index, (u) => u.error = "File already exists.");
+        subscription.cancel();
+      }
+    } on Exception catch (ex) {
+      uploadsNotifier.modify(index, (u) => u.error = ex.toString());
       subscription.cancel();
     }
   }

@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -18,7 +16,7 @@ class FileBrowserList extends _$FileBrowserList {
     try {
       state = AsyncValue.data(
           await getAllFiles());
-    } on SocketException catch (ex, st) {
+    } on Exception catch (ex, st) {
       state = AsyncValue.error(ex, st);
     }
   }
@@ -56,7 +54,7 @@ class _FileBrowserState extends ConsumerState<FileBrowser> with AutomaticKeepAli
         },
         error: (err, st) => Align(
           alignment: Alignment.center,
-          child: Text("Error: $err"),
+          child: Text(err.toString()),
         ),
         loading: () => const Align(
           alignment: Alignment.center,

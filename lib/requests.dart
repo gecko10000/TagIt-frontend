@@ -14,6 +14,11 @@ class RequestException implements Exception {
   final int statusCode;
   final String message;
   const RequestException(this.statusCode, this.message);
+  @override
+  String toString() {
+    final start = "Error: $statusCode";
+    return message.isEmpty ? start : "$start - $message";
+  }
 }
 
 class APIClient extends BaseClient {

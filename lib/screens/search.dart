@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -28,9 +26,9 @@ class SearchResults extends _$SearchResults {
       }
     } on SearchFormatException catch (ex, st) {
       if (currentQuery == query) {
-        state = currentQuery == "" ? const AsyncValue.data([]) : AsyncValue.error(ex, st);
+        state = AsyncValue.error(ex, st);
       }
-    } on SocketException catch (ex, st) {
+    } on Exception catch (ex, st) {
       state = AsyncValue.error(ex, st);
     }
   }
@@ -59,15 +57,26 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
           onChanged: (s) => ref.read(searchResultsProvider.notifier).search(s),
         ),
       ),
-      body: ref.watch(searchResultsProvider).when(
+      body: Center(child: ref.watch(searchResultsProvider).when(
           data: (results) => results.isEmpty ? const Text("No results.") : ListView.builder(
             itemCount: results.length,
             itemBuilder: (context, i) => results[i].createTile(context: context, ref: ref, onTap: (){}),
           ),
-          error: (err, st) => err is SearchFormatException ? Text("Typo at index ${err.index}") : Text(err.toString()),
+          error: (err, st) => Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+            const Icon(Icons.error, color: Colors.red),
+            err is SearchFormatException ? Text("Typo at index ${err.index}") : Text(err.toString()),
+          ]),
           loading: () => const CircularProgressIndicator(),
       ),
-    );
+    ));
+  }
+
+  @override
+  void initState() {
+    // show network error if there is one
+    Future(() => ref.read(searchResultsProvider.notifier).search(""));
   }
 
 }
