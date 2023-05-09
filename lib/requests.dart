@@ -83,8 +83,10 @@ Future<List<SavedFile>> getAllFiles(
   return files.map((j) => SavedFile.fromJson(j)).toList();
 }
 
-Future<void> sendFileDeletion(SavedFile file) async {
-  await _client.delete(url("file/${Uri.encodeComponent(file.name)}"));
+Future<void> sendFileDeletion(SavedFile file) async => await sendFileDeletionByName(file.name);
+
+Future<void> sendFileDeletionByName(String filename) async {
+  await _client.delete(url("file/${Uri.encodeComponent(filename)}"));
 }
 
 Future<void> sendFileRename(SavedFile file, String newName) async {

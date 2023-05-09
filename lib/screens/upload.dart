@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -40,11 +41,11 @@ Future<List<PlatformFile>> _showUploadDialog(BuildContext context) async {
 
 class FileUpload {
   final PlatformFile file;
-  final StreamSubscription subscription;
+  final StreamSubscription? subscription;
   int progress = 0;
   String? error;
   bool completed = false;
-  FileUpload({required this.file, required this.subscription});
+  FileUpload({required this.file, this.subscription});
 }
 
 class _FileUploadTile extends ConsumerWidget {
@@ -63,7 +64,10 @@ class _FileUploadTile extends ConsumerWidget {
 
   Widget completedTile() {
     return ListTile(
-      leading: const Icon(Icons.check_circle, color: Colors.green),
+      leading: const SizedBox(
+          width: 32,
+          height: 32,
+          child: Icon(Icons.check_circle, color: Colors.green)),
       isThreeLine: true,
       title: Text(upload.file.name),
       subtitle: Text(upload.file.size.toByteUnits()),
@@ -72,8 +76,12 @@ class _FileUploadTile extends ConsumerWidget {
 
   Widget inProgressTile(WidgetRef ref) {
     return ListTile(
-      leading:
-          CircularProgressIndicator(value: upload.progress / upload.file.size),
+      leading: SizedBox(
+        width: 32,
+        height: 32,
+        child: CircularProgressIndicator(
+            value: upload.progress / upload.file.size),
+      ),
       isThreeLine: true,
       title: Text(upload.file.name),
       subtitle: Text(
@@ -82,9 +90,13 @@ class _FileUploadTile extends ConsumerWidget {
         icon: const Icon(Icons.close),
         color: Colors.red,
         onPressed: () {
+          ref.read(_fileUploadsProvider.notifier).modify(index, (u) {
+            u.error = "Cancelled";
+            u.subscription?.cancel();
+          });
           FileUpload upload = ref.read(_fileUploadsProvider)[index];
           upload.error = "Cancelled";
-          upload.subscription.cancel();
+          upload.subscription?.cancel();
         },
       ),
     );
@@ -125,6 +137,26 @@ class _UploadScreenState extends ConsumerState {
 
   void startUpload(
       BuildContext context, WidgetRef ref, PlatformFile file, int index) async {
+    // we have to create the subscription
+    String? preError;
+    try {
+      if (await fileExists(file.name)) {
+        preError = "File already exists.";
+        //uploadsNotifier.modify(index, (u) => u.error = "File already exists.");
+      }
+    } on Exception catch (ex) {
+      preError = ex.toString();
+      //uploadsNotifier.modify(index, (u) => u.error = ex.toString());
+    }
+
+    final uploadsNotifier = ref.read(_fileUploadsProvider.notifier);
+    if (preError != null) {
+      final newUpload = FileUpload(file: file);
+      newUpload.error = preError;
+      uploadsNotifier.add(newUpload);
+      return;
+    }
+
     // declare as late so it can be used within the closures
     late StreamSubscription subscription;
     subscription = uploadFile(file, onProgress: (progress) {
@@ -132,35 +164,31 @@ class _UploadScreenState extends ConsumerState {
         subscription.cancel();
         return;
       }
+      // update progress
       ref
           .read(_fileUploadsProvider.notifier)
           .modify(index, (u) => u.progress = progress);
     }, onError: (error) {
-      if (!context.mounted) {
-        subscription.cancel();
-        return;
+      subscription.cancel();
+      if (context.mounted) {
+        // update error
+        ref.read(_fileUploadsProvider.notifier).modify(index, (u) {
+          u.completed = false;
+          u.error = error;
+        });
       }
-      ref.read(_fileUploadsProvider.notifier).modify(index, (u) {
-        u.completed = false;
-        u.error = error;
-      });
+      // partial upload completed, we should delete any existing partial file
+      sendFileDeletionByName(file.name)
+      // ignore any errors in case the file didn't actually upload at all
+      .catchError((_){}, test: (ex) => ex is RequestException || ex is SocketException);
     }, onComplete: () {
+      // update completion status
       ref
           .read(_fileUploadsProvider.notifier)
           .modify(index, (u) => u.completed = true);
     });
-    final uploadsNotifier = ref.read(_fileUploadsProvider.notifier);
     final newUpload = FileUpload(file: file, subscription: subscription);
     uploadsNotifier.add(newUpload);
-    try {
-      if (await fileExists(file.name)) {
-        uploadsNotifier.modify(index, (u) => u.error = "File already exists.");
-        subscription.cancel();
-      }
-    } on Exception catch (ex) {
-      uploadsNotifier.modify(index, (u) => u.error = ex.toString());
-      subscription.cancel();
-    }
   }
 
   void showInitialPrompt() async {
