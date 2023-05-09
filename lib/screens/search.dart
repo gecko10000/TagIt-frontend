@@ -75,6 +75,7 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
 
   @override
   void initState() {
+    super.initState();
     // show network error if there is one
     Future(() => ref.read(searchResultsProvider.notifier).search(""));
   }
