@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:tagit_frontend/screens/authenticate.dart';
 import 'package:tagit_frontend/screens/home_page.dart';
 
-void main() {
+void main() async {
+  await Hive.initFlutter();
+  await Hive.openBox("settings");
+  // accounts will store username, token, and endpoint
+  await Hive.openBox("accounts");
   runApp(const TagIt());
 }
 
@@ -13,14 +19,18 @@ class TagIt extends StatelessWidget {
   Widget build(BuildContext context) {
     return ProviderScope(
         child: MaterialApp(
-          //navigatorObservers: [browseObserver],
-          debugShowCheckedModeBanner: false,
-          title: "TagIt",
-          theme: ThemeData(
-            colorScheme: ColorScheme.dark(primary: Colors.blue, secondary: Colors.blue.withOpacity(0.7)),
-          ),
-          home: const HomePage(),
-        )
-    );
+      //navigatorObservers: [browseObserver],
+      debugShowCheckedModeBanner: false,
+      title: "TagIt",
+      theme: ThemeData(
+        colorScheme: ColorScheme.dark(
+            primary: Colors.blue, secondary: Colors.blue.withOpacity(0.7)),
+      ),
+      home: ValueListenableBuilder<Box>(
+        valueListenable: Hive.box("accounts").listenable(),
+        builder: (context, box, widget) =>
+            box.get("token") == null ? const AuthScreen() : const HomePage(),
+      ),
+    ));
   }
 }

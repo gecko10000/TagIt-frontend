@@ -170,3 +170,14 @@ StreamSubscription uploadFile(PlatformFile file,
   });
   return subscription;
 }
+
+Future<bool> checkUri(Uri uri) async {
+  try {
+    // lol
+    uri = Uri.parse("$uri/is/this/a/tagit/backend");
+    final response = await _client.get(uri);
+    return response.statusCode == 200 && response.body == "It sure is.";
+  } catch (_) {
+    return false;
+  }
+}
