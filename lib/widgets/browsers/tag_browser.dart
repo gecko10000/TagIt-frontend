@@ -7,6 +7,7 @@ import 'package:tagit_frontend/widgets/content_viewer.dart';
 import '../../objects/common.dart';
 import '../../objects/tag.dart';
 import '../../requests.dart';
+import '../error_display.dart';
 
 part 'tag_browser.g.dart';
 
@@ -125,7 +126,8 @@ class _TagBrowserState extends ConsumerState<TagBrowser>
                               scaffoldNameNotifier: widget.scaffoldNameNotifier,
                             )));
               } else if (item is SavedFile) {
-                onTap = () => openContentView(context, item); // without an onTap, hoverColor does not work
+                onTap = () => openContentView(context,
+                    item); // without an onTap, hoverColor does not work
               } else {
                 // back tile
                 onTap = () async {
@@ -148,8 +150,7 @@ class _TagBrowserState extends ConsumerState<TagBrowser>
                   .createTile(context: context, ref: ref, onTap: onTap);
             });
       },
-      error: (err, stack) =>
-          Align(alignment: Alignment.center, child: Text(err.toString())),
+      error: (err, stack) => ErrorDisplay(text: err.toString()),
       loading: () => const Align(
         alignment: Alignment.center,
         child: CircularProgressIndicator(),

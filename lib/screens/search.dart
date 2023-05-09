@@ -5,12 +5,12 @@ import 'package:tagit_frontend/requests.dart';
 
 import '../objects/common.dart';
 import '../objects/saved_file.dart';
+import '../widgets/error_display.dart';
 
 part 'search.g.dart';
 
 @riverpod
 class SearchResults extends _$SearchResults {
-
   @override
   FutureOr<List<Tileable>> build() => [];
 
@@ -45,32 +45,35 @@ class SearchScreen extends ConsumerStatefulWidget {
   @override
   ConsumerState createState() => _SearchScreenState();
 }
-class _SearchScreenState extends ConsumerState<SearchScreen> {
 
+class _SearchScreenState extends ConsumerState<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: const BackButton(),
-        title: TextFormField(
-          autofocus: true,
-          onChanged: (s) => ref.read(searchResultsProvider.notifier).search(s),
-        ),
-      ),
-      body: Center(child: ref.watch(searchResultsProvider).when(
-          data: (results) => results.isEmpty ? const Text("No results.") : ListView.builder(
-            itemCount: results.length,
-            itemBuilder: (context, i) => results[i].createTile(context: context, ref: ref, onTap: (){}),
+        appBar: AppBar(
+          leading: const BackButton(),
+          title: TextFormField(
+            autofocus: true,
+            onChanged: (s) =>
+                ref.read(searchResultsProvider.notifier).search(s),
           ),
-          error: (err, st) => Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-            const Icon(Icons.error, color: Colors.red),
-            err is SearchFormatException ? Text("Typo at index ${err.index}") : Text(err.toString()),
-          ]),
-          loading: () => const CircularProgressIndicator(),
-      ),
-    ));
+        ),
+        body: Center(
+          child: ref.watch(searchResultsProvider).when(
+                data: (results) => results.isEmpty
+                    ? const Text("No results.")
+                    : ListView.builder(
+                        itemCount: results.length,
+                        itemBuilder: (context, i) => results[i].createTile(
+                            context: context, ref: ref, onTap: () {}),
+                      ),
+                error: (err, st) => ErrorDisplay(
+                    text: err is SearchFormatException
+                        ? "Typo at index ${err.index}"
+                        : err.toString()),
+                loading: () => const CircularProgressIndicator(),
+              ),
+        ));
   }
 
   @override
@@ -79,5 +82,4 @@ class _SearchScreenState extends ConsumerState<SearchScreen> {
     // show network error if there is one
     Future(() => ref.read(searchResultsProvider.notifier).search(""));
   }
-
 }

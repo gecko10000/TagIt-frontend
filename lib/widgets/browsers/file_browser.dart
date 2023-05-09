@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tagit_frontend/objects/saved_file.dart';
 import 'package:tagit_frontend/requests.dart';
 import 'package:tagit_frontend/widgets/content_viewer.dart';
+import 'package:tagit_frontend/widgets/error_display.dart';
 
 part 'file_browser.g.dart';
 
@@ -14,13 +15,11 @@ class FileBrowserList extends _$FileBrowserList {
 
   void refresh() async {
     try {
-      state = AsyncValue.data(
-          await getAllFiles());
+      state = AsyncValue.data(await getAllFiles());
     } on Exception catch (ex, st) {
       state = AsyncValue.error(ex, st);
     }
   }
-
 }
 
 class FileBrowser extends ConsumerStatefulWidget {
@@ -28,42 +27,39 @@ class FileBrowser extends ConsumerStatefulWidget {
 
   @override
   ConsumerState createState() => _FileBrowserState();
-
 }
 
-class _FileBrowserState extends ConsumerState<FileBrowser> with AutomaticKeepAliveClientMixin {
-
+class _FileBrowserState extends ConsumerState<FileBrowser>
+    with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
     final fileFuture = ref.watch(fileBrowserListProvider);
-    return fileFuture.when(
-        data: (files) {
-          if (files.isEmpty) {
-            return const Align(
-              alignment: Alignment.center,
-              child: Text("Nothing here.",
-                style: TextStyle(fontSize: 32),
-              ),
-            );
-          }
-          return ListView.builder(
-            itemCount: files.length,
-            itemBuilder: (context, i) => files[i].createTile(context: context, ref: ref, onTap: () => openContentView(context, files[i])),
+    return Center(
+        child: fileFuture.when(
+      data: (files) {
+        if (files.isEmpty) {
+          return const Align(
+            alignment: Alignment.center,
+            child: Text(
+              "Nothing here.",
+              style: TextStyle(fontSize: 32),
+            ),
           );
-        },
-        error: (err, st) => Align(
-          alignment: Alignment.center,
-          child: Text(err.toString()),
-        ),
-        loading: () => const Align(
-          alignment: Alignment.center,
-          child: CircularProgressIndicator(),
-        )
-    );
+        }
+        return ListView.builder(
+          itemCount: files.length,
+          itemBuilder: (context, i) => files[i].createTile(
+              context: context,
+              ref: ref,
+              onTap: () => openContentView(context, files[i])),
+        );
+      },
+      error: (err, st) => ErrorDisplay(text: err.toString()),
+      loading: () => const CircularProgressIndicator(),
+    ));
   }
 
   @override
   bool get wantKeepAlive => true;
-
 }
