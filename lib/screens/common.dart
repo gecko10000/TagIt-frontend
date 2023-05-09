@@ -24,7 +24,9 @@ class BackScaffoldName extends _$BackScaffoldName {
   }
 
   void pop() {
-    _stack.pop();
+    final popped = _stack.pop();
+    // dynamically change the placeholder name so "none" is never seen
+    if (_stack.length == 1) _stack.replace(popped);
     state = _stack.peek();
   }
 }
