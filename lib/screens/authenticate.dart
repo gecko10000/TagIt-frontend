@@ -38,9 +38,8 @@ class _AuthScreenState extends State<AuthScreen> {
                 key: _formKey,
                 autovalidateMode: AutovalidateMode.always,
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    const SizedBox(height: 50),
                     const Text("TagIt", style: TextStyle(fontSize: 48)),
                     const SizedBox(height: 20),
                     const Text("Log In", style: TextStyle(fontSize: 32)),
