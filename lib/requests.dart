@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
+import 'package:hive/hive.dart';
 import 'package:http/http.dart';
 import 'package:tagit_frontend/screens/search.dart';
 
@@ -27,6 +28,10 @@ class APIClient extends BaseClient {
 
   @override
   Future<StreamedResponse> send(BaseRequest request) async {
+    final token = box.get("token");
+    if (token != null) {
+      request.headers["Authorization"] = "Bearer ${box.get("token")}";
+    }
     StreamedResponse response = await _client.send(request);
     // response code not 2XX
     if (response.statusCode != 422 && response.statusCode ~/ 100 != 2) {
@@ -39,12 +44,13 @@ class APIClient extends BaseClient {
 
 Client _client = APIClient(Client());
 
-Uri url(String endpoint, {Map<String, dynamic>? queryParameters}) => Uri(
-    scheme: 'http',
-    host: "localhost",
-    port: 10000,
-    path: endpoint,
-    queryParameters: queryParameters);
+Box box = Hive.box("account");
+
+Uri url(String endpoint, {Map<String, dynamic>? queryParameters}) {
+  return Uri.parse(box.get("host"))
+      .resolve(endpoint)
+      .replace(queryParameters: queryParameters);
+}
 
 Future<List<Tileable>> retrieveChildren(String? parent) async {
   var response = await _client.get(
@@ -83,7 +89,8 @@ Future<List<SavedFile>> getAllFiles(
   return files.map((j) => SavedFile.fromJson(j)).toList();
 }
 
-Future<void> sendFileDeletion(SavedFile file) async => await sendFileDeletionByName(file.name);
+Future<void> sendFileDeletion(SavedFile file) async =>
+    await sendFileDeletionByName(file.name);
 
 Future<void> sendFileDeletionByName(String filename) async {
   await _client.delete(url("file/${Uri.encodeComponent(filename)}"));
@@ -171,13 +178,21 @@ StreamSubscription uploadFile(PlatformFile file,
   return subscription;
 }
 
-Future<bool> checkUri(Uri uri) async {
+Future<String?> getVersion({Uri? uri}) async {
   try {
-    // lol
-    uri = Uri.parse("$uri/is/this/a/tagit/backend");
+    uri = (uri?.resolve ?? url)("tagit/version");
     final response = await _client.get(uri);
-    return response.statusCode == 200 && response.body == "It sure is.";
+    if (response.statusCode != 200) return null;
+    final body = response.body;
+    return body.substring(body.lastIndexOf(' ') + 1);
   } catch (_) {
-    return false;
+    return null;
   }
+}
+
+Future<String> login(String username, String password) async {
+  final response = await _client.post(url("auth/login"),
+      body: {"username": username, "password": password});
+  final json = jsonDecode(utf8.decode(response.bodyBytes));
+  return json["token"];
 }

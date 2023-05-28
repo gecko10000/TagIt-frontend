@@ -8,7 +8,7 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox("settings");
   // accounts will store username, token, and endpoint
-  await Hive.openBox("accounts");
+  await Hive.openBox("account");
   runApp(const TagIt());
 }
 
@@ -27,7 +27,7 @@ class TagIt extends StatelessWidget {
             primary: Colors.blue, secondary: Colors.blue.withOpacity(0.7)),
       ),
       home: ValueListenableBuilder<Box>(
-        valueListenable: Hive.box("accounts").listenable(),
+        valueListenable: Hive.box("account").listenable(),
         builder: (context, box, widget) =>
             box.get("token") == null ? const AuthScreen() : const HomePage(),
       ),
