@@ -20,9 +20,9 @@ class _AuthScreenState extends State<AuthScreen> {
   String? urlError;
   Future<void>? lastVerification;
   String? loginError;
+  Box box = Hive.box("account");
 
   void submit() async {
-    Box box = Hive.box("account");
     await box.put("host", fixUri(urlController.text));
     try {
       final token =
@@ -162,6 +162,8 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   void initState() {
     focusNode = FocusNode();
+    final host = box.get("host");
+    if (host != null) urlController.text = host;
     super.initState();
   }
 

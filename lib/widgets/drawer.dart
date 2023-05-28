@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 import 'package:tagit_frontend/screens/common.dart';
 import 'package:tagit_frontend/screens/search.dart';
 import 'package:tagit_frontend/widgets/browsers/file_browser.dart';
@@ -19,26 +20,34 @@ class SideDrawer extends ConsumerWidget {
         DrawerTile(
             Icons.tag,
             "Tags",
-            (context) => BackScaffold(
+            callback: (context) => BackScaffold(
                   body: TagBrowserNavigator(
                       scaffoldNameNotifier: backScaffoldNameProvider.notifier),
                   title: "Tags",
                 )),
-        DrawerTile(Icons.file_copy, "Files", (context) {
+        DrawerTile(Icons.file_copy, "Files", callback: (context) {
           return const BackScaffold(
             body: FileBrowser(),
             title: "Files",
           );
         }),
-        DrawerTile(Icons.search, "Search", (context) => const SearchScreen()),
-        DrawerTile(Icons.upload, "Upload", (context) => const UploadScreen()),
+        DrawerTile(Icons.search, "Search", callback: (context) => const SearchScreen()),
+        DrawerTile(Icons.upload, "Upload", callback: (context) => const UploadScreen()),
         DrawerTile(
             Icons.settings,
             "Settings",
-            (context) => const BackScaffold(
+            callback: (context) => const BackScaffold(
                   body: NotImplementedScreen(),
                   title: "Settings",
                 )),
+        DrawerTile(
+          Icons.logout,
+          "Log Out",
+          callback: (context) {
+            Hive.box("account").delete("token");
+            return null;
+          },
+        )
       ],
     ));
   }
@@ -49,7 +58,7 @@ class DrawerTile extends ConsumerWidget {
   final String title;
   final Widget? Function(BuildContext) callback;
 
-  const DrawerTile(this.icon, this.title, this.callback, {super.key});
+  const DrawerTile(this.icon, this.title, {super.key, required this.callback});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
