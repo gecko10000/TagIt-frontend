@@ -48,6 +48,15 @@ class FileUpload {
   FileUpload({required this.file, this.subscription});
 }
 
+Widget _boxWidget(Widget child) {
+  return SizedBox(width: 32, height: 32,
+  child: child);
+}
+
+Widget _boxIcon(IconData data, {Color? color}) {
+  return _boxWidget(Icon(data, color: color));
+}
+
 class _FileUploadTile extends ConsumerWidget {
   final FileUpload upload;
   final int index;
@@ -55,7 +64,7 @@ class _FileUploadTile extends ConsumerWidget {
 
   Widget errorTile(BuildContext context, WidgetRef ref) {
     return ListTile(
-      leading: const Icon(Icons.error, color: Colors.red),
+      leading: _boxIcon(Icons.error, color: Colors.red),
       isThreeLine: true,
       title: Text(upload.file.name),
       subtitle: Text(upload.error!),
@@ -64,10 +73,7 @@ class _FileUploadTile extends ConsumerWidget {
 
   Widget completedTile() {
     return ListTile(
-      leading: const SizedBox(
-          width: 32,
-          height: 32,
-          child: Icon(Icons.check_circle, color: Colors.green)),
+      leading: _boxIcon(Icons.check_circle, color: Colors.green),
       isThreeLine: true,
       title: Text(upload.file.name),
       subtitle: Text(upload.file.size.toByteUnits()),
@@ -76,10 +82,7 @@ class _FileUploadTile extends ConsumerWidget {
 
   Widget inProgressTile(WidgetRef ref) {
     return ListTile(
-      leading: SizedBox(
-        width: 32,
-        height: 32,
-        child: CircularProgressIndicator(
+      leading: _boxWidget(CircularProgressIndicator(
             value: upload.progress / upload.file.size),
       ),
       isThreeLine: true,
@@ -124,11 +127,19 @@ class UploadScreen extends ConsumerStatefulWidget {
 class _UploadScreenState extends ConsumerState {
   @override
   Widget build(BuildContext context) {
+    final uploads = ref.watch(_fileUploadsProvider);
     return BackScaffold(
       body: ListView.builder(
-          itemCount: ref.watch(_fileUploadsProvider).length,
+          itemCount: uploads.length + 1,
           itemBuilder: (context, i) {
-            final upload = ref.watch(_fileUploadsProvider)[i];
+            if (i == uploads.length) {
+              return ListTile(
+                leading: _boxIcon(Icons.add),
+                onTap: showPrompt,
+                title: const Text("Upload More")
+              );
+            }
+            final upload = uploads[i];
             return _FileUploadTile(upload, index: i);
           }),
       title: "Upload",
@@ -191,7 +202,7 @@ class _UploadScreenState extends ConsumerState {
     uploadsNotifier.add(newUpload);
   }
 
-  void showInitialPrompt() async {
+  void showPrompt() async {
     final newFiles = await _showUploadDialog(context);
     final previousAmount = ref.read(_fileUploadsProvider).length;
     if (!context.mounted) return;
@@ -206,6 +217,6 @@ class _UploadScreenState extends ConsumerState {
   @override
   void initState() {
     super.initState();
-    showInitialPrompt();
+    showPrompt();
   }
 }
