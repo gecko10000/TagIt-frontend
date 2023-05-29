@@ -27,7 +27,7 @@ class ContentViewer extends StatelessWidget {
     final link = url("file/${Uri.encodeComponent(file.name)}");
     switch (ContentType.getType(file.mimeType)) {
       case ContentType.image:
-        return Image.network(link.toString());
+        return Image.network(link.toString(), headers: defaultHeaders(),);
       case ContentType.video:
         // https://pub.dev/packages/flutter_meedu_videoplayer
         return const Text("Video player not implemented yet");

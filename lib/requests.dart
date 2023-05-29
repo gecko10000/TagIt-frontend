@@ -22,16 +22,22 @@ class RequestException implements Exception {
   }
 }
 
+Map<String, String> defaultHeaders() {
+  final headers = <String, String>{};
+  final token = box.get("token");
+  if (token != null) {
+    headers["Authorization"] = "Bearer ${box.get("token")}";
+  }
+  return headers;
+}
+
 class APIClient extends BaseClient {
   final Client _client;
   APIClient(this._client);
 
   @override
   Future<StreamedResponse> send(BaseRequest request) async {
-    final token = box.get("token");
-    if (token != null) {
-      request.headers["Authorization"] = "Bearer ${box.get("token")}";
-    }
+    request.headers.addAll(defaultHeaders());
     StreamedResponse response = await _client.send(request);
     // response code not 2XX
     if (response.statusCode != 422 && response.statusCode ~/ 100 != 2) {
@@ -195,4 +201,11 @@ Future<String> login(String username, String password) async {
       body: {"username": username, "password": password});
   final json = jsonDecode(utf8.decode(response.bodyBytes));
   return json["token"];
+}
+
+Future<ByteStream> getFileStream(SavedFile file) async {
+  final request = Request("GET", url("file/${Uri.encodeComponent(file.name)}"));
+  final response = await _client.send(request);
+  // convert chunks of ints (List<int>) to one big int stream
+  return response.stream;
 }

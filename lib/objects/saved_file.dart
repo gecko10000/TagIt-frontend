@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -9,6 +11,7 @@ import 'package:tagit_frontend/widgets/browsers/tag_browser.dart';
 
 import '../misc/colors.dart';
 import '../requests.dart';
+import '../screens/settings.dart';
 import '../widgets/browsers/file_browser.dart';
 
 class SavedFile implements Tileable {
@@ -33,6 +36,44 @@ class SavedFile implements Tileable {
       required this.fileSize,
       List<String> tags = const []}) {
     this.tags.addAll(tags);
+  }
+
+  Future<File?> resolveFile(BuildContext context) async {
+    String? path = Settings.downloadPath;
+    Directory? dir = path == null ? null : Directory(path);
+    final dirExists = await dir?.exists() ?? true;
+    if (path == null || !dirExists) {
+      path = await Settings.chooseDownloadPath();
+      if (path == null) {
+        if (!context.mounted) return null;
+        context.showSnackBar(
+            "Download cancelled (no download directory).");
+        return null;
+      }
+      dir = Directory(path);
+    }
+    final filePath = dir!.uri.resolve(name);
+    return File.fromUri(filePath);
+  }
+
+  void downloadFile(BuildContext context, WidgetRef ref) async {
+    File? file = await resolveFile(context);
+    if (file == null) return;
+    print(file);
+    final sink = file.openWrite(mode: FileMode.writeOnly);
+    final byteStream = await getFileStream(this);
+    byteStream.listen((bytes) => sink.add(bytes),
+    cancelOnError: true,
+    onError: (err) {
+      sink.close();
+      if (!context.mounted) return;
+      context.showSnackBar(err.toString());
+    },
+    onDone: () {
+      sink.close();
+      if (!context.mounted) return;
+      context.showSnackBar("Downloaded ${file.path}");
+    });
   }
 
   void renameFile(BuildContext context, WidgetRef ref) {
@@ -269,6 +310,10 @@ class SavedFile implements Tileable {
           trailing: PopupMenuButton<void Function(BuildContext, WidgetRef ref)>(
             tooltip: "Actions",
             itemBuilder: (context) => [
+              PopupMenuItem(
+                value: downloadFile,
+                  child: const Text("Download"),
+              ),
               PopupMenuItem(
                 value: renameFile,
                 child: const Text("Rename"),
