@@ -76,7 +76,7 @@ class _AuthScreenState extends State<AuthScreen> {
     setError(version != null ? null : "$uri is not a valid TagIt backend.");
   }
 
-  late FocusNode focusNode;
+  late FocusNode urlNode, usernameNode, passwordNode;
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +87,6 @@ class _AuthScreenState extends State<AuthScreen> {
           constraints: const BoxConstraints(maxWidth: width),
           child: Form(
             key: _formKey,
-            autovalidateMode: AutovalidateMode.always,
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -103,7 +102,9 @@ class _AuthScreenState extends State<AuthScreen> {
                   Row(children: [
                     Expanded(
                         child: TextFormField(
-                      focusNode: focusNode,
+                      autovalidateMode: AutovalidateMode.always,
+                      autofocus: true,
+                      focusNode: urlNode,
                       style: const TextStyle(fontSize: 20),
                       controller: urlController,
                       autocorrect: false,
@@ -114,9 +115,12 @@ class _AuthScreenState extends State<AuthScreen> {
                       },
                       onChanged: (_) => setState(() => validUrl = false),
                       onFieldSubmitted: (_) {
-                        verifyURLInput();
-                        // stop field from losing focus
-                        focusNode.requestFocus();
+                        urlNode.requestFocus();
+                        if (validUrl) {
+                          submit();
+                        } else {
+                          verifyURLInput();
+                        }
                       },
                     )),
                     validUrl
@@ -131,6 +135,17 @@ class _AuthScreenState extends State<AuthScreen> {
                     style: const TextStyle(fontSize: 20),
                     controller: usernameController,
                     autocorrect: false,
+                    focusNode: usernameNode,
+                    validator: (s) {
+                      if (s == null || s.isEmpty) {
+                        return "Please enter a username.";
+                      }
+                      return null;
+                    },
+                    onFieldSubmitted: (_) {
+                      usernameNode.requestFocus();
+                      submit();
+                    },
                   ),
                   const SizedBox(height: 20),
                   const Text("Password"),
@@ -139,17 +154,27 @@ class _AuthScreenState extends State<AuthScreen> {
                     controller: passwordController,
                     autocorrect: false,
                     obscureText: true,
+                    focusNode: passwordNode,
+                    validator: (s) {
+                      if (s == null || s.isEmpty) {
+                        return "Please enter a password.";
+                      }
+                      return null;
+                    },
+                    onFieldSubmitted: (_) {
+                      passwordNode.requestFocus();
+                      submit();
+                    },
                   ),
                   const SizedBox(height: 20),
                   Center(
                       child: TextButton(
-                          onPressed: submit,
-                          child: const Text("Submit"))),
+                          onPressed: submit, child: const Text("Submit"))),
                   Center(
                       child: Visibility(
                     visible: loginError != null,
                     child: Text(loginError ?? "No error",
-                    style: const TextStyle(color: Colors.red)),
+                        style: const TextStyle(color: Colors.red)),
                   ))
                 ],
               ),
@@ -162,7 +187,9 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   void initState() {
-    focusNode = FocusNode();
+    urlNode = FocusNode();
+    usernameNode = FocusNode();
+    passwordNode = FocusNode();
     final host = box.get("host");
     if (host != null) urlController.text = host;
     super.initState();
@@ -170,7 +197,9 @@ class _AuthScreenState extends State<AuthScreen> {
 
   @override
   void dispose() {
-    focusNode.dispose();
+    urlNode.dispose();
+    usernameNode.dispose();
+    passwordNode.dispose();
     super.dispose();
   }
 }
