@@ -35,6 +35,7 @@ Future<List<PlatformFile>> _showUploadDialog(BuildContext context) async {
     allowMultiple: true,
     dialogTitle: "Choose Files to Upload",
     withReadStream: true,
+    lockParentWindow: true,
   );
   return result?.files ?? [];
 }
@@ -125,12 +126,15 @@ class UploadScreen extends ConsumerStatefulWidget {
 }
 
 class _UploadScreenState extends ConsumerState {
+
+  bool shownInitial = false;
+
   @override
   Widget build(BuildContext context) {
     final uploads = ref.watch(_fileUploadsProvider);
     return BackScaffold(
       body: ListView.builder(
-          itemCount: uploads.length + 1,
+          itemCount: uploads.length + (shownInitial ? 1 : 0),
           itemBuilder: (context, i) {
             if (i == uploads.length) {
               return ListTile(
@@ -202,7 +206,7 @@ class _UploadScreenState extends ConsumerState {
     uploadsNotifier.add(newUpload);
   }
 
-  void showPrompt() async {
+  Future<void> showPrompt() async {
     final newFiles = await _showUploadDialog(context);
     final previousAmount = ref.read(_fileUploadsProvider).length;
     if (!context.mounted) return;
@@ -214,9 +218,14 @@ class _UploadScreenState extends ConsumerState {
     }
   }
 
+  void _showInitialPrompt() async {
+    await showPrompt();
+    setState(() => shownInitial = true);
+  }
+
   @override
   void initState() {
     super.initState();
-    showPrompt();
+    _showInitialPrompt();
   }
 }
