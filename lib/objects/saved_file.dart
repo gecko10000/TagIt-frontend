@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:download/download.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -57,6 +59,11 @@ class SavedFile implements Tileable {
   }
 
   void downloadFile(BuildContext context, WidgetRef ref) async {
+    if (kIsWeb) {
+      final stream = await getFileStream(this);
+      download(stream.expand((bytes) => bytes), name);
+      return;
+    }
     File? file = await resolveFile(context);
     if (file == null) return;
     print(file);

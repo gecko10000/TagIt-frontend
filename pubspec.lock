@@ -225,6 +225,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.0"
+  download:
+    dependency: "direct main"
+    description:
+      name: download
+      sha256: d3f39f5799913f61f84a2cfac8153a32fe71b7cd3d2282702886e6190f103c6a
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0"
   fake_async:
     dependency: transitive
     description:
