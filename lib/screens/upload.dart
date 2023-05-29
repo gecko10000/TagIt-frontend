@@ -98,9 +98,11 @@ class _FileUploadTile extends ConsumerWidget {
             u.error = "Cancelled";
             u.subscription?.cancel();
           });
-          FileUpload upload = ref.read(_fileUploadsProvider)[index];
-          upload.error = "Cancelled";
-          upload.subscription?.cancel();
+          // TODO: consolidate the duplicates of this function
+          // partial upload completed, we should delete any existing partial file
+          sendFileDeletionByName(upload.file.name)
+          // ignore any errors in case the file didn't actually upload at all
+              .catchError((_){}, test: (ex) => ex is RequestException || ex is SocketException);
         },
       ),
     );
