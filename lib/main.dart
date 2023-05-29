@@ -5,7 +5,7 @@ import 'package:tagit_frontend/screens/authenticate.dart';
 import 'package:tagit_frontend/screens/home_page.dart';
 
 void main() async {
-  await Hive.initFlutter();
+  await Hive.initFlutter("tagit");
   await Hive.openBox("settings");
   // accounts will store username, token, and endpoint
   await Hive.openBox("account");
