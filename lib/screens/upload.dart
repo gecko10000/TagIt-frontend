@@ -208,8 +208,8 @@ class _UploadScreenState extends ConsumerState {
 
   Future<void> showPrompt() async {
     final newFiles = await _showUploadDialog(context);
+    if (!mounted) return;
     final previousAmount = ref.read(_fileUploadsProvider).length;
-    if (!context.mounted) return;
     for (int i = 0; i < newFiles.length; i++) {
       final file = newFiles[i];
       // offset in the total list
@@ -220,6 +220,7 @@ class _UploadScreenState extends ConsumerState {
 
   void _showInitialPrompt() async {
     await showPrompt();
+    if (!mounted) return;
     setState(() => shownInitial = true);
   }
 
