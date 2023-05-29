@@ -23,6 +23,11 @@ class _AuthScreenState extends State<AuthScreen> {
   Box box = Hive.box("account");
 
   void submit() async {
+    setState(() => loginError = null);
+    await verifyURLInput();
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
     await box.put("host", fixUri(urlController.text));
     try {
       final token =
@@ -138,17 +143,13 @@ class _AuthScreenState extends State<AuthScreen> {
                   const SizedBox(height: 20),
                   Center(
                       child: TextButton(
-                          onPressed: () async {
-                            await verifyURLInput();
-                            if (_formKey.currentState!.validate()) {
-                              submit();
-                            }
-                          },
+                          onPressed: submit,
                           child: const Text("Submit"))),
                   Center(
                       child: Visibility(
                     visible: loginError != null,
-                    child: Text(loginError ?? "No error"),
+                    child: Text(loginError ?? "No error",
+                    style: const TextStyle(color: Colors.red)),
                   ))
                 ],
               ),
