@@ -48,8 +48,7 @@ class SavedFile implements Tileable {
       path = await Settings.chooseDownloadPath();
       if (path == null) {
         if (!context.mounted) return null;
-        context.showSnackBar(
-            "Download cancelled (no download directory).");
+        context.showSnackBar("Download cancelled (no download directory).");
         return null;
       }
       dir = Directory(path);
@@ -69,14 +68,12 @@ class SavedFile implements Tileable {
     print(file);
     final sink = file.openWrite(mode: FileMode.writeOnly);
     final byteStream = await getFileStream(this);
-    byteStream.listen((bytes) => sink.add(bytes),
-    cancelOnError: true,
-    onError: (err) {
+    byteStream.listen((bytes) => sink.add(bytes), cancelOnError: true,
+        onError: (err) {
       sink.close();
       if (!context.mounted) return;
       context.showSnackBar(err.toString());
-    },
-    onDone: () {
+    }, onDone: () {
       sink.close();
       if (!context.mounted) return;
       context.showSnackBar("Downloaded ${file.path}");
@@ -273,44 +270,44 @@ class SavedFile implements Tileable {
               borderRadius: BorderRadius.all(Radius.circular(10))),
           title: Row(
             children: [
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                Text(
-                  name,
-                  style: const TextStyle(
-                    fontSize: 24,
-                  ),
-                ),
-                Text(
-                  fileSize.toByteUnits(),
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey[500],
-                  ),
-                ),
-              ]),
               Expanded(
-                  child: Align(
-                      alignment: Alignment.centerRight,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: () sync* {
-                          // generates each tag with 5-pixel spaces in-between
-                          for (int i = 0; i < tags.length * 2; i++) {
-                            if (i % 2 == 0) {
-                              yield _tagButton(
-                                  context, tags.elementAt(i ~/ 2), ref);
-                            } else {
-                              yield const SizedBox(
-                                width: 5,
-                              );
-                            }
-                          }
-                          // finally, gives a plus button to add more tags
-                          yield _tagButton(context, "+", ref,
-                              onTapDown: (details) => _addTag(context, ref));
-                        }()
-                            .toList(),
-                      )))
+                  child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                    Text(
+                      name,
+                      style: const TextStyle(
+                        fontSize: 18,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    Text(
+                      fileSize.toByteUnits(),
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey[500],
+                      ),
+                    ),
+                  ])),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: () sync* {
+                  // generates each tag with 5-pixel spaces in-between
+                  for (int i = 0; i < tags.length * 2; i++) {
+                    if (i % 2 == 0) {
+                      yield _tagButton(context, tags.elementAt(i ~/ 2), ref);
+                    } else {
+                      yield const SizedBox(
+                        width: 5,
+                      );
+                    }
+                  }
+                  // finally, gives a plus button to add more tags
+                  yield _tagButton(context, "+", ref,
+                      onTapDown: (details) => _addTag(context, ref));
+                }()
+                    .toList(),
+              )
             ],
           ),
           onTap: onTap,
@@ -319,7 +316,7 @@ class SavedFile implements Tileable {
             itemBuilder: (context) => [
               PopupMenuItem(
                 value: downloadFile,
-                  child: const Text("Download"),
+                child: const Text("Download"),
               ),
               PopupMenuItem(
                 value: renameFile,

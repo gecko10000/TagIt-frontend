@@ -100,8 +100,9 @@ class Tag implements Tileable {
               child: Text(
                 name,
                 style: const TextStyle(
-                  fontSize: 24,
+                  fontSize: 18,
                 ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
             _numIcon(Icons.tag, children.length, CustomColor.tag),
