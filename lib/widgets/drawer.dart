@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:tagit_frontend/screens/common.dart';
 import 'package:tagit_frontend/screens/search.dart';
 import 'package:tagit_frontend/widgets/browsers/file_browser.dart';
@@ -14,42 +15,58 @@ class SideDrawer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final backend = ref.watch(backendProvider).value;
     return Drawer(
-        child: ListView(
-      children: [
-        DrawerTile(
-            Icons.tag,
-            "Tags",
-            callback: (context) => BackScaffold(
-                  body: TagBrowserNavigator(
-                      scaffoldNameNotifier: backScaffoldNameProvider.notifier),
-                  title: "Tags",
-                )),
-        DrawerTile(Icons.file_copy, "Files", callback: (context) {
-          return const BackScaffold(
-            body: FileBrowser(),
-            title: "Files",
-          );
-        }),
-        DrawerTile(Icons.search, "Search", callback: (context) => const SearchScreen()),
-        DrawerTile(Icons.upload, "Upload", callback: (context) => const UploadScreen()),
-        DrawerTile(
-            Icons.settings,
-            "Settings",
-            callback: (context) => const BackScaffold(
-                  body: NotImplementedScreen(),
-                  title: "Settings",
-                )),
-        DrawerTile(
-          Icons.account_circle,
-          "Account",
-          callback: (context) => BackScaffold(
-            body: AccountScreen(),
-            title: "Account",
-          ),
-        )
-      ],
-    ));
+        child: ValueListenableBuilder<Box>(
+            valueListenable: Hive.box("account").listenable(),
+            builder: (context, box, widget) {
+              final host = box.get("host");
+              return ListView(
+                children: [
+                  DrawerHeader(
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                        const Text("TagIt", style: TextStyle(fontSize: 36)),
+                        const SizedBox(height: 30),
+                        if (host != null)
+                          Text("Connected to $host",
+                              style: const TextStyle(fontSize: 16),
+                              maxLines: 2),
+                      ])),
+                  DrawerTile(Icons.tag, "Tags",
+                      callback: (context) => BackScaffold(
+                            body: TagBrowserNavigator(
+                                scaffoldNameNotifier:
+                                    backScaffoldNameProvider.notifier),
+                            title: "Tags",
+                          )),
+                  DrawerTile(Icons.file_copy, "Files", callback: (context) {
+                    return const BackScaffold(
+                      body: FileBrowser(),
+                      title: "Files",
+                    );
+                  }),
+                  DrawerTile(Icons.search, "Search",
+                      callback: (context) => const SearchScreen()),
+                  DrawerTile(Icons.upload, "Upload",
+                      callback: (context) => const UploadScreen()),
+                  DrawerTile(Icons.settings, "Settings",
+                      callback: (context) => const BackScaffold(
+                            body: NotImplementedScreen(),
+                            title: "Settings",
+                          )),
+                  DrawerTile(
+                    Icons.account_circle,
+                    "Account",
+                    callback: (context) => BackScaffold(
+                      body: AccountScreen(),
+                      title: "Account",
+                    ),
+                  )
+                ],
+              );
+            }));
   }
 }
 
@@ -65,7 +82,7 @@ class DrawerTile extends ConsumerWidget {
     return Material(
         child: ListTile(
       leading: Icon(icon),
-      title: Text(title),
+      title: Text(title, style: const TextStyle(fontSize: 16)),
       onTap: () {
         Navigator.pop(context);
         Widget? result = callback(context);

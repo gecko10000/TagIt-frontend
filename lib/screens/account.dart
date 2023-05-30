@@ -33,7 +33,7 @@ class AccountScreen extends ConsumerWidget {
           children: [
             Text("Logged into ${box.get("host")}"),
             if (backend != null) Text("Backend Version ${backend.version}"),
-            if (backend != null) Text("${backend.users} user${backend.users.smartS()}"),
+            if (backend != null) Text("${backend.users} user${backend.users.smartS()} total"),
             TextButton(
                 onPressed: () => print("adding user"),
                 child: const Text("Register Another User")),
