@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:hive/hive.dart';
 import 'package:tagit_frontend/screens/common.dart';
 import 'package:tagit_frontend/screens/search.dart';
 import 'package:tagit_frontend/widgets/browsers/file_browser.dart';
 import 'package:tagit_frontend/widgets/browsers/tag_browser.dart';
 
+import '../screens/account.dart';
 import '../screens/not_implemented.dart';
 import '../screens/upload.dart';
 
@@ -41,14 +41,12 @@ class SideDrawer extends ConsumerWidget {
                   title: "Settings",
                 )),
         DrawerTile(
-          Icons.logout,
-          "Log Out",
-          callback: (context) {
-            Box box = Hive.box("account");
-            box.put("error", "You've been logged out.")
-                .whenComplete(() => box.delete("token"));
-            return null;
-          },
+          Icons.account_circle,
+          "Account",
+          callback: (context) => BackScaffold(
+            body: AccountScreen(),
+            title: "Account",
+          ),
         )
       ],
     ));

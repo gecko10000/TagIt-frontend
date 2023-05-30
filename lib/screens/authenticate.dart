@@ -90,10 +90,10 @@ class _AuthScreenState extends State<AuthScreen> {
       setError("Could not parse URL.");
       return;
     }
-    String? version = await getVersion(uri: uri);
+    BackendInfo? info = await getBackendInfo(uri: uri);
     // async gap, need to ensure input matches current value
     if (urlController.text != s) return;
-    setError(version != null ? null : "$uri is not a valid TagIt backend.");
+    setError(info != null ? null : "$uri is not a valid TagIt backend.");
   }
 
   late FocusNode urlNode, usernameNode, passwordNode;

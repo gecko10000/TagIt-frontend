@@ -22,6 +22,16 @@ class RequestException implements Exception {
   }
 }
 
+class BackendInfo {
+  final String version;
+  final int users;
+  const BackendInfo(this.version, this.users);
+  factory BackendInfo.fromJson(Map<String, dynamic> json) {
+    return BackendInfo(json["version"], json["users"]);
+  }
+
+}
+
 Map<String, String> defaultHeaders() {
   final headers = <String, String>{};
   final token = box.get("token");
@@ -189,13 +199,13 @@ StreamSubscription uploadFile(PlatformFile file,
   return subscription;
 }
 
-Future<String?> getVersion({Uri? uri}) async {
+Future<BackendInfo?> getBackendInfo({Uri? uri}) async {
   try {
     uri = (uri?.resolve ?? url)("tagit/version");
     final response = await _client.get(uri);
     if (response.statusCode != 200) return null;
     final json = jsonDecode(utf8.decode(response.bodyBytes));
-    return json["version"];
+    return BackendInfo.fromJson(json);
   } catch (_) {
     return null;
   }
