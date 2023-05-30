@@ -39,6 +39,11 @@ class APIClient extends BaseClient {
   Future<StreamedResponse> send(BaseRequest request) async {
     request.headers.addAll(defaultHeaders());
     StreamedResponse response = await _client.send(request);
+    if (response.statusCode == 401) {
+      await box.put("error", "Not Authenticated");
+      await box.delete("token");
+      return response;
+    }
     // response code not 2XX
     if (response.statusCode != 422 && response.statusCode ~/ 100 != 2) {
       throw RequestException(

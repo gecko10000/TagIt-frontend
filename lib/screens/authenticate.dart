@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:tagit_frontend/misc/extensions.dart';
 import 'package:tagit_frontend/requests.dart';
 
 class AuthScreen extends StatefulWidget {
@@ -192,6 +193,11 @@ class _AuthScreenState extends State<AuthScreen> {
     passwordNode = FocusNode();
     final host = box.get("host");
     if (host != null) urlController.text = host;
+    String? error = box.get("error");
+    if (error != null) {
+      Future(() => context.showSnackBar(error));
+      box.delete("error");
+    }
     super.initState();
   }
 

@@ -44,7 +44,9 @@ class SideDrawer extends ConsumerWidget {
           Icons.logout,
           "Log Out",
           callback: (context) {
-            Hive.box("account").delete("token");
+            Box box = Hive.box("account");
+            box.put("error", "You've been logged out.")
+                .whenComplete(() => box.delete("token"));
             return null;
           },
         )
