@@ -189,8 +189,8 @@ Future<String?> getVersion({Uri? uri}) async {
     uri = (uri?.resolve ?? url)("tagit/version");
     final response = await _client.get(uri);
     if (response.statusCode != 200) return null;
-    final body = response.body;
-    return body.substring(body.lastIndexOf(' ') + 1);
+    final json = jsonDecode(utf8.decode(response.bodyBytes));
+    return json["version"];
   } catch (_) {
     return null;
   }
