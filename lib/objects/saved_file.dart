@@ -197,6 +197,8 @@ class SavedFile implements Tileable {
     dialogReturn.then((value) async {
       if (value ?? false) {
         await _patchTag(context, tagName, false);
+        final parent = ref.read(currentTagProvider)?.name;
+        ref.read(tagBrowserListProvider(parent: parent).notifier).refresh(parent: parent);
         ref.read(fileBrowserListProvider.notifier).refresh();
       }
     });
