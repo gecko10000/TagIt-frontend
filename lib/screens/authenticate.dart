@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
+import 'package:tagit_frontend/main.dart';
 import 'package:tagit_frontend/misc/extensions.dart';
 import 'package:tagit_frontend/requests.dart';
 
 class AuthScreen extends StatefulWidget {
-  const AuthScreen({super.key});
+  final bool register;
+  final String? prevUrl, prevUser, prevPass;
+  const AuthScreen(
+      {super.key,
+      this.register = false,
+      this.prevUrl,
+      this.prevUser,
+      this.prevPass});
 
   @override
   State createState() => _AuthScreenState();
@@ -13,30 +21,41 @@ class AuthScreen extends StatefulWidget {
 class _AuthScreenState extends State<AuthScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  final urlController = TextEditingController(),
-      usernameController = TextEditingController(),
-      passwordController = TextEditingController();
+  late TextEditingController urlController =
+          TextEditingController(text: widget.prevUrl),
+      usernameController = TextEditingController(text: widget.prevUser),
+      passwordController = TextEditingController(text: widget.prevPass);
 
   bool validUrl = false;
   String? urlError;
   Future<void>? lastVerification;
-  String? loginError;
+  String? _authError;
   Box box = Hive.box("account");
 
+  void navigateTo(Widget widget) {
+    Navigator.pushReplacement(context, PageRouteBuilder(pageBuilder: (_, __, ___) => widget));
+  }
+
   void submit() async {
-    setState(() => loginError = null);
+    setState(() => _authError = null);
     await verifyURLInput();
     if (!_formKey.currentState!.validate()) {
       return;
     }
     await box.put("host", fixUri(urlController.text));
     try {
-      final token =
-          await login(usernameController.text, passwordController.text);
+      final user = usernameController.text;
+      final pass = passwordController.text;
+      if (widget.register) {
+        await register(user, pass);
+      }
+      final token = await login(usernameController.text, passwordController.text);
       box.put("token", token);
+      if (!context.mounted) return;
+      navigateTo(const TagIt());
     } on RequestException catch (ex) {
       setState(() {
-        loginError = ex.message;
+        _authError = ex.message;
       });
     }
   }
@@ -96,8 +115,9 @@ class _AuthScreenState extends State<AuthScreen> {
                   const Center(
                       child: Text("TagIt", style: TextStyle(fontSize: 48))),
                   const SizedBox(height: 20),
-                  const Center(
-                      child: Text("Log In", style: TextStyle(fontSize: 32))),
+                  Center(
+                      child: Text(widget.register ? "Register" : "Log In",
+                          style: const TextStyle(fontSize: 32))),
                   const SizedBox(height: 20),
                   const Text("Host"),
                   Row(children: [
@@ -169,13 +189,34 @@ class _AuthScreenState extends State<AuthScreen> {
                   ),
                   const SizedBox(height: 20),
                   Center(
-                      child: TextButton(
+                      child: ElevatedButton(
                           onPressed: submit, child: const Text("Submit"))),
                   Center(
                       child: Visibility(
-                    visible: loginError != null,
-                    child: Text(loginError ?? "No error",
+                    visible: _authError != null,
+                    child: Text(_authError ?? "No error",
                         style: const TextStyle(color: Colors.red)),
+                  )),
+                  const SizedBox(height: 20),
+                  Center(
+                      child: TextButton(
+                    style: ButtonStyle(
+                        foregroundColor:
+                            MaterialStateColor.resolveWith((states) {
+                          return Colors.white.withOpacity(
+                              states.contains(MaterialState.hovered) ? 0.6 : 1);
+                        }),
+                        overlayColor:
+                            MaterialStateProperty.all(Colors.transparent)),
+                    onPressed: () => navigateTo(AuthScreen(
+                                  register: !widget.register,
+                                  prevUrl: urlController.text,
+                                  prevUser: usernameController.text,
+                                  prevPass: passwordController.text,
+                                )),
+                    child: Text(
+                      "${widget.register ? "Log in" : "Register"} instead",
+                    ),
                   ))
                 ],
               ),
@@ -192,7 +233,7 @@ class _AuthScreenState extends State<AuthScreen> {
     usernameNode = FocusNode();
     passwordNode = FocusNode();
     final host = box.get("host");
-    if (host != null) urlController.text = host;
+    if (urlController.text.isEmpty && host != null) urlController.text = host;
     String? error = box.get("error");
     if (error != null) {
       Future(() => context.showSnackBar(error));

@@ -201,9 +201,14 @@ Future<String?> getVersion({Uri? uri}) async {
   }
 }
 
-Future<String> login(String username, String password) async {
-  final response = await _client.post(url("auth/login"),
+Future<Response> _auth(String endpoint, String username, String password) async {
+  final response = await _client.post(url("auth/$endpoint"),
       body: {"username": username, "password": password});
+  return response;
+}
+
+Future<String> login(String username, String password) async {
+  final response = await _auth("login", username, password);
   final json = jsonDecode(utf8.decode(response.bodyBytes));
   return json["token"];
 }
@@ -214,3 +219,5 @@ Future<ByteStream> getFileStream(SavedFile file) async {
   // convert chunks of ints (List<int>) to one big int stream
   return response.stream;
 }
+
+Future<void> register(String username, String password) async => await _auth("register", username, password);
