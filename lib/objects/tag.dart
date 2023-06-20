@@ -41,9 +41,7 @@ class Tag implements Tileable {
       } on RequestException catch (ex, st) {
         context.showSnackBar(ex.message);
       }
-      ref
-          .read(tagBrowserListProvider(parent: parent).notifier)
-          .refresh(parent: parent);
+      ref.invalidate(tagBrowserListProvider(parent: parent));
     }
 
     renameObject(context, "tag", fullName(), renameCallback, controller, ref);
@@ -62,9 +60,7 @@ class Tag implements Tileable {
       } on RequestException catch (ex, st) {
         context.showSnackBar(ex.message);
       }
-      ref
-          .read(tagBrowserListProvider(parent: parent).notifier)
-          .refresh(parent: parent);
+      ref.invalidate(tagBrowserListProvider(parent: parent));
     }
 
     deleteObject(context, "tag", fullName(), deleteCallback, ref);

@@ -63,19 +63,7 @@ class TagBrowserList extends _$TagBrowserList {
 
   @override
   FutureOr<List<Tileable>> build({String? parent}) async {
-    // don't need to return anything here
-    // because refresh is called immediately
-    // from didPush
-    return [];
-  }
-
-  void refresh({String? parent}) async {
-    try {
-      state = AsyncValue.data(
-          await addBackButton(retrieveChildren(parent), parent));
-    } on Exception catch (ex, st) {
-      state = AsyncValue.error(ex, st);
-    }
+    return addBackButton(retrieveChildren(parent), parent);
   }
 }
 
@@ -164,9 +152,7 @@ class _TagBrowserState extends ConsumerState<TagBrowser>
   void refresh() {
     Future(() {
       String? fullName = widget.parent?.fullName();
-      ref
-          .read(tagBrowserListProvider(parent: fullName).notifier)
-          .refresh(parent: fullName);
+      ref.invalidate(tagBrowserListProvider(parent: fullName));
       ref.read(widget.scaffoldNameNotifier).set(fullName ?? "Tags");
       ref.read(currentTagProvider.notifier).set(widget.parent);
     });

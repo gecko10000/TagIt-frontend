@@ -12,14 +12,6 @@ part 'file_browser.g.dart';
 class FileBrowserList extends _$FileBrowserList {
   @override
   FutureOr<List<SavedFile>> build() => getAllFiles();
-
-  void refresh() async {
-    try {
-      state = AsyncValue.data(await getAllFiles());
-    } on Exception catch (ex, st) {
-      state = AsyncValue.error(ex, st);
-    }
-  }
 }
 
 class FileBrowser extends ConsumerStatefulWidget {

@@ -9,6 +9,8 @@ import 'package:tagit_frontend/misc/extensions.dart';
 import 'package:tagit_frontend/requests.dart';
 import 'package:tagit_frontend/screens/common.dart';
 
+import '../widgets/browsers/file_browser.dart';
+
 part 'upload.g.dart';
 
 @riverpod
@@ -203,6 +205,8 @@ class _UploadScreenState extends ConsumerState {
       ref
           .read(_fileUploadsProvider.notifier)
           .modify(index, (u) => u.completed = true);
+      // refresh files and tags
+      ref.invalidate(fileBrowserListProvider);
     });
     final newUpload = FileUpload(file: file, subscription: subscription);
     uploadsNotifier.add(newUpload);

@@ -57,6 +57,7 @@ class SavedFile implements Tileable {
     return File.fromUri(filePath);
   }
 
+  // use https://pub.dev/packages/permission_handler for permission asking
   void downloadFile(BuildContext context, WidgetRef ref) async {
     if (kIsWeb) {
       final stream = await getFileStream(this);
@@ -65,7 +66,6 @@ class SavedFile implements Tileable {
     }
     File? file = await resolveFile(context);
     if (file == null) return;
-    print(file);
     final sink = file.openWrite(mode: FileMode.writeOnly);
     final byteStream = await getFileStream(this);
     byteStream.listen((bytes) => sink.add(bytes), cancelOnError: true,
@@ -94,7 +94,7 @@ class SavedFile implements Tileable {
       } on RequestException catch (ex, _) {
         context.showSnackBar(ex.message);
       }
-      ref.read(fileBrowserListProvider.notifier).refresh();
+      ref.invalidate(fileBrowserListProvider);
     }
 
     renameObject(context, "file", name, renameCallback, controller, ref);
@@ -107,7 +107,7 @@ class SavedFile implements Tileable {
       } on RequestException catch (ex, _) {
         context.showSnackBar(ex.message);
       }
-      ref.read(fileBrowserListProvider.notifier).refresh();
+      ref.invalidate(fileBrowserListProvider);
     }
 
     deleteObject(context, "file", name, deleteCallback, ref);
@@ -163,7 +163,7 @@ class SavedFile implements Tileable {
     dialogReturn.then((value) async {
       if (value == null) return;
       await _patchTag(context, value, true);
-      ref.read(fileBrowserListProvider.notifier).refresh();
+      ref.invalidate(fileBrowserListProvider);
     });
   }
 
@@ -198,8 +198,8 @@ class SavedFile implements Tileable {
       if (value ?? false) {
         await _patchTag(context, tagName, false);
         final parent = ref.read(currentTagProvider)?.name;
-        ref.read(tagBrowserListProvider(parent: parent).notifier).refresh(parent: parent);
-        ref.read(fileBrowserListProvider.notifier).refresh();
+        ref.invalidate(tagBrowserListProvider(parent: parent));
+        ref.invalidate(fileBrowserListProvider);
       }
     });
   }

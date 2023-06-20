@@ -61,11 +61,9 @@ class HomePage extends ConsumerWidget {
               ref.read(tabBarIndexProvider.notifier).set(i);
               if (i == 0) {
                 final current = ref.read(currentTagProvider)?.fullName();
-                ref
-                    .read(tagBrowserListProvider(parent: current).notifier)
-                    .refresh(parent: current);
+                ref.invalidate(tagBrowserListProvider(parent: current));
               } else if (i == 1) {
-                ref.read(fileBrowserListProvider.notifier).refresh();
+                ref.invalidate(fileBrowserListProvider);
               }
             },
             tabs: const [
@@ -103,9 +101,7 @@ class HomePage extends ConsumerWidget {
                 await createTag(context,
                     leading: ref.read(currentTagProvider)?.fullName());
                 String? parent = ref.read(currentTagProvider)?.fullName();
-                ref
-                    .read(tagBrowserListProvider(parent: parent).notifier)
-                    .refresh(parent: parent);
+                ref.invalidate(tagBrowserListProvider(parent: parent));
               },
             ),
           ],
