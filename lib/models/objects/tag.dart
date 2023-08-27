@@ -11,8 +11,8 @@ class Tag with _$Tag {
   const factory Tag({
     required String name,
     required String? parent,
-    required Set<String> children,
-    required Set<String> files,
+    @Default({}) Set<String> children,
+    @Default({}) Set<String> files,
   }) = _Tag;
 
   factory Tag.fromJson(Map<String, Object?> json) => _$TagFromJson(json);

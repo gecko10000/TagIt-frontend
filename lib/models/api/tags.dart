@@ -7,7 +7,6 @@ import '../objects/saved_file.dart';
 import '../objects/tag.dart';
 
 class TagAPI {
-
   static Future<void> create(String name) async {
     await client.post(url("tag/${Uri.encodeComponent(name)}"));
   }
@@ -15,7 +14,7 @@ class TagAPI {
   static Future<Tag> get(String name) async {
     final response = await client.get(url("tag/${Uri.encodeComponent(name)}"));
     final map =
-    jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+        jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
     return Tag.fromJson(map);
   }
 
@@ -42,5 +41,4 @@ class TagAPI {
   static Future<void> delete(String fullName) async {
     await client.delete(url("tag/${Uri.encodeComponent(fullName)}"));
   }
-
 }
