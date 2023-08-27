@@ -45,7 +45,6 @@ class RequestException implements Exception {
 
   @override
   String toString() {
-    final start = "Error: $statusCode";
-    return message.isEmpty ? start : "$start - $message";
+    return message.isEmpty ? statusCode.toString() : "$statusCode - $message";
   }
 }

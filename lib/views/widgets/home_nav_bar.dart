@@ -1,16 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'home_nav_bar.g.dart';
-
-@riverpod
-class HomeIndex extends _$HomeIndex {
-  @override
-  int build() => 0;
-
-  void set(int i) => state = i;
-}
+import '../../view_models/home.dart';
 
 class HomeNavBar extends ConsumerWidget {
   const HomeNavBar({super.key});
@@ -25,8 +16,8 @@ class HomeNavBar extends ConsumerWidget {
         BottomNavigationBarItem(icon: Icon(Icons.upload), label: "Upload"),
         BottomNavigationBarItem(icon: Icon(Icons.settings), label: "Settings"),
       ],
-      unselectedItemColor: Colors.grey,
-      selectedItemColor: Colors.white70,
+      unselectedItemColor: Colors.white30,
+      selectedItemColor: Colors.white,
       type: BottomNavigationBarType.fixed,
       onTap: (i) => ref.read(homeIndexProvider.notifier).set(i),
     );

@@ -5,6 +5,7 @@ import 'package:tagit_frontend/views/screens/search.dart';
 import 'package:tagit_frontend/views/screens/settings.dart';
 import 'package:tagit_frontend/views/screens/upload.dart';
 
+import '../../view_models/home.dart';
 import '../widgets/home_nav_bar.dart';
 
 List<Widget> pages = [
@@ -21,7 +22,7 @@ class Home extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       body: pages[ref.watch(homeIndexProvider)],
-      bottomNavigationBar: HomeNavBar(),
+      bottomNavigationBar: const HomeNavBar(),
     );
   }
 }
