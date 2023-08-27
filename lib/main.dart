@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:tagit_frontend/screens/authenticate.dart';
-import 'package:tagit_frontend/screens/home_page.dart';
+import 'package:tagit_frontend/views/screens/home.dart';
 
 void main() async {
   await Hive.initFlutter("tagit");
@@ -22,15 +21,8 @@ class TagIt extends StatelessWidget {
       //navigatorObservers: [browseObserver],
       debugShowCheckedModeBanner: false,
       title: "TagIt",
-      theme: ThemeData(
-        colorScheme: ColorScheme.dark(
-            primary: Colors.blue, secondary: Colors.blue.withOpacity(0.7)),
-      ),
-      home: ValueListenableBuilder<Box>(
-        valueListenable: Hive.box("account").listenable(),
-        builder: (context, box, widget) =>
-            box.get("token") == null ? const AuthScreen() : const HomePage(),
-      ),
+      theme: ThemeData.dark(),
+      home: Home(),
     ));
   }
 }
