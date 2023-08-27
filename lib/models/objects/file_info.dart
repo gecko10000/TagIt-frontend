@@ -8,8 +8,8 @@ class FileInfo with _$FileInfo {
   const factory FileInfo({
     required String name,
     required String mimeType,
-    required int modificationTimeMillis,
-    required int fileSizeBytes,
+    required int modificationDate,
+    required int fileSize,
   }) = _FileInfo;
 
   factory FileInfo.fromJson(Map<String, Object?> json) =>

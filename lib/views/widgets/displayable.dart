@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:tagit_frontend/view_models/browse.dart';
 
 import '../../models/objects/displayable.dart';
+import '../../models/objects/tag.dart';
 
 class GridSquare extends StatelessWidget {
   static const double _borderWidth = 1;
@@ -18,14 +20,27 @@ class GridSquare extends StatelessWidget {
           padding: const EdgeInsets.all(_borderWidth),
           decoration: BoxDecoration(
               border: Border.all(color: Colors.white, width: _borderWidth)),
-          child: const Placeholder(),
+          child: child,
         ));
+  }
+
+  Widget tagInner(BuildContext context, Tag tag) {
+    return GridTile(
+      footer: Center(child: Text(tag.fullName())),
+      child: InkWell(
+        onTap: () => openTag(context, tag),
+        child: Icon(
+          Icons.tag,
+          size: 100,
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return displayable.when(
-      tag: (tag) => borderedGridTile(child: Placeholder()),
+      tag: (tag) => borderedGridTile(child: tagInner(context, tag)),
       file: (file) => borderedGridTile(child: Icon(Icons.file_copy)),
     );
   }
