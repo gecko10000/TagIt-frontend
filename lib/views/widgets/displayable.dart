@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tagit_frontend/models/objects/saved_file.dart';
 import 'package:tagit_frontend/view_models/browse.dart';
 
 import '../../models/objects/displayable.dart';
@@ -25,24 +26,36 @@ class GridSquare extends StatelessWidget {
   }
 
   Widget tagInner(BuildContext context, Tag tag) {
-    return GridTile(
-      footer: Center(child: Text(tag.fullName())),
-      child: InkWell(
+    return InkWell(
         onTap: () => openTag(context, tag),
-        child: Icon(
-          Icons.tag,
-          size: 100,
-        ),
-      ),
-    );
+        child: GridTile(
+          footer: Center(child: Text(tag.name)),
+          child: const Icon(
+            Icons.sell,
+            size: 100,
+          ),
+        ));
+  }
+
+  Widget fileInner(BuildContext context, SavedFile savedFile) {
+    return InkWell(
+        onTap: () => openFile(context, savedFile),
+        child: GridTile(
+          footer: Center(child: Text(savedFile.info.name)),
+          child: const Icon(
+            Icons.file_copy,
+            size: 100,
+          ),
+        ));
   }
 
   @override
   Widget build(BuildContext context) {
-    return displayable.when(
-      tag: (tag) => borderedGridTile(child: tagInner(context, tag)),
-      file: (file) => borderedGridTile(child: Icon(Icons.file_copy)),
-    );
+    return borderedGridTile(
+        child: displayable.when(
+      tag: (tag) => tagInner(context, tag),
+      file: (file) => fileInner(context, file),
+    ));
   }
 }
 

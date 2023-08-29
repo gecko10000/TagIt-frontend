@@ -14,10 +14,10 @@ class BrowseScreen extends ConsumerWidget {
       child: Align(
         alignment: Alignment.topCenter,
         child: ref.watch(browseListProvider(tag)).when(
-          data: (list) => DisplayableGrid(list),
-          error: (error, st) => Text("${error.runtimeType}: $error\n$st"),
-          loading: () => CircularProgressIndicator(),
-        ),
+              data: (list) => DisplayableGrid(list),
+              error: (error, st) => Text("${error.runtimeType}: $error\n$st"),
+              loading: () => const CircularProgressIndicator(),
+            ),
       ),
     );
   }
