@@ -1,10 +1,15 @@
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
+import 'package:media_kit/media_kit.dart';
+import 'package:tagit_frontend/models/file_type.dart';
 import 'package:tagit_frontend/models/objects/saved_file.dart';
 
 import 'base.dart';
 
 class FileAPI {
+  // no constructor
+  FileAPI._();
 
   static Future<List<SavedFile>> getAllFiles({bool reversed = false}) async {
     final response = await client.get(url("files/all"),
@@ -54,9 +59,9 @@ class FileAPI {
   static Future<SavedFile?> getInfo(String name) async {
     try {
       final response =
-      await client.get(url("file/${Uri.encodeComponent(name)}/info"));
+          await client.get(url("file/${Uri.encodeComponent(name)}/info"));
       final map =
-      jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+          jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
       return SavedFile.fromJson(map);
     } on RequestException catch (ex) {
       if (ex.statusCode == 404) {
@@ -64,6 +69,21 @@ class FileAPI {
       }
       rethrow;
     }
+  }
+
+  static Image getImage(SavedFile savedFile) {
+    assert(ContentType.getType(savedFile) == ContentType.image);
+    return Image.network(
+      url("file/${Uri.encodeComponent(savedFile.info.name)}").toString(),
+      headers: defaultHeaders(),
+    );
+  }
+
+  static Media getVideo(SavedFile savedFile) {
+    assert(ContentType.getType(savedFile) == ContentType.video);
+    return Media(
+        url("file/${Uri.encodeComponent(savedFile.info.name)}").toString(),
+        httpHeaders: defaultHeaders());
   }
 
   static Future<void> _modifyTag(String file, String tag, bool add) async {

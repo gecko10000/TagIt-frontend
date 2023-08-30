@@ -7,9 +7,11 @@ import '../objects/saved_file.dart';
 import '../objects/tag.dart';
 
 class SearchAPI {
+  SearchAPI._();
+
   static Future<List<SavedFile>> fileSearch(String query) async {
     Response response =
-        await client.get(url("search/files", queryParameters: {"q": query}));
+    await client.get(url("search/files", queryParameters: {"q": query}));
     final json = jsonDecode(utf8.decode(response.bodyBytes));
     if (response.statusCode == 422) {
       throw SearchFormatException(json["index"] ?? -1);
@@ -20,7 +22,7 @@ class SearchAPI {
   // TODO: convert to fully-fledged search like above
   static Future<List<Tag>> tagSearch(String substring) async {
     Response response =
-        await client.get(url("search/tags", queryParameters: {"q": substring}));
+    await client.get(url("search/tags", queryParameters: {"q": substring}));
     final json = jsonDecode(utf8.decode(response.bodyBytes));
     return (json as List).map((j) => Tag.fromJson(j)).toList();
   }

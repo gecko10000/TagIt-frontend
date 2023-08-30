@@ -4,9 +4,10 @@ import 'package:http/http.dart';
 import 'package:tagit_frontend/models/api/base.dart';
 
 class AuthenticationAPI {
+  AuthenticationAPI._();
 
-  static Future<Response> _auth(String endpoint, String username,
-      String password) async {
+  static Future<Response> _auth(
+      String endpoint, String username, String password) async {
     final response = await client.post(url("auth/$endpoint"),
         body: {"username": username, "password": password});
     return response;

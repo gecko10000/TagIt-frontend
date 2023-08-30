@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:tagit_frontend/views/screens/home.dart';
 
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  MediaKit.ensureInitialized();
   await Hive.initFlutter("tagit");
   await Hive.openBox("settings");
   // accounts will store username, token, and endpoint
