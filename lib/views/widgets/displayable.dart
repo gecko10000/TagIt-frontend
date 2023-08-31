@@ -16,8 +16,6 @@ class GridSquare extends StatelessWidget {
     return Container(
         padding: const EdgeInsets.all(2),
         child: Container(
-          width: 200,
-          height: 200,
           padding: const EdgeInsets.all(_borderWidth),
           decoration: BoxDecoration(
               border: Border.all(color: Colors.white, width: _borderWidth)),
@@ -66,8 +64,11 @@ class DisplayableGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Wrap(
-      children: displayables.map((e) => GridSquare(e)).toList(),
+    return GridView.builder(
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+          maxCrossAxisExtent: 200),
+      itemBuilder: (context, i) => GridSquare(displayables[i]),
+      itemCount: displayables.length,
     );
   }
 }
