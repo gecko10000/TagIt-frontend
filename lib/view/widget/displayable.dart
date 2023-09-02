@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:tagit_frontend/models/objects/saved_file.dart';
-import 'package:tagit_frontend/view_models/browse.dart';
+import 'package:tagit_frontend/model/object/saved_file.dart';
+import 'package:tagit_frontend/view_model/browse.dart';
 
-import '../../models/objects/displayable.dart';
-import '../../models/objects/tag.dart';
+import '../../model/object/displayable.dart';
+import '../../model/object/tag.dart';
 
 class GridSquare extends StatelessWidget {
   static const double _borderWidth = 1;
@@ -27,6 +27,9 @@ class GridSquare extends StatelessWidget {
     return InkWell(
         onTap: () => openTag(context, tag),
         child: GridTile(
+          header: Center(
+              child: Text(
+                  "${tag.files.length} files / ${tag.children.length} children")),
           footer: Center(child: Text(tag.name)),
           child: const Icon(
             Icons.sell,

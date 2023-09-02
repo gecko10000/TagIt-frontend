@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:tagit_frontend/models/api/files.dart';
-import 'package:tagit_frontend/models/file_type.dart';
-import 'package:tagit_frontend/models/objects/saved_file.dart';
-import 'package:tagit_frontend/views/widgets/content_viewers/video_viewer.dart';
+import 'package:tagit_frontend/model/api/files.dart';
+import 'package:tagit_frontend/model/file_type.dart';
+import 'package:tagit_frontend/model/object/saved_file.dart';
+import 'package:tagit_frontend/view/widget/content_viewer/video_viewer.dart';
 
 class ContentViewer extends StatelessWidget {
   final SavedFile savedFile;

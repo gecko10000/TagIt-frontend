@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tagit_frontend/view_models/browse.dart';
-import 'package:tagit_frontend/views/widgets/displayable.dart';
+import 'package:tagit_frontend/view/widget/displayable.dart';
+import 'package:tagit_frontend/view_model/browse.dart';
 
 class BrowseScreen extends ConsumerWidget {
   final String? tag;
@@ -13,10 +13,10 @@ class BrowseScreen extends ConsumerWidget {
     return Align(
       alignment: Alignment.topCenter,
       child: ref.watch(browseListProvider(tag)).when(
-            data: (list) => DisplayableGrid(list),
-            error: (error, st) => Text("${error.runtimeType}: $error\n$st"),
-            loading: () => const CircularProgressIndicator(),
-          ),
+        data: (list) => DisplayableGrid(list),
+        error: (error, st) => Text("${error.runtimeType}: $error\n$st"),
+        loading: () => const CircularProgressIndicator(),
+      ),
     );
   }
 }

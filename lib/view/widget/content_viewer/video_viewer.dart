@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import 'package:tagit_frontend/models/api/files.dart';
-import 'package:tagit_frontend/models/objects/saved_file.dart';
+import 'package:tagit_frontend/model/api/files.dart';
+import 'package:tagit_frontend/model/object/saved_file.dart';
 
 class VideoViewer extends StatefulWidget {
   final SavedFile savedFile;

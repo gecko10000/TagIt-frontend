@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-
-import 'file_info.dart';
+import 'package:tagit_frontend/model/enum/media_type.dart';
+import 'package:tagit_frontend/model/object/size.dart';
 
 part 'saved_file.freezed.dart';
 part 'saved_file.g.dart';
@@ -8,7 +8,12 @@ part 'saved_file.g.dart';
 @freezed
 class SavedFile with _$SavedFile {
   const factory SavedFile({
-    @JsonKey(name: "fileInfo") required FileInfo info,
+    required String name,
+    required MediaType mediaType,
+    required int modificationDate,
+    required int fileSize,
+    required String? thumbnail,
+    required JsonSize? size,
     required Set<String> tags,
   }) = _SavedFile;
 

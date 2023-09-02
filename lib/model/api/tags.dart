@@ -1,10 +1,10 @@
 import 'dart:convert';
 
-import 'package:tagit_frontend/models/api/base.dart';
+import 'package:tagit_frontend/model/api/base.dart';
 
-import '../objects/displayable.dart';
-import '../objects/saved_file.dart';
-import '../objects/tag.dart';
+import '../object/displayable.dart';
+import '../object/saved_file.dart';
+import '../object/tag.dart';
 
 class TagAPI {
   TagAPI._();
@@ -16,7 +16,7 @@ class TagAPI {
   static Future<Tag> get(String name) async {
     final response = await client.get(url("tag/${Uri.encodeComponent(name)}"));
     final map =
-    jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+        jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
     return Tag.fromJson(map);
   }
 

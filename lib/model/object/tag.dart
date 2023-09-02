@@ -13,6 +13,7 @@ class Tag with _$Tag {
     required String? parent,
     @Default({}) Set<String> children,
     @Default({}) Set<String> files,
+    required int totalFileCount,
   }) = _Tag;
 
   factory Tag.fromJson(Map<String, Object?> json) => _$TagFromJson(json);

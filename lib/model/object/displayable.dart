@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:tagit_frontend/models/objects/saved_file.dart';
-import 'package:tagit_frontend/models/objects/tag.dart';
+import 'package:tagit_frontend/model/object/saved_file.dart';
+import 'package:tagit_frontend/model/object/tag.dart';
 
 part 'displayable.freezed.dart';
 

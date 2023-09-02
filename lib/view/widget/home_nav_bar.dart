@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tagit_frontend/view_models/browse.dart';
+import 'package:tagit_frontend/view_model/browse.dart';
 
-import '../../view_models/home.dart';
+import '../../view_model/home.dart';
 
 class HomeNavBar extends ConsumerWidget {
   const HomeNavBar({super.key});

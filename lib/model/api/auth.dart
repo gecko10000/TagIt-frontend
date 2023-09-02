@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:tagit_frontend/models/api/base.dart';
+import 'package:tagit_frontend/model/api/base.dart';
 
 class AuthenticationAPI {
   AuthenticationAPI._();

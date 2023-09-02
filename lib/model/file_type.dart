@@ -1,4 +1,4 @@
-import 'package:tagit_frontend/models/objects/saved_file.dart';
+import 'package:tagit_frontend/model/object/saved_file.dart';
 
 enum ContentType {
   image,

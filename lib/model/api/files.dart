@@ -2,8 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:media_kit/media_kit.dart';
-import 'package:tagit_frontend/models/file_type.dart';
-import 'package:tagit_frontend/models/objects/saved_file.dart';
+import 'package:tagit_frontend/model/file_type.dart';
+import 'package:tagit_frontend/model/object/saved_file.dart';
 
 import 'base.dart';
 
@@ -12,8 +12,8 @@ class FileAPI {
   FileAPI._();
 
   static Future<List<SavedFile>> getAllFiles({bool reversed = false}) async {
-    final response = await client.get(url("files/all"),
-        headers: {"order": "dateModified", "reversed": reversed.toString()});
+    final response = await client
+        .get(url("files/all"), headers: {"reversed": reversed.toString()});
     final files = jsonDecode(utf8.decode(response.bodyBytes)) as List;
     return files.map((j) => SavedFile.fromJson(j)).toList();
   }
@@ -59,9 +59,9 @@ class FileAPI {
   static Future<SavedFile?> getInfo(String name) async {
     try {
       final response =
-          await client.get(url("file/${Uri.encodeComponent(name)}/info"));
+      await client.get(url("file/${Uri.encodeComponent(name)}/info"));
       final map =
-          jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+      jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
       return SavedFile.fromJson(map);
     } on RequestException catch (ex) {
       if (ex.statusCode == 404) {
