@@ -15,9 +15,8 @@ part 'browse.g.dart';
 Future<Tag> browseList(BrowseListRef ref, String tagName) =>
     TagAPI.get(tagName);
 
-void openTag(BuildContext context, Tag parent, ChildTag child) {
-  final parentName = parent.fullName();
-  final name = parentName == "" ? child.name : "$parentName/${child.name}";
+void openTag(BuildContext context, ChildTag child) {
+  final name = child.fullName();
   Navigator.of(context).push(MaterialPageRoute(
       builder: (context) =>
           BackScaffold(name: name, child: BrowseScreen(tagName: name))));

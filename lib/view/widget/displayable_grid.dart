@@ -1,20 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
 import 'package:tagit_frontend/model/object/tag_counts.dart';
 import 'package:tagit_frontend/view_model/browse.dart';
 
 import '../../model/object/child_tag.dart';
 import '../../model/object/displayable.dart';
-import '../../model/object/tag.dart';
 
 class GridSquare extends StatelessWidget {
   static const double _borderWidth = 1;
 
-  final Tag parentTag;
   final Displayable displayable;
 
-  const GridSquare(
-      {required this.parentTag, required this.displayable, super.key});
+  const GridSquare({required this.displayable, super.key});
 
   Widget borderedGridTile({required Widget child}) {
     return Container(
@@ -45,7 +43,7 @@ class GridSquare extends StatelessWidget {
 
   Widget tagInner(BuildContext context, ChildTag tag) {
     return InkWell(
-        onTap: () => openTag(context, parentTag, tag),
+        onTap: () => openTag(context, tag),
         child: GridTile(
           header: Center(child: tagCounts(tag.counts)),
           footer: Center(child: Text(tag.name)),
@@ -82,20 +80,28 @@ class GridSquare extends StatelessWidget {
 }
 
 class DisplayableGrid extends StatelessWidget {
-  final Tag parentTag;
-  final List<Displayable> displayables;
+  final AsyncValue<List<Displayable>> displayables;
 
-  const DisplayableGrid(
-      {required this.parentTag, required this.displayables, super.key});
+  const DisplayableGrid({required this.displayables, super.key});
 
-  @override
-  Widget build(BuildContext context) {
+  Widget gridView(List<Displayable> displayables) {
+    if (displayables.isEmpty) {
+      return const Center(child: Text("Nothing here."));
+    }
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
           maxCrossAxisExtent: 200),
-      itemBuilder: (context, i) =>
-          GridSquare(parentTag: parentTag, displayable: displayables[i]),
+      itemBuilder: (context, i) => GridSquare(displayable: displayables[i]),
       itemCount: displayables.length,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return displayables.when(
+      data: (data) => gridView(data),
+      error: (err, stack) => Text("Error: $err"),
+      loading: () => const Center(child: CircularProgressIndicator()),
     );
   }
 }

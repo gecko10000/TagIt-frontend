@@ -10,12 +10,9 @@ class BrowseScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Align(
-        alignment: Alignment.topCenter,
-        child: ref.watch(browseListProvider(tagName)).when(
-            data: (tag) => DisplayableGrid(
-                parentTag: tag, displayables: [...tag.files, ...tag.children]),
-            error: (ex, st) => Text("Error: $ex"),
-            loading: () => const CircularProgressIndicator()));
+    final displayables = ref
+        .watch(browseListProvider(tagName))
+        .whenData((tag) => [...tag.files, ...tag.children]);
+    return DisplayableGrid(displayables: displayables);
   }
 }
