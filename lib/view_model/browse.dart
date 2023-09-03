@@ -6,20 +6,21 @@ import 'package:tagit_frontend/view/screen/browse.dart';
 import 'package:tagit_frontend/view/screen/content_view.dart';
 import 'package:tagit_frontend/view/widget/back_scaffold.dart';
 
-import '../model/object/displayable.dart';
+import '../model/object/child_tag.dart';
 import '../model/object/tag.dart';
 
 part 'browse.g.dart';
 
 @riverpod
-Future<List<Displayable>> browseList(BrowseListRef ref, String? tag) =>
-    TagAPI.getChildren(tag);
+Future<Tag> browseList(BrowseListRef ref, String tagName) =>
+    TagAPI.get(tagName);
 
-void openTag(BuildContext context, Tag tag) {
-  final String fullName = tag.fullName();
+void openTag(BuildContext context, Tag parent, ChildTag child) {
+  final parentName = parent.fullName();
+  final name = parentName == "" ? child.name : "$parentName/${child.name}";
   Navigator.of(context).push(MaterialPageRoute(
       builder: (context) =>
-          BackScaffold(name: fullName, child: BrowseScreen(tag: fullName))));
+          BackScaffold(name: name, child: BrowseScreen(tagName: name))));
 }
 
 void openFile(BuildContext context, SavedFile savedFile) {

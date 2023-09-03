@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tagit_frontend/model/api/files.dart';
-import 'package:tagit_frontend/model/file_type.dart';
+import 'package:tagit_frontend/model/enum/media_type.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
 import 'package:tagit_frontend/view/widget/content_viewer/video_viewer.dart';
 
@@ -27,9 +27,9 @@ class ContentViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget viewer = switch (ContentType.getType(savedFile)) {
-      ContentType.image => imageViewer,
-      ContentType.video => videoViewer,
+    Widget viewer = switch (savedFile.mediaType) {
+      MediaType.IMAGE => imageViewer,
+      MediaType.VIDEO => videoViewer,
       _ => otherViewer,
     }(savedFile);
     return Center(child: viewer);

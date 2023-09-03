@@ -26,7 +26,7 @@ class HomeNavBar extends ConsumerWidget {
         ref.read(homeIndexProvider.notifier).set(i);
         // refresh list
         if (i == _browseIndex) {
-          ref.invalidate(browseListProvider(null));
+          ref.invalidate(browseListProvider(""));
         }
       },
     );

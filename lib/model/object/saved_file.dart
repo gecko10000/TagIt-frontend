@@ -2,11 +2,13 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:tagit_frontend/model/enum/media_type.dart';
 import 'package:tagit_frontend/model/object/size.dart';
 
+import 'displayable.dart';
+
 part 'saved_file.freezed.dart';
 part 'saved_file.g.dart';
 
 @freezed
-class SavedFile with _$SavedFile {
+class SavedFile with _$SavedFile implements Displayable {
   const factory SavedFile({
     required String name,
     required MediaType mediaType,

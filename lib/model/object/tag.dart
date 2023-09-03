@@ -1,6 +1,11 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:tagit_frontend/model/object/child_tag.dart';
+import 'package:tagit_frontend/model/object/saved_file.dart';
+
+import 'displayable.dart';
 
 part 'tag.freezed.dart';
+
 part 'tag.g.dart';
 
 @freezed
@@ -10,9 +15,9 @@ class Tag with _$Tag {
 
   const factory Tag({
     required String name,
-    required String? parent,
-    @Default({}) Set<String> children,
-    @Default({}) Set<String> files,
+    String? parent,
+    @Default({}) Set<ChildTag> children,
+    @Default({}) Set<SavedFile> files,
     required int totalFileCount,
   }) = _Tag;
 
@@ -20,5 +25,9 @@ class Tag with _$Tag {
 
   String fullName() {
     return parent == null ? name : "$parent/$name";
+  }
+
+  List<Displayable> getDisplayables() {
+    return [...children, ...files];
   }
 }

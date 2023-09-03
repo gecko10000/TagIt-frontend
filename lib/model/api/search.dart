@@ -19,7 +19,6 @@ class SearchAPI {
     return (json as List).map((j) => SavedFile.fromJson(j)).toList();
   }
 
-  // TODO: convert to fully-fledged search like above
   static Future<List<Tag>> tagSearch(String substring) async {
     Response response =
         await client.get(url("search/tags", queryParameters: {"q": substring}));

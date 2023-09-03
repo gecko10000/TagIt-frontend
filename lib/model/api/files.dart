@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:media_kit/media_kit.dart';
-import 'package:tagit_frontend/model/file_type.dart';
+import 'package:tagit_frontend/model/enum/media_type.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
 
 import 'base.dart';
@@ -59,9 +59,9 @@ class FileAPI {
   static Future<SavedFile?> getInfo(String name) async {
     try {
       final response =
-      await client.get(url("file/${Uri.encodeComponent(name)}/info"));
+          await client.get(url("file/${Uri.encodeComponent(name)}/info"));
       final map =
-      jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+          jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
       return SavedFile.fromJson(map);
     } on RequestException catch (ex) {
       if (ex.statusCode == 404) {
@@ -72,26 +72,32 @@ class FileAPI {
   }
 
   static Image getImage(SavedFile savedFile) {
-    assert(ContentType.getType(savedFile) == ContentType.image);
+    assert(savedFile.mediaType == MediaType.IMAGE);
     return Image.network(
-      url("file/${Uri.encodeComponent(savedFile.info.name)}").toString(),
+      url("file/${Uri.encodeComponent(savedFile.name)}").toString(),
       headers: defaultHeaders(),
     );
   }
 
-  static Media getVideo(SavedFile savedFile) {
-    assert(ContentType.getType(savedFile) == ContentType.video);
-    return Media(
-        url("file/${Uri.encodeComponent(savedFile.info.name)}").toString(),
+  static Media _getMedia(SavedFile savedFile) {
+    return Media(url("file/${Uri.encodeComponent(savedFile.name)}").toString(),
         httpHeaders: defaultHeaders());
+  }
+
+  static Media getVideo(SavedFile savedFile) {
+    assert(savedFile.mediaType == MediaType.VIDEO);
+    return _getMedia(savedFile);
+  }
+
+  static Media getAudio(SavedFile savedFile) {
+    assert(savedFile.mediaType == MediaType.AUDIO);
+    return _getMedia(savedFile);
   }
 
   static Future<void> _modifyTag(String file, String tag, bool add) async {
     await client.patch(
         url("file/${Uri.encodeComponent(file)}/${add ? "add" : "remove"}"),
-        body: {
-          "tags": jsonEncode([tag])
-        });
+        body: {"tag": tag});
   }
 
   static Future<void> addTag(String file, String tag) async {

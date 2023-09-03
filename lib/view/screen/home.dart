@@ -9,7 +9,7 @@ import '../../view_model/home.dart';
 import '../widget/home_nav_bar.dart';
 
 List<Widget> pages = [
-  const BrowseScreen(),
+  const BrowseScreen(tagName: ""),
   SearchScreen(),
   UploadScreen(),
   SettingsScreen(),
