@@ -3,6 +3,9 @@ import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:tagit_frontend/model/api/files.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
+import 'package:tagit_frontend/modules/content_view/viewers/video_viewer_model.dart';
+
+import '../../../model/object/dimensions.dart';
 
 class VideoViewer extends StatefulWidget {
   final SavedFile savedFile;
@@ -33,14 +36,18 @@ class _VideoViewerState extends State<VideoViewer> {
   @override
   Widget build(BuildContext context) {
     final dimensions = widget.savedFile.dimensions;
-    // TODO: calculate width and height manually because aspectRatio doesn't limit the widget size
-    final aspectRatio =
-        dimensions == null ? null : dimensions.width / dimensions.height;
-    print("le aspect ratio: $aspectRatio");
-    return Video(
-      // aspectRatio: aspectRatio,
-      controller: controller,
-      controls: MaterialVideoControls,
-    );
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+      final idealDimensions = calculateIdealDimensions(
+          dimensions,
+          Dimensions(
+              width: constraints.maxWidth, height: constraints.maxHeight));
+      return Video(
+        width: idealDimensions.width,
+        height: idealDimensions.height,
+        controller: controller,
+        controls: MaterialDesktopVideoControls,
+      );
+    });
   }
 }

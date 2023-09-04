@@ -6,8 +6,8 @@ part 'dimensions.g.dart';
 @freezed
 class Dimensions with _$Dimensions {
   const factory Dimensions({
-    required int width,
-    required int height,
+    required double width,
+    required double height,
   }) = _Dimensions;
 
   factory Dimensions.fromJson(Map<String, Object?> json) =>

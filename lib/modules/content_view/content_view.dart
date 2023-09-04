@@ -27,11 +27,14 @@ class ContentViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget viewer = switch (savedFile.mediaType) {
-      MediaType.IMAGE => imageViewer,
-      MediaType.VIDEO => videoViewer,
-      _ => otherViewer,
-    }(savedFile);
-    return Center(child: viewer);
+    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Text(savedFile.name),
+      Flexible(
+          child: switch (savedFile.mediaType) {
+        MediaType.IMAGE => imageViewer,
+        MediaType.VIDEO => videoViewer,
+        _ => otherViewer,
+      }(savedFile))
+    ]);
   }
 }
