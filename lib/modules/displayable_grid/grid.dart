@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
-import 'package:tagit_frontend/model/object/tag_counts.dart';
-import 'package:tagit_frontend/view_model/browse.dart';
+import 'package:tagit_frontend/modules/displayable_grid/file_display.dart';
+import 'package:tagit_frontend/modules/displayable_grid/tag_display.dart';
 
 import '../../model/object/child_tag.dart';
 import '../../model/object/displayable.dart';
@@ -25,54 +25,13 @@ class GridSquare extends StatelessWidget {
         ));
   }
 
-  Widget tagCounts(TagCounts counts) {
-    final fileString = counts.files == counts.totalFiles
-        ? counts.files
-        : "${counts.files} (${counts.totalFiles})";
-    final tagString = counts.tags == counts.totalTags
-        ? counts.tags
-        : "${counts.tags} (${counts.totalTags})";
-    return Tooltip(
-      message: "${counts.files} direct files\n"
-          "${counts.totalFiles} total files\n"
-          "${counts.tags} direct subtags\n"
-          "${counts.totalTags} total subtags",
-      child: Text("$fileString / $tagString"),
-    );
-  }
-
-  Widget tagInner(BuildContext context, ChildTag tag) {
-    return InkWell(
-        onTap: () => openTag(context, tag),
-        child: GridTile(
-          header: Center(child: tagCounts(tag.counts)),
-          footer: Center(child: Text(tag.name)),
-          child: const Icon(
-            Icons.sell,
-            size: 100,
-          ),
-        ));
-  }
-
-  Widget fileInner(BuildContext context, SavedFile savedFile) {
-    return InkWell(
-        onTap: () => openFile(context, savedFile),
-        child: GridTile(
-          footer: Center(child: Text(savedFile.name)),
-          child: const Icon(
-            Icons.file_copy,
-            size: 100,
-          ),
-        ));
-  }
-
   @override
   Widget build(BuildContext context) {
     Widget tileInner = displayable is ChildTag
-        ? tagInner(context, displayable as ChildTag)
+        ? TagDisplay(displayable as ChildTag)
         : displayable is SavedFile
-            ? fileInner(context, displayable as SavedFile)
-            : throw Exception();
+        ? FileDisplay(displayable as SavedFile)
+        : throw Exception();
     return borderedGridTile(
       child: tileInner,
     );

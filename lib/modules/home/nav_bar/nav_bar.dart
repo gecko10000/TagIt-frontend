@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tagit_frontend/view_model/browse.dart';
+import 'package:tagit_frontend/modules/home/nav_bar/nav_bar_model.dart';
 
-import '../../view_model/home.dart';
+import '../home_model.dart';
 
 class HomeNavBar extends ConsumerWidget {
   const HomeNavBar({super.key});
-
-  static const _browseIndex = 0;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -23,11 +21,7 @@ class HomeNavBar extends ConsumerWidget {
       selectedItemColor: Colors.white,
       type: BottomNavigationBarType.fixed,
       onTap: (i) {
-        ref.read(homeIndexProvider.notifier).set(i);
-        // refresh list
-        if (i == _browseIndex) {
-          ref.invalidate(browseListProvider(""));
-        }
+        changeHomeIndex(ref, i);
       },
     );
   }

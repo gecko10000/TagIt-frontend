@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tagit_frontend/view/widget/displayable_grid.dart';
-import 'package:tagit_frontend/view_model/search_results.dart';
+import 'package:tagit_frontend/modules/search/search_model.dart';
+
+import '../displayable_grid/grid.dart';
 
 class SearchScreen extends ConsumerWidget {
   const SearchScreen({super.key});
