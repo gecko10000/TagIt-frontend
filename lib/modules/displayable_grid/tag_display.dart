@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -33,10 +35,13 @@ class TagDisplay extends ConsumerWidget {
         child: GridTile(
           header: Center(child: tagCounts(tag.counts)),
           footer: Center(child: Text(tag.name)),
-          child: const Icon(
-            Icons.sell,
-            size: 100,
-          ),
+          child: LayoutBuilder(
+              builder: (BuildContext context, BoxConstraints constraints) {
+            return Icon(
+              Icons.sell,
+              size: min(constraints.maxWidth, constraints.maxHeight),
+            );
+          }),
         ));
   }
 }
