@@ -32,7 +32,13 @@ class _VideoViewerState extends State<VideoViewer> {
 
   @override
   Widget build(BuildContext context) {
+    final dimensions = widget.savedFile.dimensions;
+    // TODO: calculate width and height manually because aspectRatio doesn't limit the widget size
+    final aspectRatio =
+        dimensions == null ? null : dimensions.width / dimensions.height;
+    print("le aspect ratio: $aspectRatio");
     return Video(
+      // aspectRatio: aspectRatio,
       controller: controller,
       controls: MaterialVideoControls,
     );
