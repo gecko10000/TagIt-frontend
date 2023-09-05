@@ -74,14 +74,16 @@ class FileAPI {
   static Image getImage(SavedFile savedFile) {
     assert(savedFile.mediaType == MediaType.IMAGE);
     return Image.network(
-      url("file/${Uri.encodeComponent(savedFile.name)}").toString(),
-      headers: defaultHeaders(),
+      url("file/${Uri.encodeComponent(savedFile.name)}",
+              queryParameters: fileGetParams())
+          .toString(),
     );
   }
 
   static Media _getMedia(SavedFile savedFile) {
-    return Media(url("file/${Uri.encodeComponent(savedFile.name)}").toString(),
-        httpHeaders: defaultHeaders());
+    return Media(url("file/${Uri.encodeComponent(savedFile.name)}",
+            queryParameters: fileGetParams())
+        .toString());
   }
 
   static Media getVideo(SavedFile savedFile) {

@@ -30,8 +30,8 @@ class GridSquare extends StatelessWidget {
     Widget tileInner = displayable is ChildTag
         ? TagDisplay(displayable as ChildTag)
         : displayable is SavedFile
-        ? FileDisplay(displayable as SavedFile)
-        : throw Exception();
+            ? FileDisplay(displayable as SavedFile)
+            : throw Exception();
     return borderedGridTile(
       child: tileInner,
     );
@@ -59,7 +59,7 @@ class DisplayableGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return displayables.when(
       data: (data) => gridView(data),
-      error: (err, stack) => Text("Error: $err"),
+      error: (err, stack) => Text("Error: $err\n$stack"),
       loading: () => const Center(child: CircularProgressIndicator()),
     );
   }

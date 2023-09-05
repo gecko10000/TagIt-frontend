@@ -4,6 +4,11 @@ import 'package:http/http.dart';
 final Client client = _APIClient(Client());
 Box accountBox = Hive.box("account");
 
+Map<String, String> fileGetParams() {
+  final token = accountBox.get("token");
+  return token == null ? {} : {"token": token};
+}
+
 Map<String, String> defaultHeaders() {
   final headers = <String, String>{};
   final token = accountBox.get("token");
