@@ -19,9 +19,19 @@ class FileDisplay extends ConsumerWidget {
             return Icon(
               Icons.file_copy,
               size: min(constraints.maxWidth, constraints.maxHeight),
-              color: Colors.grey,
+              color: Colors.white30,
             );
           });
+  }
+
+  Widget? tileFooter() {
+    if (savedFile.thumbnail) return null;
+    return GridTileBar(
+        leading: Text(
+      savedFile.name,
+      textAlign: TextAlign.center,
+      style: TextStyle(color: Colors.white),
+    ));
   }
 
   @override
@@ -29,13 +39,7 @@ class FileDisplay extends ConsumerWidget {
     return InkWell(
         onTap: () => openFile(context, savedFile),
         child: GridTile(
-          footer: Center(
-              child: Text(
-            savedFile.name,
-            textAlign: TextAlign.center,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(backgroundColor: Colors.black.withOpacity(0.9)),
-          )),
+          footer: tileFooter(),
           child: displayIcon(),
         ));
   }

@@ -37,7 +37,13 @@ class ContentViewer extends StatelessWidget {
         MediaType.IMAGE => imageViewer,
         MediaType.VIDEO => videoViewer,
         _ => otherViewer,
-      }(savedFile))
+      }(savedFile)),
+      TextButton(
+          onPressed: () {},
+          child: Row(mainAxisSize: MainAxisSize.min, children: [
+            Text(savedFile.tags.length.toString()),
+            Icon(Icons.sell)
+          ]))
     ]);
   }
 }

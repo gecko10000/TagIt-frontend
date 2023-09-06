@@ -33,14 +33,26 @@ class TagDisplay extends ConsumerWidget {
     return InkWell(
         onTap: () => openTag(context, tag),
         child: GridTile(
-          header: Center(child: tagCounts(tag.counts)),
-          footer: Center(child: Text(tag.name)),
+          header: GridTileBar(
+              title: Align(
+                  alignment: Alignment.centerRight,
+                  child: tagCounts(tag.counts))),
+          footer: GridTileBar(
+              title: Align(
+                  // the alignment ensures the tooltip is only shown when hovering directly over the text
+                  alignment: Alignment.centerLeft,
+                  child: Tooltip(
+                      message: tag.name,
+                      child: Text(
+                        tag.name,
+                        overflow: TextOverflow.fade,
+                      )))),
           child: LayoutBuilder(
               builder: (BuildContext context, BoxConstraints constraints) {
             return Icon(
               Icons.sell,
               size: min(constraints.maxWidth, constraints.maxHeight),
-              color: Colors.grey,
+              color: Colors.white30,
             );
           }),
         ));
