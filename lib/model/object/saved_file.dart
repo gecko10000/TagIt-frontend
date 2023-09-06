@@ -5,6 +5,7 @@ import 'package:tagit_frontend/model/object/dimensions.dart';
 import 'displayable.dart';
 
 part 'saved_file.freezed.dart';
+
 part 'saved_file.g.dart';
 
 @freezed
@@ -14,7 +15,7 @@ class SavedFile with _$SavedFile implements Displayable {
     required MediaType mediaType,
     required int modificationDate,
     required int fileSize,
-    required String? thumbnail,
+    required bool thumbnail,
     required Dimensions? dimensions,
     required Set<String> tags,
   }) = _SavedFile;

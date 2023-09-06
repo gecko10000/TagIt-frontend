@@ -71,6 +71,14 @@ class FileAPI {
     }
   }
 
+  static Image getThumbnail(SavedFile savedFile) {
+    assert(savedFile.thumbnail);
+    return Image.network(
+      url("file/${Uri.encodeComponent(savedFile.name)}/thumb").toString(),
+      headers: defaultHeaders(),
+    );
+  }
+
   static Image getImage(SavedFile savedFile) {
     assert(savedFile.mediaType == MediaType.IMAGE);
     return Image.network(
