@@ -16,8 +16,11 @@ class FileDisplay extends ConsumerWidget {
     return savedFile.thumbnail
         ? FileAPI.getThumbnail(savedFile)
         : LayoutBuilder(builder: (context, constraints) {
-            return Icon(Icons.file_copy,
-                size: min(constraints.maxWidth, constraints.maxHeight));
+            return Icon(
+              Icons.file_copy,
+              size: min(constraints.maxWidth, constraints.maxHeight),
+              color: Colors.grey,
+            );
           });
   }
 
@@ -26,7 +29,13 @@ class FileDisplay extends ConsumerWidget {
     return InkWell(
         onTap: () => openFile(context, savedFile),
         child: GridTile(
-          footer: Center(child: Text(savedFile.name)),
+          footer: Center(
+              child: Text(
+            savedFile.name,
+            textAlign: TextAlign.center,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(backgroundColor: Colors.black.withOpacity(0.9)),
+          )),
           child: displayIcon(),
         ));
   }

@@ -40,6 +40,7 @@ class TagDisplay extends ConsumerWidget {
             return Icon(
               Icons.sell,
               size: min(constraints.maxWidth, constraints.maxHeight),
+              color: Colors.grey,
             );
           }),
         ));
