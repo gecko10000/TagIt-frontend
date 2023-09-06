@@ -81,10 +81,13 @@ class FileAPI {
 
   static Image getImage(SavedFile savedFile) {
     assert(savedFile.mediaType == MediaType.IMAGE);
+    final dimensions = savedFile.dimensions;
     return Image.network(
       url("file/${Uri.encodeComponent(savedFile.name)}",
               queryParameters: fileGetParams())
           .toString(),
+      width: dimensions?.width,
+      height: dimensions?.height,
     );
   }
 

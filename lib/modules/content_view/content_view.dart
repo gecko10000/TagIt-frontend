@@ -10,7 +10,10 @@ class ContentViewer extends StatelessWidget {
   const ContentViewer({required this.savedFile, super.key});
 
   Widget imageViewer(SavedFile savedFile) {
-    return FileAPI.getImage(savedFile);
+    return FittedBox(
+      fit: BoxFit.contain,
+      child: FileAPI.getImage(savedFile),
+    );
   }
 
   Widget videoViewer(SavedFile savedFile) {
