@@ -2,9 +2,12 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tagit_frontend/common/widgets/bordered_text.dart';
+import 'package:tagit_frontend/common/widgets/tile_bar_corners.dart';
 import 'package:tagit_frontend/model/api/files.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
 
+import '../../model/enum/media_type.dart';
 import '../browser/browser_model.dart';
 
 class FileDisplay extends ConsumerWidget {
@@ -25,13 +28,13 @@ class FileDisplay extends ConsumerWidget {
   }
 
   Widget? tileFooter() {
-    if (savedFile.thumbnail) return null;
-    return GridTileBar(
-        leading: Text(
-      savedFile.name,
-      textAlign: TextAlign.center,
-      style: TextStyle(color: Colors.white),
-    ));
+    bool isVideo = savedFile.mediaType == MediaType.VIDEO;
+    final leading = BorderedText(savedFile.name, overflow: TextOverflow.fade);
+    final trailing = isVideo ? const Icon(Icons.play_arrow_rounded) : null;
+    return GridTileBarCorners(
+      leading: leading,
+      trailing: trailing,
+    );
   }
 
   @override

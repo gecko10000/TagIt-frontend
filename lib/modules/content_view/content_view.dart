@@ -4,6 +4,8 @@ import 'package:tagit_frontend/model/enum/media_type.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
 import 'package:tagit_frontend/modules/content_view/viewers/video_viewer.dart';
 
+import '../../common/widgets/bordered_text.dart';
+
 class ContentViewer extends StatelessWidget {
   final SavedFile savedFile;
 
@@ -31,7 +33,9 @@ class ContentViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Text(savedFile.name),
+      BorderedText(
+        savedFile.name,
+      ),
       Flexible(
           child: switch (savedFile.mediaType) {
         MediaType.IMAGE => imageViewer,
