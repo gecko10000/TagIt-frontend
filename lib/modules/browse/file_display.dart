@@ -8,7 +8,7 @@ import 'package:tagit_frontend/model/api/files.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
 
 import '../../model/enum/media_type.dart';
-import '../browser/browser_model.dart';
+import 'screen/browser_model.dart';
 
 class FileDisplay extends ConsumerWidget {
   final SavedFile savedFile;

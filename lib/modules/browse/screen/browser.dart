@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tagit_frontend/modules/displayable_grid/grid.dart';
+import 'package:tagit_frontend/modules/browse/grid.dart';
 
 import 'browser_model.dart';
 

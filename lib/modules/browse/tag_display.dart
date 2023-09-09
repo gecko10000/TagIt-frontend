@@ -7,7 +7,7 @@ import '../../common/widgets/bordered_text.dart';
 import '../../common/widgets/tile_bar_corners.dart';
 import '../../model/object/child_tag.dart';
 import '../../model/object/tag_counts.dart';
-import '../browser/browser_model.dart';
+import 'screen/browser_model.dart';
 
 class TagDisplay extends ConsumerWidget {
   final ChildTag tag;

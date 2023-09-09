@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
-import 'package:tagit_frontend/modules/displayable_grid/file_display.dart';
-import 'package:tagit_frontend/modules/displayable_grid/tag_display.dart';
+import 'package:tagit_frontend/modules/browse/tag_display.dart';
 
 import '../../model/object/child_tag.dart';
 import '../../model/object/displayable.dart';
+import 'file_display.dart';
 
 class GridSquare extends StatelessWidget {
   static const double _borderWidth = 1;

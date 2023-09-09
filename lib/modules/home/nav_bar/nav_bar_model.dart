@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../browser/browser_model.dart';
+import '../../browse/screen/browser_model.dart';
 import '../home_model.dart';
 
 const _browseIndex = 0;
