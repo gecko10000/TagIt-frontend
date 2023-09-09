@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tagit_frontend/model/api/files.dart';
 import 'package:tagit_frontend/model/enum/media_type.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
+import 'package:tagit_frontend/modules/content_view/content_view_model.dart';
 import 'package:tagit_frontend/modules/content_view/viewers/video_viewer.dart';
 
 import '../../common/widgets/bordered_text.dart';
@@ -44,8 +45,8 @@ class ContentViewer extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
             )),
             TextButton.icon(
-                onPressed: () {},
-                icon: Icon(Icons.sell),
+                onPressed: () => openSavedFileTags(context, savedFile),
+                icon: const Icon(Icons.sell),
                 label: Text(numTags.toString()))
           ]),
       Flexible(

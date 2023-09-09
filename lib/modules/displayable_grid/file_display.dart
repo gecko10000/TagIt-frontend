@@ -41,7 +41,7 @@ class FileDisplay extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final numTags = savedFile.tags.length;
     return InkWell(
-        onTap: () => openFile(context, savedFile),
+        onTap: () => openContentView(context, savedFile),
         child: GridTile(
           header: GridTileBarCorners(
               trailing: Tooltip(

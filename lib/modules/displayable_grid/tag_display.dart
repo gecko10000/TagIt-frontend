@@ -34,7 +34,7 @@ class TagDisplay extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
-        onTap: () => openTag(context, tag),
+        onTap: () => openTagBrowser(context, tag),
         child: GridTile(
           header: GridTileBarCorners(trailing: tagCounts(tag.counts)),
           footer: GridTileBarCorners(
