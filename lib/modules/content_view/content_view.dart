@@ -32,22 +32,28 @@ class ContentViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final numTags = savedFile.tags.length;
     return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      BorderedText(
-        savedFile.name,
-      ),
+      Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Flexible(
+                child: BorderedText(
+              savedFile.name,
+              overflow: TextOverflow.ellipsis,
+            )),
+            TextButton.icon(
+                onPressed: () {},
+                icon: Icon(Icons.sell),
+                label: Text(numTags.toString()))
+          ]),
       Flexible(
           child: switch (savedFile.mediaType) {
         MediaType.IMAGE => imageViewer,
         MediaType.VIDEO => videoViewer,
         _ => otherViewer,
       }(savedFile)),
-      TextButton(
-          onPressed: () {},
-          child: Row(mainAxisSize: MainAxisSize.min, children: [
-            Text(savedFile.tags.length.toString()),
-            Icon(Icons.sell)
-          ]))
     ]);
   }
 }
