@@ -8,7 +8,7 @@ import 'package:tagit_frontend/modules/content_view/viewers/video_viewer_model.d
 import '../../../model/object/dimensions.dart';
 
 class VideoViewer extends StatefulWidget {
-  final SavedFile savedFile;
+  final SavedFileState savedFile;
 
   const VideoViewer({super.key, required this.savedFile});
 

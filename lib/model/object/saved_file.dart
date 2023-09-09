@@ -5,21 +5,20 @@ import 'package:tagit_frontend/model/object/dimensions.dart';
 import 'displayable.dart';
 
 part 'saved_file.freezed.dart';
-
 part 'saved_file.g.dart';
 
 @freezed
-class SavedFile with _$SavedFile implements Displayable {
-  const factory SavedFile({
+class SavedFileState with _$SavedFileState implements Displayable {
+  const factory SavedFileState({
     required String name,
     required MediaType mediaType,
     required int modificationDate,
     required int fileSize,
     required bool thumbnail,
     required Dimensions? dimensions,
-    required Set<String> tags,
-  }) = _SavedFile;
+    required List<String> tags,
+  }) = _SavedFileState;
 
-  factory SavedFile.fromJson(Map<String, Object?> json) =>
-      _$SavedFileFromJson(json);
+  factory SavedFileState.fromJson(Map<String, Object?> json) =>
+      _$SavedFileStateFromJson(json);
 }

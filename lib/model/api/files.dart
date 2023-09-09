@@ -11,11 +11,12 @@ class FileAPI {
   // no constructor
   FileAPI._();
 
-  static Future<List<SavedFile>> getAllFiles({bool reversed = false}) async {
+  static Future<List<SavedFileState>> getAllFiles(
+      {bool reversed = false}) async {
     final response = await client
         .get(url("files/all"), headers: {"reversed": reversed.toString()});
     final files = jsonDecode(utf8.decode(response.bodyBytes)) as List;
-    return files.map((j) => SavedFile.fromJson(j)).toList();
+    return files.map((j) => SavedFileState.fromJson(j)).toList();
   }
 
   /*static StreamSubscription uploadFile(PlatformFile file,
@@ -56,22 +57,15 @@ class FileAPI {
         body: {"name": newName});
   }
 
-  static Future<SavedFile?> getInfo(String name) async {
-    try {
-      final response =
-          await client.get(url("file/${Uri.encodeComponent(name)}/info"));
-      final map =
-          jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-      return SavedFile.fromJson(map);
-    } on RequestException catch (ex) {
-      if (ex.statusCode == 404) {
-        return null;
-      }
-      rethrow;
-    }
+  static Future<SavedFileState> getInfo(String name) async {
+    final response =
+        await client.get(url("file/${Uri.encodeComponent(name)}/info"));
+    final map =
+        jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
+    return SavedFileState.fromJson(map);
   }
 
-  static Image getThumbnail(SavedFile savedFile) {
+  static Image getThumbnail(SavedFileState savedFile) {
     assert(savedFile.thumbnail);
     return Image.network(
       url("file/${Uri.encodeComponent(savedFile.name)}/thumb").toString(),
@@ -79,7 +73,7 @@ class FileAPI {
     );
   }
 
-  static Image getImage(SavedFile savedFile) {
+  static Image getImage(SavedFileState savedFile) {
     assert(savedFile.mediaType == MediaType.IMAGE);
     final dimensions = savedFile.dimensions;
     return Image.network(
@@ -91,18 +85,18 @@ class FileAPI {
     );
   }
 
-  static Media _getMedia(SavedFile savedFile) {
+  static Media _getMedia(SavedFileState savedFile) {
     return Media(url("file/${Uri.encodeComponent(savedFile.name)}",
             queryParameters: fileGetParams())
         .toString());
   }
 
-  static Media getVideo(SavedFile savedFile) {
+  static Media getVideo(SavedFileState savedFile) {
     assert(savedFile.mediaType == MediaType.VIDEO);
     return _getMedia(savedFile);
   }
 
-  static Media getAudio(SavedFile savedFile) {
+  static Media getAudio(SavedFileState savedFile) {
     assert(savedFile.mediaType == MediaType.AUDIO);
     return _getMedia(savedFile);
   }

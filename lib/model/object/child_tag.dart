@@ -7,17 +7,17 @@ part 'child_tag.freezed.dart';
 part 'child_tag.g.dart';
 
 @freezed
-class ChildTag with _$ChildTag implements Displayable {
-  const ChildTag._();
+class ChildTagState with _$ChildTagState implements Displayable {
+  const ChildTagState._();
 
-  factory ChildTag({
+  factory ChildTagState({
     required String name,
     String? parent,
     required TagCounts counts,
-  }) = _ChildTag;
+  }) = _ChildTagState;
 
-  factory ChildTag.fromJson(Map<String, Object?> json) =>
-      _$ChildTagFromJson(json);
+  factory ChildTagState.fromJson(Map<String, Object?> json) =>
+      _$ChildTagStateFromJson(json);
 
   String fullName() {
     return parent == null ? name : "$parent/$name";

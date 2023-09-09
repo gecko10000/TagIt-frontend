@@ -27,10 +27,10 @@ class GridSquare extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Widget tileInner = displayable is ChildTag
-        ? TagDisplay(displayable as ChildTag)
-        : displayable is SavedFile
-            ? FileDisplay(displayable as SavedFile)
+    Widget tileInner = displayable is ChildTagState
+        ? TagDisplay(displayable as ChildTagState)
+        : displayable is SavedFileState
+            ? FileDisplay(displayable as SavedFileState)
             : throw Exception();
     return borderedGridTile(
       child: tileInner,

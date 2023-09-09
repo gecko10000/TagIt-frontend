@@ -5,23 +5,23 @@ import 'package:tagit_frontend/model/object/saved_file.dart';
 import 'displayable.dart';
 
 part 'tag.freezed.dart';
-
 part 'tag.g.dart';
 
 @freezed
-class Tag with _$Tag {
+class TagState with _$TagState {
   // required for custom methods
-  const Tag._();
+  const TagState._();
 
-  const factory Tag({
+  const factory TagState({
     required String name,
     String? parent,
-    @Default({}) Set<ChildTag> children,
-    @Default({}) Set<SavedFile> files,
+    @Default([]) List<ChildTagState> children,
+    @Default([]) List<SavedFileState> files,
     required int totalFileCount,
-  }) = _Tag;
+  }) = _TagState;
 
-  factory Tag.fromJson(Map<String, Object?> json) => _$TagFromJson(json);
+  factory TagState.fromJson(Map<String, Object?> json) =>
+      _$TagStateFromJson(json);
 
   String fullName() {
     return parent == null ? name : "$parent/$name";

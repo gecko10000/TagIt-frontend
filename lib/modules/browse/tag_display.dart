@@ -10,7 +10,7 @@ import '../../model/object/tag_counts.dart';
 import 'screen/browser_model.dart';
 
 class TagDisplay extends ConsumerWidget {
-  final ChildTag tag;
+  final ChildTagState tag;
 
   const TagDisplay(this.tag, {super.key});
 
@@ -34,7 +34,7 @@ class TagDisplay extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
-        onTap: () => openTagBrowser(context, tag),
+        onTap: () => openTagBrowser(context, tag.fullName()),
         child: GridTile(
           header: GridTileBarCorners(trailing: tagCounts(tag.counts)),
           footer: GridTileBarCorners(

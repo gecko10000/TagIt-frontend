@@ -11,12 +11,12 @@ class TagAPI {
     await client.post(url("tag/${Uri.encodeComponent(name)}"));
   }
 
-  static Future<Tag> get(String name) async {
+  static Future<TagState> get(String name) async {
     final endpoint = name == "" ? "tag" : "tag/${Uri.encodeComponent(name)}";
     final response = await client.get(url(endpoint));
     final map =
         jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-    return Tag.fromJson(map);
+    return TagState.fromJson(map);
   }
 
   static Future<void> rename(String currentName, String newName) async {

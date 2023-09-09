@@ -8,22 +8,22 @@ import 'package:tagit_frontend/modules/content_view/viewers/video_viewer.dart';
 import '../../common/widgets/bordered_text.dart';
 
 class ContentViewer extends StatelessWidget {
-  final SavedFile savedFile;
+  final SavedFileState savedFile;
 
   const ContentViewer({required this.savedFile, super.key});
 
-  Widget imageViewer(SavedFile savedFile) {
+  Widget imageViewer(SavedFileState savedFile) {
     return FittedBox(
       fit: BoxFit.contain,
       child: FileAPI.getImage(savedFile),
     );
   }
 
-  Widget videoViewer(SavedFile savedFile) {
+  Widget videoViewer(SavedFileState savedFile) {
     return VideoViewer(savedFile: savedFile);
   }
 
-  Widget otherViewer(SavedFile savedFile) {
+  Widget otherViewer(SavedFileState savedFile) {
     return const SizedBox(
       height: 10,
       width: 10,

@@ -4,7 +4,7 @@ import 'package:tagit_frontend/model/object/saved_file.dart';
 
 final searchInputProvider = StateProvider((ref) => "");
 
-final searchResultsProvider = FutureProvider<List<SavedFile>>((ref) async {
+final searchResultsProvider = FutureProvider<List<SavedFileState>>((ref) async {
   String query = ref.watch(searchInputProvider);
   return SearchAPI.fileSearch(query);
 });

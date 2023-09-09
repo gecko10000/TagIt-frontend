@@ -11,7 +11,7 @@ import '../../model/enum/media_type.dart';
 import 'screen/browser_model.dart';
 
 class FileDisplay extends ConsumerWidget {
-  final SavedFile savedFile;
+  final SavedFileState savedFile;
 
   const FileDisplay(this.savedFile, {super.key});
 
