@@ -13,7 +13,7 @@ class GridTileBarCorners extends StatelessWidget {
     return GridTileBar(
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [Expanded(child: leading), trailing],
+        children: [Flexible(child: leading), trailing],
       ),
     );
   }

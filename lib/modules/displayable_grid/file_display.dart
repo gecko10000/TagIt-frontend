@@ -39,9 +39,13 @@ class FileDisplay extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final numTags = savedFile.tags.length;
     return InkWell(
         onTap: () => openFile(context, savedFile),
         child: GridTile(
+          header: GridTileBarCorners(
+              trailing: Tooltip(
+                  message: "$numTags tags", child: BorderedText("$numTags"))),
           footer: tileFooter(),
           child: displayIcon(),
         ));
