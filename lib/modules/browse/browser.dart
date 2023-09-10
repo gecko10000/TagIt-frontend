@@ -7,8 +7,9 @@ import 'grid.dart';
 
 class TagBrowser extends ConsumerWidget {
   final String tagName;
+  final bool stackPush;
 
-  const TagBrowser({required this.tagName, super.key});
+  const TagBrowser({required this.tagName, this.stackPush = true, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -17,6 +18,6 @@ class TagBrowser extends ConsumerWidget {
               (f) => ref.watch(savedFileProvider(f.name)).valueOrNull ?? f),
           ...tag.children
         ]);
-    return DisplayableGrid(displayables: displayables);
+    return DisplayableGrid(displayables: displayables, stackPush: stackPush);
   }
 }

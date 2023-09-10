@@ -11,13 +11,16 @@ import 'browser_model.dart';
 
 class TagTile extends ConsumerWidget {
   final ChildTagState tag;
+  final bool stackPush;
 
-  const TagTile(this.tag, {super.key});
+  const TagTile(this.tag, {this.stackPush = true, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
-        onTap: () => openTagBrowser(context, tag.fullName()),
+        onTap: () => stackPush
+            ? openTagBrowser(context, tag.fullName())
+            : popAndOpenTagBrowser(context, tag.fullName()),
         child: GridTile(
           header: GridTileBarCorners(trailing: TagCountsDisplay(tag.counts)),
           footer: GridTileBarCorners(

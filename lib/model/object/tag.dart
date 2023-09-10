@@ -5,6 +5,7 @@ import 'package:tagit_frontend/model/object/saved_file.dart';
 import 'displayable.dart';
 
 part 'tag.freezed.dart';
+
 part 'tag.g.dart';
 
 @freezed
@@ -30,4 +31,10 @@ class TagState with _$TagState {
   List<Displayable> getDisplayables() {
     return [...children, ...files];
   }
+
+  static String getParentName(String tagName) {
+    final slashIndex = tagName.lastIndexOf('/');
+    return slashIndex == -1 ? "" : tagName.substring(0, slashIndex);
+  }
+
 }

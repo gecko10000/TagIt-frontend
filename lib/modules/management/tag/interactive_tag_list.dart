@@ -29,7 +29,7 @@ class InteractiveTagList extends ConsumerWidget {
         children: [
           IconButton(
               icon: const Icon(Icons.open_in_new),
-              onPressed: () => openTagBrowser(context, tag)),
+              onPressed: () => openTagBrowser(context, tag, stackPush: false)),
           IconButton(
             icon: const Icon(Icons.delete),
             onPressed: () => ref
@@ -46,8 +46,8 @@ class InteractiveTagList extends ConsumerWidget {
     return Center(
         child: Material(
             child: ListTile(
-      leading: Icon(Icons.add),
-      title: Text("Add Tag"),
+      leading: const Icon(Icons.add),
+      title: const Text("Add Tag"),
       onTap: () => addTags(context, ref, savedFile),
     )));
   }
@@ -56,7 +56,6 @@ class InteractiveTagList extends ConsumerWidget {
       BuildContext context, WidgetRef ref, SavedFileState savedFile) {
     final numTags = savedFile.tags.length;
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         listTitle("Modify $numTags Tags"),
         const SizedBox(height: 5),
@@ -64,11 +63,12 @@ class InteractiveTagList extends ConsumerWidget {
             child: ListView.builder(
           // add 1 for the addMoreTile
           itemCount: numTags + 1,
+          shrinkWrap: true,
           itemBuilder: (context, i) {
             if (i == numTags) return addMoreTile(context, ref, savedFile);
             return tagListEntry(context, ref, savedFile, savedFile.tags[i]);
           },
-        ))
+        )),
       ],
     );
   }
@@ -87,7 +87,7 @@ class InteractiveTagList extends ConsumerWidget {
               }));
             },
             error: (ex, st) => Text("Error: $ex\n$st"),
-            loading: () => CircularProgressIndicator()));
+            loading: () => const CircularProgressIndicator()));
     /*final numTags = savedFile.tags.length;
     return SizedBox(
         width: 400,
