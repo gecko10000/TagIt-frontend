@@ -1,38 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
-import 'package:tagit_frontend/modules/browse/tag_display.dart';
+import 'package:tagit_frontend/modules/browse/tag_tile.dart';
 
+import '../../common/widgets/bordered_grid_tile.dart';
 import '../../model/object/child_tag.dart';
 import '../../model/object/displayable.dart';
-import 'file_display.dart';
+import 'file_tile.dart';
 
 class GridSquare extends StatelessWidget {
-  static const double _borderWidth = 1;
-
   final Displayable displayable;
 
   const GridSquare({required this.displayable, super.key});
 
-  Widget borderedGridTile({required Widget child}) {
-    return Container(
-        padding: const EdgeInsets.all(2),
-        child: Container(
-          padding: const EdgeInsets.all(_borderWidth),
-          decoration: BoxDecoration(
-              border: Border.all(color: Colors.white, width: _borderWidth)),
-          child: child,
-        ));
-  }
-
   @override
   Widget build(BuildContext context) {
     Widget tileInner = displayable is ChildTagState
-        ? TagDisplay(displayable as ChildTagState)
+        ? TagTile(displayable as ChildTagState)
         : displayable is SavedFileState
-            ? FileDisplay(displayable as SavedFileState)
+            ? FileTile(displayable as SavedFileState)
             : throw Exception();
-    return borderedGridTile(
+    return BorderedGridTile(
       child: tileInner,
     );
   }
@@ -40,8 +28,10 @@ class GridSquare extends StatelessWidget {
 
 class DisplayableGrid extends StatelessWidget {
   final AsyncValue<List<Displayable>> displayables;
+  final Widget Function(BuildContext, Displayable)? itemBuilder;
 
-  const DisplayableGrid({required this.displayables, super.key});
+  const DisplayableGrid(
+      {required this.displayables, this.itemBuilder, super.key});
 
   Widget gridView(List<Displayable> displayables) {
     if (displayables.isEmpty) {
@@ -50,7 +40,12 @@ class DisplayableGrid extends StatelessWidget {
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
           maxCrossAxisExtent: 200),
-      itemBuilder: (context, i) => GridSquare(displayable: displayables[i]),
+      itemBuilder: (context, i) {
+        final displayable = displayables[i];
+        return itemBuilder != null
+            ? itemBuilder!(context, displayable)
+            : GridSquare(displayable: displayable);
+      },
       itemCount: displayables.length,
     );
   }

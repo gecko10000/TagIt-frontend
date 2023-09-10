@@ -1,13 +1,13 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tagit_frontend/modules/browse/grid.dart';
 
-import '../../management/tag/tag_view_model.dart';
+import '../management/tag/tag_view_model.dart';
+import 'grid.dart';
 
-class BrowseScreen extends ConsumerWidget {
+class TagBrowser extends ConsumerWidget {
   final String tagName;
 
-  const BrowseScreen({required this.tagName, super.key});
+  const TagBrowser({required this.tagName, super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

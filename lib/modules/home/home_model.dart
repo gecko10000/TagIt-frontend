@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../browse/screen/browser.dart';
+import '../browse/screen.dart';
 import '../search/search.dart';
 import '../settings/settings.dart';
 import '../upload/upload.dart';

@@ -13,9 +13,20 @@ class SavedFile extends _$SavedFile {
 
   void setValue(SavedFileState savedFile) => state = AsyncData(savedFile);
 
-  void removeTag(SavedFileState savedFile, String tagName) {
+  void removeTag(String tagName) {
+    final savedFile = state.value;
+    if (savedFile == null) return;
     FileAPI.removeTag(fileName, tagName);
     final newTags = savedFile.tags.where((t) => t != tagName).toList();
+    setValue(savedFile.copyWith(tags: newTags));
+    ref.invalidate(tagProvider(tagName));
+  }
+
+  void addTag(String tagName) {
+    final savedFile = state.value;
+    if (savedFile == null) return;
+    FileAPI.addTag(fileName, tagName);
+    final newTags = [...savedFile.tags, tagName];
     setValue(savedFile.copyWith(tags: newTags));
     ref.invalidate(tagProvider(tagName));
   }

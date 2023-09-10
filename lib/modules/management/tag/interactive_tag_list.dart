@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tagit_frontend/modules/browse/screen/browser_model.dart';
+import 'package:tagit_frontend/modules/browse/browser_model.dart';
 import 'package:tagit_frontend/modules/management/tag/saved_file_view_model.dart';
 
 import '../../../model/object/saved_file.dart';
+import 'interactive_tag_list_model.dart';
+
+const fileTagListRouteName = "fileTagListRoute";
 
 class InteractiveTagList extends ConsumerWidget {
   static const double maxWidth = 500;
@@ -31,20 +34,20 @@ class InteractiveTagList extends ConsumerWidget {
             icon: const Icon(Icons.delete),
             onPressed: () => ref
                 .read(savedFileProvider(savedFileName).notifier)
-                .removeTag(savedFile, tag),
+                .removeTag(tag),
           )
         ],
       ),
     )));
   }
 
-  Widget addMoreTile(SavedFileState savedFile) {
+  Widget addMoreTile(BuildContext context, SavedFileState savedFile) {
     return Center(
         child: Material(
             child: ListTile(
       leading: Icon(Icons.add),
       title: Text("Add Tag"),
-      onTap: () => print("Adding tag"),
+      onTap: () => addTags(context, savedFile),
     )));
   }
 
@@ -61,10 +64,9 @@ class InteractiveTagList extends ConsumerWidget {
           // add 1 for the addMoreTile
           itemCount: numTags + 1,
           itemBuilder: (context, i) {
-            if (i == numTags) return addMoreTile(savedFile);
+            if (i == numTags) return addMoreTile(context, savedFile);
             return tagListEntry(context, ref, savedFile, savedFile.tags[i]);
           },
-          shrinkWrap: true,
         ))
       ],
     );

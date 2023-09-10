@@ -6,6 +6,7 @@ import '../../model/object/saved_file.dart';
 void openSavedFileTags(BuildContext context, SavedFileState savedFile) {
   Navigator.pop(context);
   showDialog(
+    routeSettings: const RouteSettings(name: fileTagListRouteName),
     context: context,
     barrierDismissible: true,
     builder: (context) {

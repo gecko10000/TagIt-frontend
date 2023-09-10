@@ -8,12 +8,12 @@ import 'package:tagit_frontend/model/api/files.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
 
 import '../../model/enum/media_type.dart';
-import 'screen/browser_model.dart';
+import 'browser_model.dart';
 
-class FileDisplay extends ConsumerWidget {
+class FileTile extends ConsumerWidget {
   final SavedFileState savedFile;
 
-  const FileDisplay(this.savedFile, {super.key});
+  const FileTile(this.savedFile, {super.key});
 
   Widget displayIcon() {
     return savedFile.thumbnail
