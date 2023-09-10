@@ -41,13 +41,14 @@ class InteractiveTagList extends ConsumerWidget {
     )));
   }
 
-  Widget addMoreTile(BuildContext context, SavedFileState savedFile) {
+  Widget addMoreTile(
+      BuildContext context, WidgetRef ref, SavedFileState savedFile) {
     return Center(
         child: Material(
             child: ListTile(
       leading: Icon(Icons.add),
       title: Text("Add Tag"),
-      onTap: () => addTags(context, savedFile),
+      onTap: () => addTags(context, ref, savedFile),
     )));
   }
 
@@ -64,7 +65,7 @@ class InteractiveTagList extends ConsumerWidget {
           // add 1 for the addMoreTile
           itemCount: numTags + 1,
           itemBuilder: (context, i) {
-            if (i == numTags) return addMoreTile(context, savedFile);
+            if (i == numTags) return addMoreTile(context, ref, savedFile);
             return tagListEntry(context, ref, savedFile, savedFile.tags[i]);
           },
         ))

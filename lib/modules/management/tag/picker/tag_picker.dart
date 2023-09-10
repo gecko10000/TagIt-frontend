@@ -9,7 +9,7 @@ import '../../../../model/object/child_tag.dart';
 import '../tag_view_model.dart';
 
 class TagPickerScreen extends ConsumerWidget {
-  final void Function(WidgetRef, List<String>)? onPicked;
+  final void Function(List<String>)? onPicked;
   final SavedFileState savedFile;
   final String tagName;
 
@@ -46,7 +46,7 @@ class TagPickerScreen extends ConsumerWidget {
                 tooltip: "Confirm",
                 onPressed: () {
                   if (onPicked != null) {
-                    onPicked!(ref, ref.read(pickedTagsProvider));
+                    onPicked!(ref.read(pickedTagsProvider));
                   }
                   //ref.invalidate(pickedTagsProvider);
                   closeTagPicker(context);

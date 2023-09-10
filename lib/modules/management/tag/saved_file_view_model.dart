@@ -22,10 +22,10 @@ class SavedFile extends _$SavedFile {
     ref.invalidate(tagProvider(tagName));
   }
 
-  void addTag(String tagName) {
+  Future<void> addTag(String tagName) async {
     final savedFile = state.value;
     if (savedFile == null) return;
-    FileAPI.addTag(fileName, tagName);
+    await FileAPI.addTag(fileName, tagName);
     final newTags = [...savedFile.tags, tagName];
     setValue(savedFile.copyWith(tags: newTags));
     ref.invalidate(tagProvider(tagName));
