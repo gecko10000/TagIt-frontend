@@ -6,15 +6,17 @@ class BorderedText extends StatelessWidget {
   final String data;
   final double strokeSize;
   final TextOverflow? overflow;
+  final TextAlign? textAlign;
 
   const BorderedText(this.data,
-      {this.strokeSize = 3, this.overflow, super.key});
+      {this.strokeSize = 3, this.overflow, this.textAlign, super.key});
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       children: [
         Text(data,
+            textAlign: textAlign,
             overflow: overflow,
             style: TextStyle(
                 foreground: Paint()
@@ -23,6 +25,7 @@ class BorderedText extends StatelessWidget {
         Text(
           data,
           overflow: overflow,
+          textAlign: textAlign,
         )
       ],
     );

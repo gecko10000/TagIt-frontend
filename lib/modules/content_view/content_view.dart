@@ -31,30 +31,67 @@ class ContentViewer extends StatelessWidget {
     );
   }
 
+  Widget topRow(BuildContext context) {
+    final numTags = savedFile.tags.length;
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Tooltip(
+                message: "Download file",
+                child: TextButton(
+                  onPressed: () => print("Downloading file"),
+                  child: const Icon(Icons.download),
+                )),
+            Tooltip(
+                message: "Share file",
+                child: TextButton(
+                    onPressed: () => print("Sharing file"),
+                    child: const Icon(Icons.share))),
+          ],
+        ),
+        Row(
+          children: [
+            Tooltip(
+                message: "Manage tags",
+                child: TextButton.icon(
+                    onPressed: () => openSavedFileTags(context, savedFile),
+                    icon: const Icon(Icons.sell),
+                    label: Text(numTags.toString()))),
+            Tooltip(
+                message: "Delete file",
+                child: TextButton(
+                    onPressed: () => print("Deleting file"),
+                    child: const Icon(Icons.delete))),
+          ],
+        )
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    final numTags = savedFile.tags.length;
-    return Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Row(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Flexible(
-                child: BorderedText(
-              savedFile.name,
-              overflow: TextOverflow.ellipsis,
-            )),
-            TextButton.icon(
-                onPressed: () => openSavedFileTags(context, savedFile),
-                icon: const Icon(Icons.sell),
-                label: Text(numTags.toString()))
-          ]),
+    return Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      topRow(context),
       Flexible(
           child: switch (savedFile.mediaType) {
         MediaType.IMAGE => imageViewer,
         MediaType.VIDEO => videoViewer,
         _ => otherViewer,
       }(savedFile)),
+      Container(
+          alignment: Alignment.centerRight,
+          padding: const EdgeInsets.all(5),
+          child: Tooltip(
+              message: "Rename file",
+              child: TextButton(
+                  onPressed: () => print("Renaming file"),
+                  child: BorderedText(
+                    savedFile.name,
+                    overflow: TextOverflow.fade,
+                    textAlign: TextAlign.right,
+                  )))),
     ]);
   }
 }

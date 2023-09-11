@@ -15,7 +15,16 @@ class InteractiveTagList extends ConsumerWidget {
   const InteractiveTagList(this.savedFileName, {super.key});
 
   Widget listTitle(String title) {
-    return Text(title, style: const TextStyle(fontSize: 20));
+    return Tooltip(
+        message: title,
+        child: Text(
+          title,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 20),
+          overflow: TextOverflow.fade,
+          softWrap: false,
+          maxLines: 1,
+        ));
   }
 
   Widget tagListEntry(BuildContext context, WidgetRef ref,
@@ -57,7 +66,8 @@ class InteractiveTagList extends ConsumerWidget {
     final numTags = savedFile.tags.length;
     return Column(
       children: [
-        listTitle("Modify $numTags Tags"),
+        listTitle(savedFile.name),
+        Text("$numTags tags"),
         const SizedBox(height: 5),
         Flexible(
             child: ListView.builder(
