@@ -2,11 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tagit_frontend/common/widgets/bordered_text.dart';
-import 'package:tagit_frontend/common/widgets/tile_bar_corners.dart';
+import 'package:tagit_frontend/common/widget/bordered_text.dart';
 import 'package:tagit_frontend/model/api/files.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
 
+import '../../common/widget/tile_bar_corners.dart';
 import '../../model/enum/media_type.dart';
 import 'browser_model.dart';
 

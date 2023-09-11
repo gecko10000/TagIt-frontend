@@ -2,14 +2,14 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tagit_frontend/common/widgets/bordered_grid_tile.dart';
+import 'package:tagit_frontend/common/widget/bordered_grid_tile.dart';
 import 'package:tagit_frontend/model/object/child_tag.dart';
 import 'package:tagit_frontend/modules/management/tag/picker/tag_picker.dart';
 import 'package:tagit_frontend/modules/management/tag/picker/tag_picker_model.dart';
 
-import '../../../../common/widgets/bordered_text.dart';
-import '../../../../common/widgets/tag_counts_display.dart';
-import '../../../../common/widgets/tile_bar_corners.dart';
+import '../../../../common/widget/bordered_text.dart';
+import '../../../../common/widget/tag_counts_display.dart';
+import '../../../../common/widget/tile_bar_corners.dart';
 
 class TagPickerTile extends ConsumerWidget {
   final TagPickerScreen currentPicker;

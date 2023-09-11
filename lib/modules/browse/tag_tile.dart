@@ -3,9 +3,9 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../common/widgets/bordered_text.dart';
-import '../../common/widgets/tag_counts_display.dart';
-import '../../common/widgets/tile_bar_corners.dart';
+import '../../common/widget/bordered_text.dart';
+import '../../common/widget/tag_counts_display.dart';
+import '../../common/widget/tile_bar_corners.dart';
 import '../../model/object/child_tag.dart';
 import 'browser_model.dart';
 

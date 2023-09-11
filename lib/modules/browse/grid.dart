@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
 import 'package:tagit_frontend/modules/browse/tag_tile.dart';
 
-import '../../common/widgets/bordered_grid_tile.dart';
+import '../../common/widget/bordered_grid_tile.dart';
 import '../../model/object/child_tag.dart';
 import '../../model/object/displayable.dart';
 import 'file_tile.dart';
