@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tagit_frontend/common/extension/build_context.dart';
+import 'package:tagit_frontend/common/style/button_style.dart';
 import 'package:tagit_frontend/model/api/files.dart';
 import 'package:tagit_frontend/model/enum/media_type.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
@@ -43,12 +44,14 @@ class ContentViewer extends StatelessWidget {
                 message: "Download file",
                 child: TextButton(
                   onPressed: () => context.showTextSnackBar("Downloading file"),
+                  style: defaultButtonStyle(),
                   child: const Icon(Icons.download),
                 )),
             Tooltip(
                 message: "Share file",
                 child: TextButton(
                     onPressed: () => context.showTextSnackBar("Sharing file"),
+                    style: defaultButtonStyle(),
                     child: const Icon(Icons.share))),
           ],
         ),
@@ -58,12 +61,14 @@ class ContentViewer extends StatelessWidget {
                 message: "Manage tags",
                 child: TextButton.icon(
                     onPressed: () => openSavedFileTags(context, savedFile),
+                    style: defaultButtonStyle(),
                     icon: const Icon(Icons.sell),
                     label: Text(numTags.toString()))),
             Tooltip(
                 message: "Delete file",
                 child: TextButton(
                     onPressed: () => context.showTextSnackBar("Deleting file"),
+                    style: defaultButtonStyle(),
                     child: const Icon(Icons.delete))),
           ],
         )
@@ -88,6 +93,7 @@ class ContentViewer extends StatelessWidget {
               message: "Rename file",
               child: TextButton(
                   onPressed: () => context.showTextSnackBar("Renaming file"),
+                  style: defaultButtonStyle(),
                   child: BorderedText(
                     savedFile.name,
                     overflow: TextOverflow.fade,
