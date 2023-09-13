@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tagit_frontend/modules/browse/browser_model.dart';
-import 'package:tagit_frontend/modules/management/tag/saved_file_view_model.dart';
 
 import '../../../model/object/saved_file.dart';
 import 'interactive_tag_list_model.dart';
@@ -10,9 +9,9 @@ const fileTagListRouteName = "fileTagListRoute";
 
 class InteractiveTagList extends ConsumerWidget {
   static const double maxWidth = 500;
-  final String savedFileName;
+  final SavedFileState savedFile;
 
-  const InteractiveTagList(this.savedFileName, {super.key});
+  const InteractiveTagList(this.savedFile, {super.key});
 
   Widget listTitle(String title) {
     return Tooltip(
@@ -41,9 +40,7 @@ class InteractiveTagList extends ConsumerWidget {
               onPressed: () => openTagBrowser(context, tag, stackPush: false)),
           IconButton(
             icon: const Icon(Icons.delete),
-            onPressed: () => ref
-                .read(savedFileProvider(savedFileName).notifier)
-                .removeTag(tag),
+            onPressed: () => removeTag(context, savedFile, tag),
           )
         ],
       ),
@@ -85,19 +82,11 @@ class InteractiveTagList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Center(
-        child: ref.watch(savedFileProvider(savedFileName)).when(
-            data: (savedFile) {
-              return LayoutBuilder(builder: ((context, constraints) {
-                final child = tagList(context, ref, savedFile);
-                final width = constraints.maxWidth;
-                return width < maxWidth
-                    ? child
-                    : SizedBox(width: maxWidth, child: child);
-              }));
-            },
-            error: (ex, st) => Text("Error: $ex\n$st"),
-            loading: () => const CircularProgressIndicator()));
+    return Center(child: LayoutBuilder(builder: ((context, constraints) {
+      final child = tagList(context, ref, savedFile);
+      final width = constraints.maxWidth;
+      return width < maxWidth ? child : SizedBox(width: maxWidth, child: child);
+    })));
     /*final numTags = savedFile.tags.length;
     return SizedBox(
         width: 400,

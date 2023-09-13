@@ -92,7 +92,7 @@ class ContentViewer extends StatelessWidget {
           child: Tooltip(
               message: "Rename file",
               child: TextButton(
-                  onPressed: () => context.showTextSnackBar("Renaming file"),
+                  onPressed: () => renameFile(context, savedFile),
                   style: defaultButtonStyle(),
                   child: BorderedText(
                     savedFile.name,
