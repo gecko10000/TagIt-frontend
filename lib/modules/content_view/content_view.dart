@@ -33,7 +33,7 @@ class ContentViewer extends StatelessWidget {
     );
   }
 
-  Widget topRow(BuildContext context) {
+  Widget topRow(BuildContext context, SavedFileState savedFile) {
     final numTags = savedFile.tags.length;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -79,7 +79,7 @@ class ContentViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      topRow(context),
+      topRow(context, savedFile),
       Flexible(
           child: switch (savedFile.mediaType) {
         MediaType.IMAGE => imageViewer,
