@@ -19,5 +19,5 @@ void popAndOpenTagBrowser(BuildContext context, String tagName) {
 
 void openContentView(BuildContext context, SavedFileState savedFile) {
   showRiverpodDialog(
-      context: context, child: ContentViewer(savedFile: savedFile));
+      context: context, child: ContentViewer(fileId: savedFile.uuid));
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tagit_frontend/modules/browse/browser_model.dart';
+import 'package:tagit_frontend/modules/management/file/saved_file_view_model.dart';
 
 import '../../../model/object/saved_file.dart';
 import 'interactive_tag_list_model.dart';
@@ -9,9 +10,9 @@ const fileTagListRouteName = "fileTagListRoute";
 
 class InteractiveTagList extends ConsumerWidget {
   static const double maxWidth = 500;
-  final SavedFileState savedFile;
+  final String fileId;
 
-  const InteractiveTagList(this.savedFile, {super.key});
+  const InteractiveTagList(this.fileId, {super.key});
 
   Widget listTitle(String title) {
     return Tooltip(
@@ -40,7 +41,7 @@ class InteractiveTagList extends ConsumerWidget {
               onPressed: () => openTagBrowser(context, tag, stackPush: false)),
           IconButton(
             icon: const Icon(Icons.delete),
-            onPressed: () => removeTag(context, savedFile, tag),
+            onPressed: () => removeTag(context, ref, savedFile, tag),
           )
         ],
       ),
@@ -82,11 +83,17 @@ class InteractiveTagList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Center(child: LayoutBuilder(builder: ((context, constraints) {
-      final child = tagList(context, ref, savedFile);
-      final width = constraints.maxWidth;
-      return width < maxWidth ? child : SizedBox(width: maxWidth, child: child);
-    })));
+    return ref.watch(savedFileByUUIDProvider(fileId)).when(
+        data: (savedFile) =>
+            Center(child: LayoutBuilder(builder: ((context, constraints) {
+              final child = tagList(context, ref, savedFile);
+              final width = constraints.maxWidth;
+              return width < maxWidth
+                  ? child
+                  : SizedBox(width: maxWidth, child: child);
+            }))),
+        error: (ex, st) => Text("$ex\n$st"),
+        loading: () => const CircularProgressIndicator());
     /*final numTags = savedFile.tags.length;
     return SizedBox(
         width: 400,

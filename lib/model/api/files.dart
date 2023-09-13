@@ -57,9 +57,9 @@ class FileAPI {
         body: {"name": newName});
   }
 
-  static Future<SavedFileState> getInfo(String name) async {
+  static Future<SavedFileState> getInfo(String uuid) async {
     final response =
-        await client.get(url("file/${Uri.encodeComponent(name)}/info"));
+        await client.get(url("file/by_id/${Uri.encodeComponent(uuid)}/info"));
     final map =
         jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
     return SavedFileState.fromJson(map);

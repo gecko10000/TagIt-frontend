@@ -10,6 +10,7 @@ part 'saved_file.g.dart';
 @freezed
 class SavedFileState with _$SavedFileState implements Displayable {
   const factory SavedFileState({
+    required String uuid,
     required String name,
     required MediaType mediaType,
     required int modificationDate,

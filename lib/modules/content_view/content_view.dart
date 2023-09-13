@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tagit_frontend/common/extension/build_context.dart';
 import 'package:tagit_frontend/common/style/button_style.dart';
 import 'package:tagit_frontend/model/api/files.dart';
@@ -8,11 +9,12 @@ import 'package:tagit_frontend/modules/content_view/content_view_model.dart';
 import 'package:tagit_frontend/modules/content_view/viewers/video_viewer.dart';
 
 import '../../common/widget/bordered_text.dart';
+import '../management/file/saved_file_view_model.dart';
 
-class ContentViewer extends StatelessWidget {
-  final SavedFileState savedFile;
+class ContentViewer extends ConsumerWidget {
+  final String fileId;
 
-  const ContentViewer({required this.savedFile, super.key});
+  const ContentViewer({required this.fileId, super.key});
 
   Widget imageViewer(SavedFileState savedFile) {
     return FittedBox(
@@ -77,28 +79,33 @@ class ContentViewer extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-      topRow(context, savedFile),
-      Flexible(
-          child: switch (savedFile.mediaType) {
-        MediaType.IMAGE => imageViewer,
-        MediaType.VIDEO => videoViewer,
-        _ => otherViewer,
-      }(savedFile)),
-      Container(
-          alignment: Alignment.centerRight,
-          padding: const EdgeInsets.all(5),
-          child: Tooltip(
-              message: "Rename file",
-              child: TextButton(
-                  onPressed: () => renameFile(context, savedFile),
-                  style: defaultButtonStyle(),
-                  child: BorderedText(
-                    savedFile.name,
-                    overflow: TextOverflow.fade,
-                    textAlign: TextAlign.right,
-                  )))),
-    ]);
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ref.watch(savedFileByUUIDProvider(fileId)).when(
+        data: (savedFile) => Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  topRow(context, savedFile),
+                  Flexible(
+                      child: switch (savedFile.mediaType) {
+                    MediaType.IMAGE => imageViewer,
+                    MediaType.VIDEO => videoViewer,
+                    _ => otherViewer,
+                  }(savedFile)),
+                  Container(
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.all(5),
+                      child: Tooltip(
+                          message: "Rename file",
+                          child: TextButton(
+                              onPressed: () => renameFile(context, savedFile),
+                              style: defaultButtonStyle(),
+                              child: BorderedText(
+                                savedFile.name,
+                                overflow: TextOverflow.fade,
+                                textAlign: TextAlign.right,
+                              )))),
+                ]),
+        error: (ex, st) => Text("$ex\n$st"),
+        loading: () => CircularProgressIndicator());
   }
 }

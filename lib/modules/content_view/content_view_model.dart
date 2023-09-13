@@ -11,9 +11,9 @@ void openSavedFileTags(BuildContext context, SavedFileState savedFile) {
     routeSettings: const RouteSettings(name: fileTagListRouteName),
     context: context,
     barrierDismissible: true,
-    // note: we use the name because it uses
+    // note: we use the ID because it uses
     // a separate provider for the file info
-    child: InteractiveTagList(savedFile),
+    child: InteractiveTagList(savedFile.uuid),
   );
 }
 
