@@ -106,6 +106,6 @@ class ContentViewer extends ConsumerWidget {
                               )))),
                 ]),
         error: (ex, st) => Text("$ex\n$st"),
-        loading: () => CircularProgressIndicator());
+        loading: () => const Center(child: CircularProgressIndicator()));
   }
 }
