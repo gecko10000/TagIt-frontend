@@ -1,11 +1,12 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:tagit_frontend/model/object/child_tag.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
+import 'package:tagit_frontend/model/object/uuid_converter.dart';
+import 'package:uuid/uuid.dart';
 
 import 'displayable.dart';
 
 part 'tag.freezed.dart';
-
 part 'tag.g.dart';
 
 @freezed
@@ -14,8 +15,10 @@ class TagState with _$TagState {
   const TagState._();
 
   const factory TagState({
+    @UuidConverter() required UuidValue uuid,
     required String name,
-    String? parent,
+    @UuidConverter() UuidValue? parentUUID,
+    String? parentName,
     @Default([]) List<ChildTagState> children,
     @Default([]) List<SavedFileState> files,
     required int totalFileCount,
@@ -25,7 +28,7 @@ class TagState with _$TagState {
       _$TagStateFromJson(json);
 
   String fullName() {
-    return parent == null ? name : "$parent/$name";
+    return parentName == null ? name : "$parentName/$name";
   }
 
   List<Displayable> getDisplayables() {
@@ -36,5 +39,4 @@ class TagState with _$TagState {
     final slashIndex = tagName.lastIndexOf('/');
     return slashIndex == -1 ? "" : tagName.substring(0, slashIndex);
   }
-
 }

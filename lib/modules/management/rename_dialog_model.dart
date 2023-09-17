@@ -14,15 +14,16 @@ import '../../model/object/displayable.dart';
 void renameDisplayable(BuildContext context, WidgetRef ref,
     Displayable displayable, String newName) async {
   if (displayable is SavedFileState) {
-    await FileAPI.rename(displayable.name, newName);
+    await FileAPI.rename(displayable.uuid, newName);
     invalidateTags(ref, displayable);
-    ref.invalidate(savedFileByUUIDProvider(displayable.uuid));
+    ref.invalidate(savedFileProvider(displayable.uuid));
     if (context.mounted) Navigator.pop(context);
     return;
   }
   // no auto cast :(
   final tag = displayable as TagState;
-  final fullNewName = tag.parent == null ? newName : "${tag.parent}/$newName";
-  await TagAPI.rename(tag.fullName(), fullNewName);
+  final fullNewName =
+      tag.parentName == null ? newName : "${tag.parentName}/$newName";
+  await TagAPI.rename(tag.uuid, fullNewName);
   if (context.mounted) Navigator.pop(context);
 }

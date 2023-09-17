@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:tagit_frontend/model/object/child_tag.dart';
 import 'package:tagit_frontend/modules/management/tag/picker/tag_picker.dart';
+import 'package:uuid/uuid.dart';
 
 import '../interactive_tag_list.dart';
 
@@ -9,19 +11,19 @@ part 'tag_picker_model.g.dart';
 @riverpod
 class PickedTags extends _$PickedTags {
   @override
-  List<String> build() => [];
+  List<ChildTagState> build() => [];
 
-  void addTag(String tagName) => state = [...state, tagName];
+  void addTag(ChildTagState tagId) => state = [...state, tagId];
 
-  void removeTag(String tagName) =>
-      state = state.where((t) => t != tagName).toList();
+  void removeTag(ChildTagState tagId) =>
+      state = state.where((t) => t != tagId).toList();
 }
 
 void openTagPicker(
-    BuildContext context, String tagName, TagPickerScreen parent) {
+    BuildContext context, UuidValue tagId, TagPickerScreen parent) {
   Navigator.of(context).push(MaterialPageRoute(
     builder: (context) => TagPickerScreen(
-      tagName: tagName,
+      tagId: tagId,
       savedFile: parent.savedFile,
       onPicked: parent.onPicked,
     ),

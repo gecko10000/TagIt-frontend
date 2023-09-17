@@ -29,7 +29,9 @@ class FileTile extends ConsumerWidget {
 
   Widget? tileFooter() {
     bool isVideo = savedFile.mediaType == MediaType.VIDEO;
-    final leading = BorderedText(savedFile.name, overflow: TextOverflow.fade);
+    final leading = Tooltip(
+        message: savedFile.name,
+        child: BorderedText(savedFile.name, overflow: TextOverflow.fade));
     final trailing = isVideo ? const Icon(Icons.play_arrow_rounded) : null;
     return GridTileBarCorners(
       leading: leading,

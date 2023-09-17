@@ -47,6 +47,7 @@ dependencies:
   media_kit: ^1.1.7
   media_kit_video: ^1.1.8
   media_kit_libs_video: ^1.0.1
+  uuid: ^3.0.7
 
 dev_dependencies:
   flutter_test:

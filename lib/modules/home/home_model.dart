@@ -8,7 +8,7 @@ import '../upload/upload.dart';
 final homeIndexProvider = StateProvider((ref) => 0);
 
 final _pages = [
-  const BrowseScreen(tagName: ""),
+  const BrowseScreen(tagId: null, tagName: null),
   SearchScreen(),
   UploadScreen(),
   SettingsScreen(),

@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:tagit_frontend/model/object/tag_counts.dart';
+import 'package:tagit_frontend/model/object/uuid_converter.dart';
+import 'package:uuid/uuid.dart';
 
 import 'displayable.dart';
 
@@ -11,8 +13,10 @@ class ChildTagState with _$ChildTagState implements Displayable {
   const ChildTagState._();
 
   factory ChildTagState({
+    @UuidConverter() required UuidValue uuid,
     required String name,
-    String? parent,
+    @UuidConverter() UuidValue? parentUUID,
+    String? parentName,
     required TagCounts counts,
   }) = _ChildTagState;
 
@@ -20,6 +24,6 @@ class ChildTagState with _$ChildTagState implements Displayable {
       _$ChildTagStateFromJson(json);
 
   String fullName() {
-    return parent == null ? name : "$parent/$name";
+    return parentName == null ? name : "$parentName/$name";
   }
 }

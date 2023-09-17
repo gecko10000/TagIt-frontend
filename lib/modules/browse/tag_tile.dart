@@ -19,8 +19,8 @@ class TagTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return InkWell(
         onTap: () => stackPush
-            ? openTagBrowser(context, tag.fullName())
-            : popAndOpenTagBrowser(context, tag.fullName()),
+            ? openTagBrowser(context, tag.uuid, tag.fullName())
+            : popAndOpenTagBrowser(context, tag.uuid, tag.fullName()),
         child: GridTile(
           header: GridTileBarCorners(trailing: TagCountsDisplay(tag.counts)),
           footer: GridTileBarCorners(

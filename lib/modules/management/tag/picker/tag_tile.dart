@@ -21,10 +21,10 @@ class TagPickerTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final savedFile = currentPicker.savedFile;
     // for already-selected tags.
-    final disabled = savedFile.tags.contains(tag.fullName());
+    final disabled = savedFile.tags.map((t) => t.uuid).contains(tag.uuid);
     return BorderedGridTile(
         child: InkWell(
-            onTap: () => openTagPicker(context, tag.fullName(), currentPicker),
+            onTap: () => openTagPicker(context, tag.uuid, currentPicker),
             child: GridTile(
               header:
                   GridTileBarCorners(trailing: TagCountsDisplay(tag.counts)),
@@ -34,8 +34,8 @@ class TagPickerTile extends ConsumerWidget {
                     child: BorderedText(tag.name, overflow: TextOverflow.fade)),
                 trailing: Checkbox(
                     // we mark already-selected tags
-                    value: disabled ||
-                        ref.watch(pickedTagsProvider).contains(tag.fullName()),
+                    value:
+                        disabled || ref.watch(pickedTagsProvider).contains(tag),
                     // a null onChanged disables the checkbox
                     onChanged: disabled
                         ? null
@@ -44,7 +44,7 @@ class TagPickerTile extends ConsumerWidget {
                                 ref.read(pickedTagsProvider.notifier);
                             (checked!
                                 ? notifier.addTag
-                                : notifier.removeTag)(tag.fullName());
+                                : notifier.removeTag)(tag);
                           }),
               ),
               child: LayoutBuilder(

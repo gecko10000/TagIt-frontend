@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tagit_frontend/modules/browse/browser_model.dart';
 import 'package:tagit_frontend/modules/management/file/saved_file_view_model.dart';
+import 'package:uuid/uuid.dart';
 
+import '../../../model/object/child_tag.dart';
 import '../../../model/object/saved_file.dart';
 import 'interactive_tag_list_model.dart';
 
@@ -10,7 +12,7 @@ const fileTagListRouteName = "fileTagListRoute";
 
 class InteractiveTagList extends ConsumerWidget {
   static const double maxWidth = 500;
-  final String fileId;
+  final UuidValue fileId;
 
   const InteractiveTagList(this.fileId, {super.key});
 
@@ -28,20 +30,21 @@ class InteractiveTagList extends ConsumerWidget {
   }
 
   Widget tagListEntry(BuildContext context, WidgetRef ref,
-      SavedFileState savedFile, String tag) {
+      SavedFileState savedFile, ChildTagState tag) {
     return Center(
         child: Material(
             child: ListTile(
-      title: Text(tag),
+      title: Text(tag.fullName()),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
               icon: const Icon(Icons.open_in_new),
-              onPressed: () => openTagBrowser(context, tag, stackPush: false)),
+              onPressed: () => openTagBrowser(context, tag.uuid, tag.name,
+                  stackPush: false)),
           IconButton(
             icon: const Icon(Icons.delete),
-            onPressed: () => removeTag(context, ref, savedFile, tag),
+            onPressed: () => removeTag(context, ref, savedFile, tag.uuid),
           )
         ],
       ),
@@ -83,7 +86,7 @@ class InteractiveTagList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ref.watch(savedFileByUUIDProvider(fileId)).when(
+    return ref.watch(savedFileProvider(fileId)).when(
         data: (savedFile) =>
             Center(child: LayoutBuilder(builder: ((context, constraints) {
               final child = tagList(context, ref, savedFile);

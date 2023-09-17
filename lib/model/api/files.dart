@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:tagit_frontend/model/enum/media_type.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
+import 'package:uuid/uuid.dart';
 
 import 'base.dart';
 
@@ -52,14 +53,12 @@ class FileAPI {
     return subscription;
   }*/
 
-  static Future<void> rename(String currentName, String newName) async {
-    await client.patch(url("file/${Uri.encodeComponent(currentName)}"),
-        body: {"name": newName});
+  static Future<void> rename(UuidValue fileId, String newName) async {
+    await client.patch(url("file/${fileId.uuid}"), body: {"name": newName});
   }
 
-  static Future<SavedFileState> getInfo(String uuid) async {
-    final response =
-        await client.get(url("file/by_id/${Uri.encodeComponent(uuid)}/info"));
+  static Future<SavedFileState> getInfo(UuidValue fileId) async {
+    final response = await client.get(url("file/${fileId.uuid}/info"));
     final map =
         jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
     return SavedFileState.fromJson(map);
@@ -68,7 +67,7 @@ class FileAPI {
   static Image getThumbnail(SavedFileState savedFile) {
     assert(savedFile.thumbnail);
     return Image.network(
-      url("file/${Uri.encodeComponent(savedFile.name)}/thumb").toString(),
+      url("file/${savedFile.uuid}/thumb").toString(),
       headers: defaultHeaders(),
     );
   }
@@ -77,8 +76,7 @@ class FileAPI {
     assert(savedFile.mediaType == MediaType.IMAGE);
     final dimensions = savedFile.dimensions;
     return Image.network(
-      url("file/${Uri.encodeComponent(savedFile.name)}",
-              queryParameters: fileGetParams())
+      url("file/${savedFile.uuid}", queryParameters: fileGetParams())
           .toString(),
       width: dimensions?.width,
       height: dimensions?.height,
@@ -86,8 +84,7 @@ class FileAPI {
   }
 
   static Media _getMedia(SavedFileState savedFile) {
-    return Media(url("file/${Uri.encodeComponent(savedFile.name)}",
-            queryParameters: fileGetParams())
+    return Media(url("file/${savedFile.uuid}", queryParameters: fileGetParams())
         .toString());
   }
 
@@ -101,21 +98,21 @@ class FileAPI {
     return _getMedia(savedFile);
   }
 
-  static Future<void> _modifyTag(String file, String tag, bool add) async {
-    await client.patch(
-        url("file/${Uri.encodeComponent(file)}/${add ? "add" : "remove"}"),
-        body: {"tag": tag});
+  static Future<void> _modifyTag(
+      UuidValue fileId, UuidValue tagId, bool add) async {
+    await client.patch(url("file/${fileId.uuid}/${add ? "add" : "remove"}"),
+        body: {"tag": tagId.uuid});
   }
 
-  static Future<void> addTag(String file, String tag) async {
-    await _modifyTag(file, tag, true);
+  static Future<void> addTag(UuidValue fileId, UuidValue tagId) async {
+    await _modifyTag(fileId, tagId, true);
   }
 
-  static Future<void> removeTag(String file, String tag) async {
-    await _modifyTag(file, tag, false);
+  static Future<void> removeTag(UuidValue fileId, UuidValue tagId) async {
+    await _modifyTag(fileId, tagId, false);
   }
 
-  static Future<void> delete(String fileName) async {
-    await client.delete(url("file/${Uri.encodeComponent(fileName)}"));
+  static Future<void> delete(UuidValue fileId) async {
+    await client.delete(url("file/${fileId.uuid}"));
   }
 }

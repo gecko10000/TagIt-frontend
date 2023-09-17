@@ -7,12 +7,13 @@ import 'package:tagit_frontend/model/enum/media_type.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
 import 'package:tagit_frontend/modules/content_view/content_view_model.dart';
 import 'package:tagit_frontend/modules/content_view/viewers/video_viewer.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../common/widget/bordered_text.dart';
 import '../management/file/saved_file_view_model.dart';
 
 class ContentViewer extends ConsumerWidget {
-  final String fileId;
+  final UuidValue fileId;
 
   const ContentViewer({required this.fileId, super.key});
 
@@ -80,7 +81,7 @@ class ContentViewer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ref.watch(savedFileByUUIDProvider(fileId)).when(
+    return ref.watch(savedFileProvider(fileId)).when(
         data: (savedFile) => Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

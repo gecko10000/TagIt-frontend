@@ -9,6 +9,6 @@ void changeHomeIndex(WidgetRef ref, int i) {
   ref.read(homeIndexProvider.notifier).state = i;
   // refresh list
   if (i == _browseIndex) {
-    ref.invalidate(tagProvider(""));
+    ref.invalidate(tagProvider(null));
   }
 }
