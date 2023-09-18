@@ -1,7 +1,9 @@
+import 'package:async/async.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tagit_frontend/model/api/files.dart';
 import 'package:tagit_frontend/model/object/file_upload.dart';
+import 'package:uuid/uuid.dart';
 
 part 'upload_model.g.dart';
 
@@ -16,6 +18,22 @@ class Uploads extends _$Uploads {
 
   void clear() {
     state = [];
+  }
+
+  Future<void> removeByUuid(UuidValue uuid) async {
+    state = [
+      ...state.where((upload) {
+        final complete = upload.savedFileFuture?.isComplete ?? false;
+        if (!complete) {
+          return true;
+        }
+        final result = upload.savedFileFuture!.result!;
+        if (result.isError) {
+          return true;
+        }
+        return result.asValue!.value.uuid != uuid;
+      })
+    ];
   }
 }
 
@@ -32,7 +50,7 @@ Future<FileUpload> _uploadFile(PlatformFile file) async {
   return FileUpload(
     platformFile: file,
     stream: stream,
-    savedFileFuture: savedFileFuture,
+    savedFileFuture: ResultFuture(savedFileFuture),
   );
 }
 

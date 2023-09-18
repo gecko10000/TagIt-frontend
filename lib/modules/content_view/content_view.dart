@@ -36,7 +36,7 @@ class ContentViewer extends ConsumerWidget {
     );
   }
 
-  Widget topRow(BuildContext context, SavedFileState savedFile) {
+  Widget topRow(BuildContext context, WidgetRef ref, SavedFileState savedFile) {
     final numTags = savedFile.tags.length;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -73,7 +73,7 @@ class ContentViewer extends ConsumerWidget {
             Tooltip(
                 message: "Delete file",
                 child: TextButton(
-                    onPressed: () => context.showTextSnackBar("Deleting file"),
+                    onPressed: () => deleteFile(context, ref, savedFile),
                     style: defaultButtonStyle(),
                     child: const Icon(Icons.delete))),
           ],
@@ -88,7 +88,7 @@ class ContentViewer extends ConsumerWidget {
         data: (savedFile) => Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  topRow(context, savedFile),
+                  topRow(context, ref, savedFile),
                   Flexible(
                       child: switch (savedFile.mediaType) {
                     MediaType.IMAGE => imageViewer,

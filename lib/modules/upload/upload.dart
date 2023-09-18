@@ -15,31 +15,51 @@ class UploadScreen extends ConsumerStatefulWidget {
 class _UploadScreenState extends ConsumerState<UploadScreen> {
   @override
   Widget build(BuildContext context) {
+    if (_first) {
+      return const Center(child: Text("Choosing files..."));
+    }
     final uploads = ref.watch(uploadsProvider);
-    return ListView.builder(
-        itemCount: uploads.length + 1,
-        itemBuilder: (context, i) {
-          if (i == uploads.length) {
-            return ListTile(
-              title: const Text("Upload More"),
-              onTap: pickAndAdd,
-            );
-          }
-          return UploadTile(uploads[i]);
-        });
+    return Column(children: [
+      Flexible(
+          child: uploads.isEmpty
+              ? const Center(child: Text("Nothing here."))
+              : ListView.builder(
+                  itemCount: uploads.length,
+                  itemBuilder: (context, i) {
+                    return UploadTile(uploads[i]);
+                  })),
+      Row(children: [
+        Expanded(
+            child: ListTile(
+          title: const Center(child: Text("Upload More")),
+          onTap: pickAndAdd,
+        )),
+        Expanded(
+            child: ListTile(
+          title: const Center(child: Text("Clear Uploads")),
+          onTap: () => ref.read(uploadsProvider.notifier).clear(),
+        ))
+      ]),
+    ]);
   }
 
-  void pickAndAdd() async {
+  Future<void> pickAndAdd() async {
     final files = await pickFilesToUpload();
     ref.read(uploadsProvider.notifier).addAll(files);
+  }
+
+  void initialPick() async {
+    if (_first) {
+      await pickAndAdd();
+      // note: we use _first to determine
+      // when to display the list of uploads
+      setState(() => _first = false);
+    }
   }
 
   @override
   void initState() {
     super.initState();
-    if (_first) {
-      pickAndAdd();
-      _first = false;
-    }
+    initialPick();
   }
 }

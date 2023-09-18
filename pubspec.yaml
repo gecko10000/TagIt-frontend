@@ -48,6 +48,7 @@ dependencies:
   media_kit_video: ^1.1.8
   media_kit_libs_video: ^1.0.1
   uuid: ^3.0.7
+  async: ^2.11.0
 
 dev_dependencies:
   flutter_test:

@@ -44,8 +44,8 @@ class FileAPI {
     final future = client.send(request);
     final savedFileFuture = future.then((response) async {
       final responseString = await response.stream.bytesToString();
-      final file = jsonDecode(responseString);
-      return SavedFileState.fromJson(file);
+      final fileJson = jsonDecode(responseString);
+      return SavedFileState.fromJson(fileJson);
     });
     return (stream.stream, savedFileFuture);
   }

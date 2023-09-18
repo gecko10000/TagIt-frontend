@@ -34,12 +34,15 @@ class _UploadTileState extends ConsumerState<UploadTile> {
                 message: error.toString(),
                 child: const Icon(Icons.error, color: Colors.red));
           }
-          if (snapshot.connectionState == ConnectionState.done) {
+          if (widget.upload.savedFileFuture!.isComplete) {
             return const Icon(Icons.check_circle, color: Colors.green);
           }
           // won't be null here as we handled the error case
           final data = snapshot.requireData;
           final size = file.size;
+          if (data == size) {
+            return const CircularProgressIndicator(color: Colors.green);
+          }
           return CircularProgressIndicator(
               value: data == 0 ? null : data / size);
         });
@@ -82,7 +85,6 @@ class _UploadTileState extends ConsumerState<UploadTile> {
   @override
   void initState() {
     super.initState();
-    widget.upload.savedFileFuture
-        ?.whenComplete(() => setState(() => tappable = true));
+    widget.upload.savedFileFuture?.then((_) => setState(() => tappable = true));
   }
 }
