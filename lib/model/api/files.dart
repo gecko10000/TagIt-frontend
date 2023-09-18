@@ -1,6 +1,9 @@
+import 'dart:async';
 import 'dart:convert';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:http/http.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:tagit_frontend/model/enum/media_type.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
@@ -18,6 +21,33 @@ class FileAPI {
         .get(url("files/all"), headers: {"reversed": reversed.toString()});
     final files = jsonDecode(utf8.decode(response.bodyBytes)) as List;
     return files.map((j) => SavedFileState.fromJson(j)).toList();
+  }
+
+  static (Stream<int>, Future<SavedFileState>) uploadFile(PlatformFile file) {
+    final request =
+        StreamedRequest("POST", url("file/${Uri.encodeComponent(file.name)}"));
+    final stream = StreamController<int>();
+    request.contentLength = file.size;
+    int total = 0;
+    file.readStream!.listen((chunk) {
+      request.sink.add(chunk);
+      total += chunk.length;
+      stream.add(total);
+    }, onError: (ex, st) {
+      stream.addError(ex, st);
+      request.sink.close();
+      stream.close();
+    }, onDone: () {
+      request.sink.close();
+      stream.close();
+    });
+    final future = client.send(request);
+    final savedFileFuture = future.then((response) async {
+      final responseString = await response.stream.bytesToString();
+      final file = jsonDecode(responseString);
+      return SavedFileState.fromJson(file);
+    });
+    return (stream.stream, savedFileFuture);
   }
 
   /*static StreamSubscription uploadFile(PlatformFile file,
