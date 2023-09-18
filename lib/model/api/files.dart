@@ -26,7 +26,7 @@ class FileAPI {
   static (Stream<int>, Future<SavedFileState>) uploadFile(PlatformFile file) {
     final request =
         StreamedRequest("POST", url("file/${Uri.encodeComponent(file.name)}"));
-    final stream = StreamController<int>();
+    final stream = StreamController<int>.broadcast();
     request.contentLength = file.size;
     int total = 0;
     file.readStream!.listen((chunk) {
@@ -144,5 +144,12 @@ class FileAPI {
 
   static Future<void> delete(UuidValue fileId) async {
     await client.delete(url("file/${fileId.uuid}"));
+  }
+
+  static Future<bool> checkExists(String fileName) async {
+    final response =
+        await client.get(url("file/exists/${Uri.encodeComponent(fileName)}"));
+    final exists = jsonDecode(utf8.decode(response.bodyBytes))["exists"];
+    return exists;
   }
 }

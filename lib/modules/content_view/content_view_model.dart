@@ -6,7 +6,6 @@ import 'package:tagit_frontend/modules/management/tag/interactive_tag_list.dart'
 import '../../model/object/saved_file.dart';
 
 void openSavedFileTags(BuildContext context, SavedFileState savedFile) {
-  Navigator.pop(context);
   showRiverpodDialog(
     routeSettings: const RouteSettings(name: fileTagListRouteName),
     context: context,

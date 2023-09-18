@@ -63,7 +63,10 @@ class ContentViewer extends ConsumerWidget {
             Tooltip(
                 message: "Manage tags",
                 child: TextButton.icon(
-                    onPressed: () => openSavedFileTags(context, savedFile),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      openSavedFileTags(context, savedFile);
+                    },
                     style: defaultButtonStyle(),
                     icon: const Icon(Icons.sell),
                     label: Text(numTags.toString()))),
