@@ -10,7 +10,7 @@ void pickFilesToUpload() async {
   for (final file in result.files) {
     final (upload, savedFileFuture) = FileAPI.uploadFile(file);
     futures.add(savedFileFuture);
-  }=
+  }
   for (final future in futures) {
     final savedFile = await future;
     print(savedFile);
