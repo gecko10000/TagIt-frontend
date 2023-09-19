@@ -23,5 +23,5 @@ void renameFile(BuildContext context, SavedFileState savedFile) {
 }
 
 void deleteFile(BuildContext context, WidgetRef ref, SavedFileState savedFile) {
-  showRiverpodDialog(context: context, child: DeleteDialog(savedFile, ref));
+  showRiverpodDialog(context: context, child: DeleteDialog(savedFile));
 }

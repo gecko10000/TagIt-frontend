@@ -1,5 +1,6 @@
 import 'package:async/async.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:tagit_frontend/model/api/files.dart';
 import 'package:tagit_frontend/model/object/file_upload.dart';
@@ -71,4 +72,11 @@ Future<Iterable<FileUpload>> pickFilesToUpload() async {
       .pickFiles(allowMultiple: true, withReadStream: true);
   if (result == null) return [];
   return _uploadFiles(result.files);
+}
+
+void cancelAndClearUploads(WidgetRef ref) {
+  for (final upload in ref.read(uploadsProvider)) {
+    // TODO: cancel current uploads
+  }
+  ref.read(uploadsProvider.notifier).clear();
 }

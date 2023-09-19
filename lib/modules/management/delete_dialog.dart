@@ -7,10 +7,7 @@ import 'delete_dialog_model.dart';
 class DeleteDialog extends ConsumerWidget {
   final SavedFileState savedFile;
 
-  // Used to invalidate the file after closing
-  final WidgetRef parentRef;
-
-  const DeleteDialog(this.savedFile, this.parentRef, {super.key});
+  const DeleteDialog(this.savedFile, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -18,10 +15,11 @@ class DeleteDialog extends ConsumerWidget {
       title: Text("Delete ${savedFile.name}?"),
       actions: [
         TextButton(
-            onPressed: () => Navigator.pop(context), child: Text("Cancel")),
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Cancel")),
         TextButton(
-            onPressed: () => deleteSavedFile(context, parentRef, savedFile),
-            child: Text(
+            onPressed: () => deleteSavedFile(context, ref, savedFile),
+            child: const Text(
               "Delete",
               style: TextStyle(color: Colors.red),
             )),

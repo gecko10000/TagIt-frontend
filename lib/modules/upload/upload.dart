@@ -16,7 +16,11 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
   @override
   Widget build(BuildContext context) {
     if (_first) {
-      return const Center(child: Text("Choosing files..."));
+      return const Center(
+          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+        CircularProgressIndicator(),
+        Text("Choosing files...")
+      ]));
     }
     final uploads = ref.watch(uploadsProvider);
     return Column(children: [
@@ -37,7 +41,7 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
         Expanded(
             child: ListTile(
           title: const Center(child: Text("Clear Uploads")),
-          onTap: () => ref.read(uploadsProvider.notifier).clear(),
+          onTap: () => cancelAndClearUploads(ref),
         ))
       ]),
     ]);
