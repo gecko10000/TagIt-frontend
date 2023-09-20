@@ -1,6 +1,4 @@
-import 'dart:convert';
-
-import 'package:http/http.dart';
+import 'package:dio/dio.dart';
 import 'package:tagit_frontend/model/api/base.dart';
 
 import '../object/saved_file.dart';
@@ -11,8 +9,8 @@ class SearchAPI {
 
   static Future<List<SavedFileState>> fileSearch(String query) async {
     Response response =
-        await client.get(url("search/files", queryParameters: {"q": query}));
-    final json = jsonDecode(utf8.decode(response.bodyBytes));
+        await client.get("/search/files", queryParameters: {"q": query});
+    final json = response.data;
     if (response.statusCode == 422) {
       throw SearchFormatException(json["index"] ?? -1);
     }
@@ -21,9 +19,8 @@ class SearchAPI {
 
   static Future<List<TagState>> tagSearch(String substring) async {
     Response response =
-        await client.get(url("search/tags", queryParameters: {"q": substring}));
-    final json = jsonDecode(utf8.decode(response.bodyBytes));
-    return (json as List).map((j) => TagState.fromJson(j)).toList();
+        await client.get("/search/tags", queryParameters: {"q": substring});
+    return (response.data as List).map((j) => TagState.fromJson(j)).toList();
   }
 }
 

@@ -1,14 +1,16 @@
 import 'dart:async';
-import 'dart:convert';
+import 'dart:io';
 
+import 'package:async/async.dart';
+import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:tagit_frontend/model/enum/media_type.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
 import 'package:uuid/uuid.dart';
 
+import '../object/file_upload.dart';
 import 'base.dart';
 
 class FileAPI {
@@ -17,37 +19,42 @@ class FileAPI {
 
   static Future<List<SavedFileState>> getAllFiles(
       {bool reversed = false}) async {
-    final response = await client
-        .get(url("files/all"), headers: {"reversed": reversed.toString()});
-    final files = jsonDecode(utf8.decode(response.bodyBytes)) as List;
+    final response = await client.get("/files/all",
+        options: Options(headers: {"reversed": reversed.toString()}));
+    final files = response.data as List;
     return files.map((j) => SavedFileState.fromJson(j)).toList();
   }
 
-  static (Stream<int>, Future<SavedFileState>) uploadFile(PlatformFile file) {
-    final request =
-        StreamedRequest("POST", url("file/${Uri.encodeComponent(file.name)}"));
-    final stream = StreamController<int>.broadcast();
-    request.contentLength = file.size;
-    int total = 0;
-    file.readStream!.listen((chunk) {
-      request.sink.add(chunk);
-      total += chunk.length;
-      stream.add(total);
-    }, onError: (ex, st) {
+  static Future<SavedFileState> _internalUpload(PlatformFile file,
+      StreamController<int> stream, CancelToken cancelToken) async {
+    try {
+      final upload = await client.post(
+          "/file/${Uri.encodeComponent(file.name)}",
+          data: file.readStream!,
+          cancelToken: cancelToken,
+          options: Options(
+              headers: {Headers.contentLengthHeader: file.size},
+              contentType: ContentType.binary.toString()),
+          onSendProgress: (total, _) {
+        stream.add(total);
+      });
+      return SavedFileState.fromJson(upload.data);
+    } on DioException catch (ex, st) {
       stream.addError(ex, st);
-      request.sink.close();
-      stream.close();
-    }, onDone: () {
-      request.sink.close();
-      stream.close();
-    });
-    final future = client.send(request);
-    final savedFileFuture = future.then((response) async {
-      final responseString = await response.stream.bytesToString();
-      final fileJson = jsonDecode(responseString);
-      return SavedFileState.fromJson(fileJson);
-    });
-    return (stream.stream, savedFileFuture);
+      return Future.error(ex, st);
+    }
+  }
+
+  static FileUpload uploadFile(UuidValue uuid, PlatformFile file) {
+    final stream = StreamController<int>.broadcast();
+    final cancelToken = CancelToken();
+    final future = _internalUpload(file, stream, cancelToken);
+    return FileUpload(
+        uuid: uuid,
+        platformFile: file,
+        stream: stream.stream,
+        savedFileFuture: ResultFuture(future),
+        cancelToken: cancelToken);
   }
 
   /*static StreamSubscription uploadFile(PlatformFile file,
@@ -84,14 +91,13 @@ class FileAPI {
   }*/
 
   static Future<void> rename(UuidValue fileId, String newName) async {
-    await client.patch(url("file/${fileId.uuid}"), body: {"name": newName});
+    await client.patch("/file/${fileId.uuid}",
+        data: FormData.fromMap({"name": newName}));
   }
 
   static Future<SavedFileState> getInfo(UuidValue fileId) async {
-    final response = await client.get(url("file/${fileId.uuid}/info"));
-    final map =
-        jsonDecode(utf8.decode(response.bodyBytes)) as Map<String, dynamic>;
-    return SavedFileState.fromJson(map);
+    final response = await client.get("/file/${fileId.uuid}/info");
+    return SavedFileState.fromJson(response.data);
   }
 
   static Image getThumbnail(SavedFileState savedFile) {
@@ -130,8 +136,8 @@ class FileAPI {
 
   static Future<void> _modifyTag(
       UuidValue fileId, UuidValue tagId, bool add) async {
-    await client.patch(url("file/${fileId.uuid}/${add ? "add" : "remove"}"),
-        body: {"tag": tagId.uuid});
+    await client.patch("/file/${fileId.uuid}/${add ? "add" : "remove"}",
+        data: FormData.fromMap({"tag": tagId.uuid}));
   }
 
   static Future<void> addTag(UuidValue fileId, UuidValue tagId) async {
@@ -143,13 +149,13 @@ class FileAPI {
   }
 
   static Future<void> delete(UuidValue fileId) async {
-    await client.delete(url("file/${fileId.uuid}"));
+    await client.delete("/file/${fileId.uuid}");
   }
 
   static Future<bool> checkExists(String fileName) async {
     final response =
-        await client.get(url("file/exists/${Uri.encodeComponent(fileName)}"));
-    final exists = jsonDecode(utf8.decode(response.bodyBytes))["exists"];
+        await client.get("/file/exists/${Uri.encodeComponent(fileName)}");
+    final exists = response.data["exists"];
     return exists;
   }
 }

@@ -109,7 +109,7 @@ class ContentViewer extends ConsumerWidget {
                                 textAlign: TextAlign.right,
                               )))),
                 ]),
-        error: (ex, st) => Text("$ex\n$st"),
+        error: (ex, st) => Center(child: Text("$ex\n$st")),
         loading: () => const Center(child: CircularProgressIndicator()));
   }
 }

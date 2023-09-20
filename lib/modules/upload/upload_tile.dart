@@ -1,9 +1,13 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tagit_frontend/model/object/file_upload.dart';
 import 'package:tagit_frontend/modules/browse/browser_model.dart';
 import 'package:tagit_frontend/modules/content_view/content_view_model.dart';
 import 'package:tagit_frontend/modules/management/file/saved_file_view_model.dart';
+import 'package:tagit_frontend/modules/upload/upload_model.dart';
+
+import '../../model/object/saved_file.dart';
 
 class UploadTile extends ConsumerStatefulWidget {
   final FileUpload upload;
@@ -15,76 +19,75 @@ class UploadTile extends ConsumerStatefulWidget {
 }
 
 class _UploadTileState extends ConsumerState<UploadTile> {
-  bool tappable = false;
+  Widget progressBar(Stream<int> stream, int fileSize) {
+    return StreamBuilder(
+        stream: stream,
+        initialData: 0,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Tooltip(
+                message: snapshot.error.toString(),
+                child: const Icon(Icons.error, color: Colors.red));
+          }
+          final data = snapshot.requireData;
+          // upload is done, request processing
+          if (data == fileSize) {
+            return const CircularProgressIndicator(color: Colors.green);
+          }
+          // If no progress, upload hasn't started yet
+          // Therefore, we display the spinning progress indicator
+          final progress = data == 0 ? null : data / fileSize;
+          return CircularProgressIndicator(value: progress);
+        });
+  }
 
-  Widget leading() {
-    final file = widget.upload.platformFile;
-    if (widget.upload.stream == null) {
+  Widget leading(AsyncValue<SavedFileState?> savedFile) {
+    final stream = widget.upload.stream;
+    if (stream == null) {
       return const Tooltip(
           message: "File already exists.",
           child: Icon(Icons.error, color: Colors.red));
     }
-    return StreamBuilder(
-        stream: widget.upload.stream,
-        initialData: 0,
-        builder: (context, snapshot) {
-          final error = snapshot.error;
-          if (error != null) {
-            return Tooltip(
-                message: error.toString(),
-                child: const Icon(Icons.error, color: Colors.red));
-          }
-          if (widget.upload.savedFileFuture!.isComplete) {
-            return const Icon(Icons.check_circle, color: Colors.green);
-          }
-          // won't be null here as we handled the error case
-          final data = snapshot.requireData;
-          final size = file.size;
-          if (data == size) {
-            return const CircularProgressIndicator(color: Colors.green);
-          }
-          return CircularProgressIndicator(
-              value: data == 0 ? null : data / size);
-        });
+    return savedFile.when(
+        data: (data) => const Icon(Icons.check_circle, color: Colors.green),
+        error: (ex, st) => Tooltip(
+              message: ex is DioException ? ex.message : ex.toString(),
+              child: const Icon(Icons.error, color: Colors.red),
+            ),
+        loading: () => progressBar(stream, widget.upload.platformFile.size));
   }
 
-  Widget? trailing(WidgetRef ref) {
-    if (widget.upload.savedFileFuture == null) return null;
-    return StreamBuilder(
-        stream: widget.upload.savedFileFuture!.asStream(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) return const SizedBox.shrink();
-          final savedFile =
-              ref.watch(savedFileProvider(snapshot.requireData.uuid));
-          final cached = snapshot.requireData;
+  Widget? trailing(AsyncValue<SavedFileState?> savedFile) {
+    return savedFile.when(
+        data: (file) {
+          if (file == null) return null;
+          final updatedFile = ref.watch(savedFileProvider(file.uuid));
           return TextButton.icon(
-              onPressed: () =>
-                  openSavedFileTags(context, savedFile.valueOrNull ?? cached),
+              onPressed: () => openSavedFileTags(context, file),
               icon: const Icon(Icons.sell),
               label: Text(
-                  (savedFile.valueOrNull ?? cached).tags.length.toString()));
-        });
+                  (updatedFile.valueOrNull ?? file).tags.length.toString()));
+        },
+        error: (_, __) => null,
+        loading: () => IconButton(
+            onPressed: () => widget.upload.cancelToken?.cancel(),
+            icon: const Icon(Icons.close)));
   }
 
   @override
   Widget build(BuildContext context) {
     final file = widget.upload.platformFile;
+    final savedFile = ref.watch(uploadedFileProvider(widget.upload.uuid));
     return ListTile(
       title: Text(file.name),
-      leading: leading(),
-      trailing: trailing(ref),
-      onTap: !tappable
+      leading: leading(savedFile),
+      trailing: trailing(savedFile),
+      onTap: !savedFile.hasValue || savedFile.value == null
           ? null
           : () async {
-              final savedFile = await widget.upload.savedFileFuture!;
-              if (context.mounted) openContentView(context, savedFile);
+              final actualFile = savedFile.value!;
+              openContentView(context, actualFile);
             },
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    widget.upload.savedFileFuture?.then((_) => setState(() => tappable = true));
   }
 }

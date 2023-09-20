@@ -1,4 +1,3 @@
-import 'package:async/async.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -6,7 +5,11 @@ import 'package:tagit_frontend/model/api/files.dart';
 import 'package:tagit_frontend/model/object/file_upload.dart';
 import 'package:uuid/uuid.dart';
 
+import '../../model/object/saved_file.dart';
+
 part 'upload_model.g.dart';
+
+final Map<UuidValue, FileUpload> uploads = {};
 
 @Riverpod(keepAlive: true)
 class Uploads extends _$Uploads {
@@ -22,48 +25,45 @@ class Uploads extends _$Uploads {
   }
 
   Future<void> removeByUuid(UuidValue uuid) async {
-    state = [
-      ...state.where((upload) {
-        final complete = upload.savedFileFuture?.isComplete ?? false;
-        if (!complete) {
-          return true;
-        }
-        final result = upload.savedFileFuture!.result!;
-        if (result.isError) {
-          return true;
-        }
-        return result.asValue!.value.uuid != uuid;
-      })
-    ];
+    state = [...state.where((upload) => upload.uuid != uuid)];
   }
+}
+
+@riverpod
+class UploadedFile extends _$UploadedFile {
+  @override
+  Future<SavedFileState?> build(UuidValue uuid) async {
+    final future = ref
+        .watch(uploadsProvider)
+        .singleWhere((f) => f.uuid == uuid)
+        .savedFileFuture;
+    return future;
+  }
+}
+
+@riverpod
+class Upload extends _$Upload {
+  @override
+  Future<FileUpload> build(PlatformFile file) => _uploadFile(file);
 }
 
 Future<FileUpload> _uploadFile(PlatformFile file) async {
   final exists = await FileAPI.checkExists(file.name);
+  final uuid = UuidValue(const Uuid().v4());
   if (exists) {
     return FileUpload(
+      uuid: uuid,
       platformFile: file,
       stream: null,
+      cancelToken: null,
       savedFileFuture: null,
     );
   }
-  final (stream, savedFileFuture) = FileAPI.uploadFile(file);
-  return FileUpload(
-    platformFile: file,
-    stream: stream,
-    savedFileFuture: ResultFuture(savedFileFuture),
-  );
+  return FileAPI.uploadFile(uuid, file);
 }
 
 Future<Iterable<FileUpload>> _uploadFiles(Iterable<PlatformFile> files) async {
-  final futures = <Future<FileUpload>>[];
-  for (final file in files) {
-    futures.add(_uploadFile(file));
-  }
-  final uploads = <FileUpload>[];
-  for (final future in futures) {
-    uploads.add(await future);
-  }
+  final uploads = await Future.wait(files.map((f) => _uploadFile(f)));
   return uploads;
 }
 
