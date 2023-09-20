@@ -41,6 +41,18 @@ class _UploadTileState extends ConsumerState<UploadTile> {
         });
   }
 
+  String _readableErrorMessage(Exception ex) {
+    if (ex is DioException) {
+      if (ex.type != DioExceptionType.unknown && ex.message != null) {
+        return ex.message!;
+      }
+      return ex.message ??
+          ex.error?.toString() ??
+          "Unknown error: ${ex.stackTrace.toString()}";
+    }
+    return ex.toString();
+  }
+
   Widget leading(AsyncValue<SavedFileState?> savedFile) {
     final stream = widget.upload.stream;
     if (stream == null) {
@@ -50,10 +62,13 @@ class _UploadTileState extends ConsumerState<UploadTile> {
     }
     return savedFile.when(
         data: (data) => const Icon(Icons.check_circle, color: Colors.green),
-        error: (ex, st) => Tooltip(
-              message: ex is DioException ? ex.message : ex.toString(),
-              child: const Icon(Icons.error, color: Colors.red),
-            ),
+        error: (ex, st) {
+          return Tooltip(
+            message:
+                ex is Exception ? _readableErrorMessage(ex) : ex.toString(),
+            child: const Icon(Icons.error, color: Colors.red),
+          );
+        },
         loading: () => progressBar(stream, widget.upload.platformFile.size));
   }
 
