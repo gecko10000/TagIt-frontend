@@ -35,7 +35,6 @@ void refreshClientEndpoint() {
 
 Map<String, String> fileGetParams() {
   final token = accountBox.get("token");
-  print("Using token $token");
   return token == null ? {} : {"token": token};
 }
 
