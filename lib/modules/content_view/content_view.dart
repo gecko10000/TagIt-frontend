@@ -10,6 +10,7 @@ import 'package:tagit_frontend/modules/content_view/viewers/video_viewer.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../common/widget/bordered_text.dart';
+import '../management/file/download.dart';
 import '../management/file/saved_file_view_model.dart';
 
 class ContentViewer extends ConsumerWidget {
