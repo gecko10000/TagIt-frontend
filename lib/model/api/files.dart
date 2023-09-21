@@ -5,7 +5,10 @@ import 'package:async/async.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:media_kit/media_kit.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:tagit_frontend/model/enum/media_type.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
 import 'package:uuid/uuid.dart';
@@ -57,38 +60,59 @@ class FileAPI {
         cancelToken: cancelToken);
   }
 
-  /*static StreamSubscription uploadFile(PlatformFile file,
-      {required void Function(int) onProgress,
-        required void Function(String) onError,
-        required void Function() onComplete}) {
-    final request =
-    StreamedRequest("POST", url("file/${Uri.encodeComponent(file.name)}"));
-    request.contentLength = file.size;
-    int progress = 0;
-    final subscription = file.readStream!.listen((chunk) {
-      request.sink.add(chunk);
-      progress += chunk.length;
-      onProgress(progress);
-    },
-        // don't call onComplete here
-        // we do this when we can confirm that
-        // the request went through properly
-        onDone: () {
-          request.sink.close();
-        }, onError: (e) {
-          request.sink.addError(e);
-          request.sink.close();
-          onError(e.toString());
-        });
-    // use .then to ignore the StreamedResponse
-    // this makes it so onError does not expect
-    // a StreamedResponse as a return value
-    _client.send(request).then((_) => onComplete()).onError((error, _) {
-      onError(error is RequestException ? error.message : error.toString());
-      subscription.cancel();
-    });
-    return subscription;
-  }*/
+  static Future<bool> _iosPermissions() async {
+    final storageAccess = await Permission.storage.request();
+    if (storageAccess.isPermanentlyDenied) {
+      await openAppSettings();
+    }
+    return storageAccess.isGranted;
+  }
+
+  // TODO: make these work with Android 30+
+  // https://stackoverflow.com/a/66366102
+  static Future<bool> _androidPermissions() async {
+    final storageAccess = await Permission.storage.request();
+    if (storageAccess.isPermanentlyDenied) {
+      await openAppSettings();
+    }
+    return storageAccess.isGranted;
+  }
+
+  static const androidDownloadPath = "/storage/emulated/0/Download/tagit";
+
+  static Future<String?> _getPlatformPath(SavedFileState savedFile) async {
+    if (kIsWeb) return savedFile.name;
+    if (Platform.isLinux ||
+        Platform.isMacOS ||
+        Platform.isWindows ||
+        Platform.isFuchsia) {
+      // TODO: save previously used directory as initial directory
+      return await FilePicker.platform.saveFile(fileName: savedFile.name);
+    }
+    if (Platform.isAndroid) {
+      _androidPermissions();
+      return "$androidDownloadPath/${savedFile.name}";
+    }
+    // iOS
+    _iosPermissions();
+    final downloadsDir = await getDownloadsDirectory();
+    if (downloadsDir == null) return null;
+    if (!downloadsDir.existsSync()) downloadsDir.createSync();
+    return downloadsDir.uri.resolve(savedFile.name).path;
+  }
+
+  // platform-dependent downloading and paths
+  // wtf is fuschia? I assume it's supported like Linux.
+  // The first future is for choosing/getting the path.
+  // The returned future is the download future.
+  static Future<Future<void>?> downloadFile(SavedFileState savedFile) async {
+    final url = "/file/${savedFile.uuid.uuid}";
+    final queryParams = fileGetParams();
+    final path = await _getPlatformPath(savedFile);
+    print(path);
+    if (path == null) return null;
+    return client.download(url, path, queryParameters: queryParams);
+  }
 
   static Future<void> rename(UuidValue fileId, String newName) async {
     await client.patch("/file/${fileId.uuid}",

@@ -46,7 +46,7 @@ class ContentViewer extends ConsumerWidget {
             Tooltip(
                 message: "Download file",
                 child: TextButton(
-                  onPressed: () => context.showTextSnackBar("Downloading file"),
+                  onPressed: () => downloadFile(context, savedFile),
                   style: defaultButtonStyle(),
                   child: const Icon(Icons.download),
                 )),

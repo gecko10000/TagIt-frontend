@@ -19,7 +19,6 @@ Dio _createDio() {
       options.headers.addAll(defaultHeaders());
       handler.next(options);
     },
-    onError: (e, handler) => handler.next(e),
   ));
   return dio;
 }

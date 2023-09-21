@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tagit_frontend/common/extension/build_context.dart';
 import 'package:tagit_frontend/common/widget/riverpod_dialog.dart';
+import 'package:tagit_frontend/model/api/files.dart';
 import 'package:tagit_frontend/modules/management/rename_dialog.dart';
 import 'package:tagit_frontend/modules/management/tag/interactive_tag_list.dart';
 
 import '../../model/object/saved_file.dart';
-import '../management/delete_dialog.dart';
+import '../management/file/delete_dialog.dart';
+
+void downloadFile(BuildContext context, SavedFileState savedFile) async {
+  final future = await FileAPI.downloadFile(savedFile);
+  if (future == null) return;
+
+  showStaticSnackBar(const Text("Saving..."));
+  await future;
+  showStaticSnackBar(const Text("Download complete."));
+}
 
 void openSavedFileTags(BuildContext context, SavedFileState savedFile) {
   showRiverpodDialog(
@@ -18,10 +29,10 @@ void openSavedFileTags(BuildContext context, SavedFileState savedFile) {
   );
 }
 
-void renameFile(BuildContext context, SavedFileState savedFile) {
-  showRiverpodDialog(context: context, child: RenameDialog(savedFile));
-}
-
 void deleteFile(BuildContext context, WidgetRef ref, SavedFileState savedFile) {
   showRiverpodDialog(context: context, child: DeleteDialog(savedFile));
+}
+
+void renameFile(BuildContext context, SavedFileState savedFile) {
+  showRiverpodDialog(context: context, child: RenameDialog(savedFile));
 }
