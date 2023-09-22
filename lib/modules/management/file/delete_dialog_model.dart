@@ -15,5 +15,5 @@ void deleteSavedFile(
   for (final tag in savedFile.tags) {
     ref.invalidate(tagProvider(tag.uuid));
   }
-  ref.read(uploadsProvider.notifier).removeByUuid(savedFile.uuid);
+  ref.read(uploadsProvider.notifier).removeBySavedFileUuid(savedFile.uuid);
 }

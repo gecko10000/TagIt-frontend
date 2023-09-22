@@ -24,8 +24,19 @@ class Uploads extends _$Uploads {
     state = [];
   }
 
-  Future<void> removeByUuid(UuidValue uuid) async {
+  void removeByUuid(UuidValue uuid) {
     state = [...state.where((upload) => upload.uuid != uuid)];
+  }
+
+  void removeBySavedFileUuid(UuidValue uuid) {
+    state = [...state.where((upload) {
+      final savedFileFuture = upload.savedFileFuture;
+      if (savedFileFuture == null) return true;
+      final savedFile = savedFileFuture.result?.asValue?.value;
+      if (savedFile == null) return true;
+      return savedFile.uuid != uuid;
+    })
+    ];
   }
 }
 
@@ -62,16 +73,16 @@ Future<FileUpload> _uploadFile(PlatformFile file) async {
   return FileAPI.uploadFile(uuid, file);
 }
 
-Future<Iterable<FileUpload>> _uploadFiles(Iterable<PlatformFile> files) async {
+Future<Iterable<FileUpload>> uploadFiles(Iterable<PlatformFile> files) async {
   final uploads = await Future.wait(files.map((f) => _uploadFile(f)));
   return uploads;
 }
 
-Future<Iterable<FileUpload>> pickFilesToUpload() async {
+Future<Iterable<PlatformFile>> pickFilesToUpload() async {
   final result = await FilePicker.platform
       .pickFiles(allowMultiple: true, withReadStream: true);
   if (result == null) return [];
-  return _uploadFiles(result.files);
+  return result.files;
 }
 
 void cancelAndClearUploads(WidgetRef ref) {

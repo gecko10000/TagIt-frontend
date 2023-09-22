@@ -49,15 +49,18 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
 
   Future<void> pickAndAdd() async {
     final files = await pickFilesToUpload();
-    ref.read(uploadsProvider.notifier).addAll(files);
+    final uploads = await uploadFiles(files);
+    ref.read(uploadsProvider.notifier).addAll(uploads);
   }
 
   void initialPick() async {
     if (_first) {
-      await pickAndAdd();
+      final files = await pickFilesToUpload();
       // note: we use _first to determine
       // when to display the list of uploads
       setState(() => _first = false);
+      final uploads = await uploadFiles(files);
+      ref.read(uploadsProvider.notifier).addAll(uploads);
     }
   }
 
