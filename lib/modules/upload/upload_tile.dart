@@ -92,17 +92,23 @@ class _UploadTileState extends ConsumerState<UploadTile> {
   @override
   Widget build(BuildContext context) {
     final file = widget.upload.platformFile;
-    final savedFile = ref.watch(uploadedFileProvider(widget.upload.uuid));
-    return ListTile(
-      title: Text(file.name),
-      leading: leading(savedFile),
-      trailing: trailing(savedFile),
-      onTap: !savedFile.hasValue || savedFile.value == null
-          ? null
-          : () async {
-              final actualFile = savedFile.value!;
-              openContentView(context, actualFile);
-            },
-    );
+    final uploadUuid = widget.upload.uuid;
+    final savedFile = ref.watch(uploadedFileProvider(uploadUuid));
+    return Dismissible(
+        key: Key(uploadUuid.uuid),
+        onDismissed: (_) {
+          ref.read(uploadsProvider.notifier).removeByUuid(uploadUuid);
+        },
+        child: ListTile(
+          title: Text(file.name),
+          leading: leading(savedFile),
+          trailing: trailing(savedFile),
+          onTap: !savedFile.hasValue || savedFile.value == null
+              ? null
+              : () async {
+                  final actualFile = savedFile.value!;
+                  openContentView(context, actualFile);
+                },
+        ));
   }
 }
