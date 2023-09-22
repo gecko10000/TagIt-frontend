@@ -21,21 +21,34 @@ class Uploads extends _$Uploads {
   }
 
   void clear() {
+    for (final upload in state) {
+      upload.cancelToken?.cancel();
+    }
     state = [];
   }
 
   void removeByUuid(UuidValue uuid) {
-    state = [...state.where((upload) => upload.uuid != uuid)];
+    state = [
+      ...state.where((upload) {
+        if (upload.uuid == uuid) {
+          upload.cancelToken?.cancel();
+        }
+        return upload.uuid != uuid;
+      })
+    ];
   }
 
+  // Note: the upload is complete at this
+  // point so there's no need to cancel it
   void removeBySavedFileUuid(UuidValue uuid) {
-    state = [...state.where((upload) {
-      final savedFileFuture = upload.savedFileFuture;
-      if (savedFileFuture == null) return true;
-      final savedFile = savedFileFuture.result?.asValue?.value;
-      if (savedFile == null) return true;
-      return savedFile.uuid != uuid;
-    })
+    state = [
+      ...state.where((upload) {
+        final savedFileFuture = upload.savedFileFuture;
+        if (savedFileFuture == null) return true;
+        final savedFile = savedFileFuture.result?.asValue?.value;
+        if (savedFile == null) return true;
+        return savedFile.uuid != uuid;
+      })
     ];
   }
 }

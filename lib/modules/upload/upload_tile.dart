@@ -99,6 +99,9 @@ class _UploadTileState extends ConsumerState<UploadTile> {
         onDismissed: (_) {
           ref.read(uploadsProvider.notifier).removeByUuid(uploadUuid);
         },
+        background: Container(
+          color: Colors.red,
+        ),
         child: ListTile(
           title: Text(file.name),
           leading: leading(savedFile),
