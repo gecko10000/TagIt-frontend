@@ -9,6 +9,7 @@ class SearchScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final resultsValue = ref.watch(searchResultsProvider);
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -17,9 +18,10 @@ class SearchScreen extends ConsumerWidget {
             onChanged: (s) => ref.read(searchInputProvider.notifier).state = s,
           ),
           Expanded(
-            child:
-                DisplayableGrid(displayables: ref.watch(searchResultsProvider)),
-          )
+              child: resultsValue.when(
+                  data: (results) => DisplayableGrid(displayables: results),
+                  error: (ex, st) => Text("$ex\n$st"),
+                  loading: () => const CircularProgressIndicator()))
         ]);
   }
 }

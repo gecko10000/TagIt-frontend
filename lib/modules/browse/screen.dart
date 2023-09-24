@@ -22,45 +22,58 @@ class BrowseScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final body = TagBrowser(tagId: tagId, stackPush: stackPush);
-    AppBar? appBar;
-    if (tagId == null && stackPush) {
-      appBar = null;
-    } else {
-      final leading = tagId == null
-          ? null
-          : IconButton(
-              icon: const Icon(Icons.arrow_upward),
-              onPressed: () async {
-                if (stackPush) {
-                  Navigator.pop(context);
-                } else {
-                  final tag = await ref.read(tagProvider(tagId).future);
-                  if (context.mounted) {
-                    popAndOpenTagBrowser(
-                        context, tag.parentUUID, tag.parentName);
-                  }
-                }
-              },
-            );
-      final title = tagName == null ? null : Text(tagName!);
-      final actions = stackPush
-          ? <Widget>[]
-          : [
+    final tagValue = ref.watch(tagProvider(tagId));
+    return tagValue.when(
+        data: (tag) {
+          final body = TagBrowser(tag: tag, stackPush: stackPush);
+          final leading = tagId == null
+              ? null
+              : IconButton(
+                  icon: const Icon(Icons.arrow_upward),
+                  onPressed: () async {
+                    if (stackPush) {
+                      Navigator.pop(context);
+                    } else {
+                      final tag = await ref.read(tagProvider(tagId).future);
+                      if (context.mounted) {
+                        popAndOpenTagBrowser(
+                            context, tag.parentUUID, tag.parentName);
+                      }
+                    }
+                  },
+                );
+          final titleString = tagName != null ? tagName! : "TagIt";
+          final title = Tooltip(
+              message: titleString,
+              child: Text(
+                titleString,
+                overflow: TextOverflow.fade,
+              ));
+          final actions = [
+            IconButton(
+                onPressed: () => openCreateTagDialog(context, tag),
+                icon: const Icon(Icons.add)),
+            if (tagId != null)
+              IconButton(
+                  onPressed: () => openDeleteTagDialog(context, tag),
+                  icon: const Icon(Icons.delete)),
+            if (!stackPush)
               IconButton(
                   onPressed: () => Navigator.pop(context),
                   icon: const Icon(Icons.close))
-            ];
-      appBar = AppBar(
-        automaticallyImplyLeading: false,
-        leading: leading,
-        title: title,
-        actions: actions,
-      );
-    }
-    return Scaffold(
-      appBar: appBar,
-      body: body,
-    );
+          ];
+          final appBar = AppBar(
+            automaticallyImplyLeading: false,
+            leading: leading,
+            title: title,
+            actions: actions,
+          );
+          return Scaffold(
+            appBar: appBar,
+            body: body,
+          );
+        },
+        error: (ex, st) => Text("$ex\n$st"),
+        loading: () => const Center(child: CircularProgressIndicator()));
   }
 }

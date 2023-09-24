@@ -4,10 +4,10 @@ import 'package:tagit_frontend/model/object/saved_file.dart';
 
 import 'delete_dialog_model.dart';
 
-class DeleteDialog extends ConsumerWidget {
+class DeleteFileDialog extends ConsumerWidget {
   final SavedFileState savedFile;
 
-  const DeleteDialog(this.savedFile, {super.key});
+  const DeleteFileDialog(this.savedFile, {super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

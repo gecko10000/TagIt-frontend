@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
-import 'package:tagit_frontend/modules/browse/grid.dart';
 import 'package:tagit_frontend/modules/management/tag/picker/tag_picker_model.dart';
 import 'package:tagit_frontend/modules/management/tag/picker/tag_tile.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../model/object/child_tag.dart';
+import '../../../browse/grid.dart';
 import '../tag_view_model.dart';
 
 class TagPickerScreen extends ConsumerWidget {
@@ -20,7 +20,7 @@ class TagPickerScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final tag = ref.watch(tagProvider(tagId));
-    final displayables = tag.whenData((tag) => tag.children);
+    final displayablesValue = tag.whenData((tag) => tag.children);
     final leadingIcon = tagId == null
         ? null
         : IconButton(
@@ -61,10 +61,14 @@ class TagPickerScreen extends ConsumerWidget {
                 icon: const Icon(Icons.close))
           ],
         ),
-        body: DisplayableGrid(
-          displayables: displayables,
-          itemBuilder: (context, displayable) =>
-              TagPickerTile(displayable as ChildTagState, currentPicker: this),
-        ));
+        body: displayablesValue.when(
+            data: (displayables) => DisplayableGrid(
+                  displayables: displayables,
+                  itemBuilder: (context, displayable) => TagPickerTile(
+                      displayable as ChildTagState,
+                      currentPicker: this),
+                ),
+            error: (ex, st) => Text("$ex\n$st"),
+            loading: () => const CircularProgressIndicator()));
   }
 }

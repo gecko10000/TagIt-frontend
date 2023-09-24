@@ -36,7 +36,7 @@ class _RenameDialogState extends ConsumerState<RenameDialog> {
             child: const Text("Cancel")),
         TextButton(
             onPressed: () => renameDisplayable(
-                context, ref, widget.toRename, controller.value.text),
+                context, ref, widget.toRename, controller.text),
             child: const Text("Confirm"))
       ],
     );

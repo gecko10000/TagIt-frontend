@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
 import 'package:tagit_frontend/modules/browse/tag_tile.dart';
 
@@ -32,7 +31,7 @@ class GridSquare extends StatelessWidget {
 }
 
 class DisplayableGrid extends StatelessWidget {
-  final AsyncValue<List<Displayable>> displayables;
+  final List<Displayable> displayables;
   final Widget Function(BuildContext, Displayable)? itemBuilder;
   final bool stackPush;
 
@@ -42,7 +41,8 @@ class DisplayableGrid extends StatelessWidget {
       super.key,
       this.stackPush = true});
 
-  Widget gridView(List<Displayable> displayables) {
+  @override
+  Widget build(BuildContext context) {
     if (displayables.isEmpty) {
       return const Center(child: Text("Nothing here."));
     }
@@ -59,15 +59,6 @@ class DisplayableGrid extends StatelessWidget {
               );
       },
       itemCount: displayables.length,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return displayables.when(
-      data: (data) => gridView(data),
-      error: (err, stack) => Text("Error: $err\n$stack"),
-      loading: () => const Center(child: CircularProgressIndicator()),
     );
   }
 }

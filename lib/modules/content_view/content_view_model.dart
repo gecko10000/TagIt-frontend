@@ -19,7 +19,7 @@ void openSavedFileTags(BuildContext context, SavedFileState savedFile) {
 }
 
 void deleteFile(BuildContext context, WidgetRef ref, SavedFileState savedFile) {
-  showRiverpodDialog(context: context, child: DeleteDialog(savedFile));
+  showRiverpodDialog(context: context, child: DeleteFileDialog(savedFile));
 }
 
 void renameFile(BuildContext context, SavedFileState savedFile) {
