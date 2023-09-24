@@ -27,20 +27,24 @@ class TagPickerScreen extends ConsumerWidget {
             onPressed: () => Navigator.pop(context),
             icon: const Icon(Icons.arrow_upward));
     final pickedTags = ref.watch(pickedTagsProvider);
+    final titleText = tagId == null
+        ? "Select Tags"
+        : tag.when(
+            data: (t) => t.fullName(),
+            error: (ex, st) => "Error",
+            loading: () => "...");
     return Scaffold(
         appBar: AppBar(
-          title:
-              Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-            Text(tagId == null
-                ? "Select Tags"
-                : tag.when(
-                    data: (t) => t.fullName(),
-                    error: (ex, st) => "Error",
-                    loading: () => "...")),
-            Tooltip(
-              message: pickedTags.map((t) => t.fullName()).join("\n"),
-              child: Text("${pickedTags.length} tags selected"),
-            ),
+          title: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+            Align(
+                alignment: Alignment.centerLeft,
+                child: Tooltip(message: titleText, child: Text(titleText))),
+            Align(
+                alignment: Alignment.centerLeft,
+                child: Tooltip(
+                  message: pickedTags.map((t) => t.fullName()).join("\n"),
+                  child: Text("${pickedTags.length} tags selected"),
+                )),
           ]),
           automaticallyImplyLeading: false,
           leading: leadingIcon,
