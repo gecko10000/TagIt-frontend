@@ -73,6 +73,6 @@ class TagPickerScreen extends ConsumerWidget {
                       currentPicker: this),
                 ),
             error: (ex, st) => Text("$ex\n$st"),
-            loading: () => const CircularProgressIndicator()));
+            loading: () => const Center(child: CircularProgressIndicator())));
   }
 }
