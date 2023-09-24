@@ -8,12 +8,19 @@ class SearchAPI {
   SearchAPI._();
 
   static Future<List<SavedFileState>> fileSearch(String query) async {
-    Response response =
-        await client.get("/search/files", queryParameters: {"q": query});
-    final json = response.data;
-    if (response.statusCode == 422) {
-      throw SearchFormatException(json["index"] ?? -1);
+    late Response response;
+    try {
+      response =
+          await client.get("/search/files", queryParameters: {"q": query});
+    } on DioException catch (ex, st) {
+      final response = ex.response;
+      if (response == null) rethrow;
+      if (response.statusCode == 422) {
+        throw SearchFormatException(int.tryParse(response.data["index"]) ?? -1);
+      }
+      rethrow;
     }
+    final json = response.data;
     return (json as List).map((j) => SavedFileState.fromJson(j)).toList();
   }
 

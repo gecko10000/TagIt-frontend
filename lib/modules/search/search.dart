@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tagit_frontend/model/api/search.dart';
 import 'package:tagit_frontend/modules/search/search_model.dart';
 
 import '../browse/grid.dart';
@@ -18,10 +21,39 @@ class SearchScreen extends ConsumerWidget {
             onChanged: (s) => ref.read(searchInputProvider.notifier).state = s,
           ),
           Expanded(
-              child: resultsValue.when(
-                  data: (results) => DisplayableGrid(displayables: results),
-                  error: (ex, st) => Text("$ex\n$st"),
-                  loading: () => const CircularProgressIndicator()))
+              child: Center(
+                  child: resultsValue.when(
+                      data: (results) => DisplayableGrid(displayables: results),
+                      error: (ex, st) {
+                        if (ex is SearchFormatException) {
+                          final index = ex.index;
+                          final text = ref.watch(searchInputProvider);
+                          const errorDisplayRange = 3;
+                          final beforeError = text.substring(
+                              max(0, index - errorDisplayRange), index);
+                          final afterError = text.substring(index + 1,
+                              min(index + errorDisplayRange + 1, text.length));
+                          return Text.rich(
+                            TextSpan(children: [
+                              TextSpan(
+                                  text:
+                                      "Invalid input at index $index: \"$beforeError"),
+                              TextSpan(
+                                  text: text[index],
+                                  style: const TextStyle(
+                                      decorationColor: Colors.red,
+                                      decorationThickness: 2,
+                                      decoration: TextDecoration.underline,
+                                      decorationStyle:
+                                          TextDecorationStyle.wavy)),
+                              TextSpan(text: "$afterError\""),
+                            ]),
+                            style: const TextStyle(fontSize: 20),
+                          );
+                        }
+                        return Text("$ex\n$st");
+                      },
+                      loading: () => const CircularProgressIndicator())))
         ]);
   }
 }

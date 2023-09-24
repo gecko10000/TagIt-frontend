@@ -13,7 +13,7 @@ class Home extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     homeContext = context;
     return Scaffold(
-      body: ref.watch(pageProvider),
+      body: SafeArea(child: ref.watch(pageProvider)),
       bottomNavigationBar: const HomeNavBar(),
     );
   }
