@@ -7,11 +7,17 @@ import '../object/tag.dart';
 class SearchAPI {
   SearchAPI._();
 
+  static CancelToken? _currentFileSearch;
+
   static Future<List<SavedFileState>> fileSearch(String query) async {
     late Response response;
+    if (_currentFileSearch != null) {
+      _currentFileSearch!.cancel();
+    }
+    _currentFileSearch = CancelToken();
     try {
-      response =
-          await client.get("/search/files", queryParameters: {"q": query});
+      response = await client.get("/search/files",
+          queryParameters: {"q": query}, cancelToken: _currentFileSearch);
     } on DioException catch (ex, st) {
       final response = ex.response;
       if (response == null) rethrow;
