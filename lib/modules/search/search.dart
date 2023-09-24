@@ -42,7 +42,6 @@ class SearchScreen extends ConsumerWidget {
                                   text: text[index],
                                   style: const TextStyle(
                                       decorationColor: Colors.red,
-                                      decorationThickness: 2,
                                       decoration: TextDecoration.underline,
                                       decorationStyle:
                                           TextDecorationStyle.wavy)),
