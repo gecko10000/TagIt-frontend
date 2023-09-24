@@ -9,13 +9,16 @@ class SearchHelpPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("Search Format")),
-      body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        bulletpoint("Search terms indicate tags by default."),
-        bulletpoint("Add \"file:\" before a term to indicate filename."),
-        bulletpoint(
-            "Combine search terms with \"and\" (&/&& work too) or \"or\" (|/|| work too)."),
-        bulletpoint("Negate terms with \"not:\" or an exclamation mark."),
-      ]),
+      body: Container(
+          padding: const EdgeInsets.all(10),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            bulletpoint("Search terms indicate tags by default."),
+            bulletpoint("Add \"file:\" before a term to indicate filename."),
+            bulletpoint(
+                "Combine search terms with \"and\" (&/&& work too) or \"or\" (|/|| work too)."),
+            bulletpoint("Negate terms with \"not:\" or an exclamation mark."),
+          ])),
     );
   }
 }
