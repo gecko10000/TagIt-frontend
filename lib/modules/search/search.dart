@@ -14,12 +14,20 @@ class SearchScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final resultsValue = ref.watch(searchResultsProvider);
     return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          TextFormField(
-            onChanged: (s) => ref.read(searchInputProvider.notifier).state = s,
-          ),
+          Row(children: [
+            const Icon(Icons.search),
+            Flexible(
+                child: TextFormField(
+              onChanged: (s) =>
+                  ref.read(searchInputProvider.notifier).state = s,
+            )),
+            IconButton(
+                onPressed: () => openSearchHelpPage(context),
+                icon: const Icon(Icons.help))
+          ]),
           Expanded(
               child: Center(
                   child: resultsValue.when(
