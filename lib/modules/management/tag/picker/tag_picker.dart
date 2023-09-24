@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
+import 'package:tagit_frontend/modules/management/tag/picker/picker_tile.dart';
 import 'package:tagit_frontend/modules/management/tag/picker/tag_picker_model.dart';
-import 'package:tagit_frontend/modules/management/tag/picker/tag_tile.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../../model/object/child_tag.dart';
