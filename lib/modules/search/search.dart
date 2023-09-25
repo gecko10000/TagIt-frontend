@@ -20,7 +20,7 @@ class SearchScreen extends ConsumerWidget {
           Row(children: [
             const Icon(Icons.search),
             Flexible(
-                child: TextFormField(
+                child: TextField(
               onChanged: (s) =>
                   ref.read(searchInputProvider.notifier).state = s,
             )),

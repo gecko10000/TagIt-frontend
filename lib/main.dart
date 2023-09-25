@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:media_kit/media_kit.dart';
-import 'package:tagit_frontend/modules/home/home.dart';
+
+import 'modules/home/home.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,11 +22,10 @@ class TagIt extends StatelessWidget {
   Widget build(BuildContext context) {
     return ProviderScope(
         child: MaterialApp(
-      //navigatorObservers: [browseObserver],
-      debugShowCheckedModeBanner: false,
-      title: "TagIt",
-      theme: ThemeData.dark(),
-      home: const Home(),
-    ));
+            //navigatorObservers: [browseObserver],
+            debugShowCheckedModeBanner: false,
+            title: "TagIt",
+            theme: ThemeData.dark(),
+            home: const Home()));
   }
 }

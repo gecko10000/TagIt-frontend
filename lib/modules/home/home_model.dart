@@ -9,9 +9,9 @@ final homeIndexProvider = StateProvider((ref) => 0);
 
 final _pages = [
   const BrowseScreen(tagId: null, tagName: null),
-  SearchScreen(),
-  UploadScreen(),
-  SettingsScreen(),
+  const SearchScreen(),
+  const UploadScreen(),
+  const SettingsScreen(),
 ];
 
 final pageProvider =
