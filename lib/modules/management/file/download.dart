@@ -42,7 +42,7 @@ Future<bool> _androidPermissions() async {
   return storageAccess.isGranted;
 }
 
-const androidDownloadPath = "/storage/emulated/0/Download/tagit";
+const androidDownloadPath = "/storage/emulated/0/Download/TagIt";
 
 // platform-dependent downloading and paths
 // wtf is fuschia? I assume it's supported like Linux.
