@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tagit_frontend/model/api/files.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
 import 'package:tagit_frontend/modules/management/tag/tag_view_model.dart';
+import 'package:tagit_frontend/modules/search/search_model.dart';
 import 'package:tagit_frontend/modules/upload/upload_model.dart';
 
 void deleteSavedFile(
@@ -16,4 +17,5 @@ void deleteSavedFile(
     ref.invalidate(tagProvider(tag.uuid));
   }
   ref.read(uploadsProvider.notifier).removeBySavedFileUuid(savedFile.uuid);
+  ref.invalidate(searchResultsProvider);
 }
