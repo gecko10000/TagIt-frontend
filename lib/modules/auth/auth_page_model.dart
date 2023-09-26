@@ -9,6 +9,9 @@ import 'package:tagit_frontend/modules/home/home.dart';
 final backendInfoProvider =
     FutureProvider.autoDispose((ref) => AuthenticationAPI.getEndpointInfo());
 
+final isRegisterProvider = FutureProvider.autoDispose((ref) =>
+    ref.watch(backendInfoProvider.future).then((data) => data.users == 0));
+
 Future<String?> submitAuth(BuildContext context, bool register, String username,
     String password) async {
   if (register) {

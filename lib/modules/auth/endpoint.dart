@@ -32,33 +32,41 @@ class _EndpointScreenState extends ConsumerState<EndpointScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-            body: Center(
+            appBar: AppBar(title: const Text("TagIt Endpoint")),
+            body: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                alignment: Alignment.center,
                 child: Column(
-      children: [
-        Row(children: [
-          Expanded(
-              child: TextField(
-            controller: controller,
-            onChanged: (s) {
-              // greys out the continue button
-              ref.read(endpointProvider.notifier).state = "";
-              setState(() => endpointChecked = false);
-            },
-            onSubmitted: (s) => checkEndpoint(),
-          )),
-          endpointChecked
-              ? _EndpointValidityIndicator()
-              : TextButton(
-                  onPressed: checkEndpoint, child: const Text("Verify")),
-        ]),
-        TextButton(
-            // only make the button clickable
-            // when backendInfo is present
-            onPressed: ref.watch(multiUrlBackendInfoProvider).whenOrNull(
-                data: (info) => () => submitEndpoint(context, info)),
-            child: const Text("Continue")),
-      ],
-    ))));
+                  children: [
+                    Row(children: [
+                      Expanded(
+                          child: TextField(
+                        decoration: const InputDecoration(hintText: "Host"),
+                        controller: controller,
+                        onChanged: (s) {
+                          // greys out the continue button
+                          ref.read(endpointProvider.notifier).state = "";
+                          setState(() => endpointChecked = false);
+                        },
+                        onSubmitted: (s) => checkEndpoint(),
+                      )),
+                      endpointChecked
+                          ? _EndpointValidityIndicator()
+                          : TextButton(
+                              onPressed: checkEndpoint,
+                              child: const Text("Verify")),
+                    ]),
+                    TextButton(
+                        // only make the button clickable
+                        // when backendInfo is present
+                        onPressed: ref
+                            .watch(multiUrlBackendInfoProvider)
+                            .whenOrNull(
+                                data: (info) =>
+                                    () => submitEndpoint(context, info)),
+                        child: const Text("Continue")),
+                  ],
+                ))));
   }
 
   @override
