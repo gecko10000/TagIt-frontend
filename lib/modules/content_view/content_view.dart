@@ -7,6 +7,7 @@ import 'package:tagit_frontend/model/enum/media_type.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
 import 'package:tagit_frontend/modules/content_view/content_view_model.dart';
 import 'package:tagit_frontend/modules/content_view/viewers/video_viewer.dart';
+import 'package:tagit_frontend/modules/management/file/share.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../common/widget/bordered_text.dart';
@@ -54,7 +55,7 @@ class ContentViewer extends ConsumerWidget {
             Tooltip(
                 message: "Share file",
                 child: TextButton(
-                    onPressed: () => context.showTextSnackBar("Sharing file"),
+                    onPressed: () => shareFile(context, savedFile),
                     style: defaultButtonStyle(),
                     child: const Icon(Icons.share))),
           ],

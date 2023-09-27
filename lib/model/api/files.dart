@@ -59,7 +59,7 @@ class FileAPI {
 
   // The first future is for choosing/getting the path.
   // The returned future is the download future.
-  static Future<Future<void>?> downloadFile(
+  static Future<Response> downloadFile(
       SavedFileState savedFile, String path) async {
     final url = "/file/${savedFile.uuid.uuid}";
     final queryParams = fileGetParams();
