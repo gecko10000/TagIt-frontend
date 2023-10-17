@@ -9,6 +9,6 @@ void createTag(BuildContext context, WidgetRef ref, TagState parentTag,
   final parentName = parentTag.fullName();
   final fullName = parentName.isEmpty ? tagName : "$parentName/$tagName";
   await TagAPI.create(fullName);
-  ref.invalidate(tagProvider(parentTag.uuid));
+  ref.invalidate(tagProvider(parentName.isEmpty ? null : parentTag.uuid));
   if (context.mounted) Navigator.pop(context);
 }

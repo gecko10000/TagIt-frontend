@@ -18,6 +18,10 @@ class SearchHelpPage extends StatelessWidget {
             bulletpoint(
                 "Combine search terms with \"and\" (&/&& work too) or \"or\" (|/|| work too)."),
             bulletpoint("Negate terms with \"not:\" or an exclamation mark."),
+            bulletpoint(
+                "Use special characters in your search terms with quotes: file:\"hello world\""),
+            bulletpoint(
+                "Escape quotes in your search terms with backslashes: tag:\"\\\"Hi\\\"\"")
           ])),
     );
   }
