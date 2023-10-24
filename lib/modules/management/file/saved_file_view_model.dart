@@ -5,6 +5,7 @@ import 'package:tagit_frontend/modules/management/tag/tag_view_model.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../model/enum/sort_order.dart';
+import '../../../model/object/displayable.dart';
 import '../../../model/object/saved_file.dart';
 
 part 'saved_file_view_model.g.dart';
@@ -14,6 +15,13 @@ class SavedFile extends _$SavedFile {
   @override
   Future<SavedFileState> build(UuidValue uuid) => FileAPI.getInfo(
       uuid, ref.watch(tagOrderProvider), ref.watch(tagReverseProvider));
+}
+
+@riverpod
+class AllFiles extends _$AllFiles {
+  @override
+  Future<List<Displayable>> build() => FileAPI.getAllFiles(
+      ref.watch(fileOrderProvider), ref.watch(fileReverseProvider));
 }
 
 final fileOrderProvider = StateProvider((ref) => FileOrder.MODIFICATION_DATE);

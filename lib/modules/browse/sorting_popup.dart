@@ -7,6 +7,8 @@ import 'package:tagit_frontend/modules/management/file/saved_file_view_model.dar
 import 'package:tagit_frontend/modules/management/tag/tag_view_model.dart';
 
 class SortingPopup extends ConsumerStatefulWidget {
+  const SortingPopup({super.key});
+
   @override
   ConsumerState<SortingPopup> createState() => _SortingPopupState();
 }

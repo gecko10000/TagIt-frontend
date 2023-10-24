@@ -17,6 +17,7 @@ void renameDisplayable(BuildContext context, WidgetRef ref,
     await FileAPI.rename(displayable.uuid, newName);
     invalidateTags(ref, displayable);
     ref.invalidate(savedFileProvider(displayable.uuid));
+    ref.invalidate(allFilesProvider);
     if (context.mounted) Navigator.pop(context);
     return;
   }

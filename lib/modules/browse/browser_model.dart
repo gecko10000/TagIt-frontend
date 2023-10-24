@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tagit_frontend/common/widget/riverpod_dialog.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
+import 'package:tagit_frontend/modules/browse/file_browser.dart';
 import 'package:tagit_frontend/modules/browse/sorting_popup.dart';
 import 'package:tagit_frontend/modules/content_view/content_view.dart';
 import 'package:tagit_frontend/modules/management/tag/create_dialog.dart';
@@ -39,5 +40,10 @@ void openDeleteTagDialog(BuildContext context, TagState tag) {
 }
 
 void openSortingDialog(BuildContext context) {
-  showRiverpodDialog(context: context, child: SortingPopup());
+  showRiverpodDialog(context: context, child: const SortingPopup());
+}
+
+void openAllFiles(BuildContext context) {
+  Navigator.of(context)
+      .push(MaterialPageRoute(builder: (context) => const FileBrowser()));
 }

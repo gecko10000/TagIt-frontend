@@ -56,6 +56,10 @@ class BrowseScreen extends ConsumerWidget {
             IconButton(
                 onPressed: () => openSortingDialog(context),
                 icon: const Icon(Icons.sort)),
+            if (stackPush && tagId == null)
+              IconButton(
+                  onPressed: () => openAllFiles(context),
+                  icon: const Icon(Icons.file_copy_sharp)),
             if (tagId != null)
               IconButton(
                   onPressed: () => openDeleteTagDialog(context, tag),
