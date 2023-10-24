@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tagit_frontend/common/extension/build_context.dart';
+import 'package:tagit_frontend/common/extension/int.dart';
 import 'package:tagit_frontend/common/style/button_style.dart';
 import 'package:tagit_frontend/model/api/files.dart';
 import 'package:tagit_frontend/model/enum/media_type.dart';
@@ -43,23 +43,26 @@ class ContentViewer extends ConsumerWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Row(
-          children: [
-            Tooltip(
-                message: "Download file",
-                child: TextButton(
-                  onPressed: () => downloadFile(context, savedFile),
-                  style: defaultButtonStyle(),
-                  child: const Icon(Icons.download),
-                )),
-            Tooltip(
-                message: "Share file",
-                child: TextButton(
-                    onPressed: () => shareFile(context, savedFile),
+        Column(children: [
+          Row(
+            children: [
+              Tooltip(
+                  message: "Download file",
+                  child: TextButton(
+                    onPressed: () => downloadFile(context, savedFile),
                     style: defaultButtonStyle(),
-                    child: const Icon(Icons.share))),
-          ],
-        ),
+                    child: const Icon(Icons.download),
+                  )),
+              Tooltip(
+                  message: "Share file",
+                  child: TextButton(
+                      onPressed: () => shareFile(context, savedFile),
+                      style: defaultButtonStyle(),
+                      child: const Icon(Icons.share))),
+            ],
+          ),
+          Text(savedFile.fileSize.readableFileSize())
+        ]),
         Row(
           children: [
             Tooltip(
