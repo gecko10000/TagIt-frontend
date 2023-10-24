@@ -53,6 +53,9 @@ class BrowseScreen extends ConsumerWidget {
             IconButton(
                 onPressed: () => openCreateTagDialog(context, tag),
                 icon: const Icon(Icons.add)),
+            IconButton(
+                onPressed: () => print("Changing sorting"),
+                icon: const Icon(Icons.sort)),
             if (tagId != null)
               IconButton(
                   onPressed: () => openDeleteTagDialog(context, tag),

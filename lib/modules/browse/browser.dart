@@ -12,7 +12,7 @@ class TagBrowser extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final displayables = [...tag.files, ...tag.children];
+    final displayables = [...tag.children, ...tag.files];
     return DisplayableGrid(displayables: displayables, stackPush: stackPush);
   }
 }
