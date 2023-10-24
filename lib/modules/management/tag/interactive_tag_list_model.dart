@@ -24,6 +24,7 @@ void addTags(BuildContext context, WidgetRef ref, SavedFileState savedFile) {
                 ref.invalidate(tagProvider(tag));
               }
               ref.invalidate(savedFileProvider(savedFile.uuid));
+              ref.invalidate(allFilesProvider);
             },
           )));
 }
