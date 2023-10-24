@@ -7,7 +7,7 @@ Future<T?> showRiverpodDialog<T>(
     RouteSettings? routeSettings,
     bool barrierDismissible = true}) {
   return showDialog<T>(
-      barrierColor: Colors.black.withOpacity(0.95),
+      barrierColor: Colors.black.withOpacity(0.75),
       context: context,
       routeSettings: routeSettings,
       barrierDismissible: barrierDismissible,

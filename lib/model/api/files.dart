@@ -7,6 +7,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:tagit_frontend/model/enum/media_type.dart';
+import 'package:tagit_frontend/model/enum/sort_order.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
 import 'package:uuid/uuid.dart';
 
@@ -18,10 +19,13 @@ class FileAPI {
   FileAPI._();
 
   static Future<List<SavedFileState>> getAllFiles(
-      {bool reversed = false}) async {
+      FileOrder order, bool reversed) async {
     final response = await client.get("/files/all",
-        options: Options(headers: {"reversed": reversed.toString()}));
-    final files = response.data as List;
+        options: Options(headers: {
+          "fileOrder": order.name,
+          "filesReversed": reversed,
+        }));
+    final files = response.data["files"] as List;
     return files.map((j) => SavedFileState.fromJson(j)).toList();
   }
 
@@ -71,8 +75,13 @@ class FileAPI {
         data: FormData.fromMap({"name": newName}));
   }
 
-  static Future<SavedFileState> getInfo(UuidValue fileId) async {
-    final response = await client.get("/file/${fileId.uuid}/info");
+  static Future<SavedFileState> getInfo(
+      UuidValue fileId, TagOrder tagOrder, bool tagsReversed) async {
+    final response = await client.get("/file/${fileId.uuid}/info",
+        options: Options(headers: {
+          "tagOrder": tagOrder.name,
+          "tagsReversed": tagsReversed,
+        }));
     return SavedFileState.fromJson(response.data);
   }
 

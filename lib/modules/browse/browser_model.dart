@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tagit_frontend/common/widget/riverpod_dialog.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
+import 'package:tagit_frontend/modules/browse/sorting_popup.dart';
 import 'package:tagit_frontend/modules/content_view/content_view.dart';
 import 'package:tagit_frontend/modules/management/tag/create_dialog.dart';
 import 'package:tagit_frontend/modules/management/tag/delete_dialog.dart';
@@ -35,4 +36,8 @@ void openCreateTagDialog(BuildContext context, TagState parentTag) {
 
 void openDeleteTagDialog(BuildContext context, TagState tag) {
   showRiverpodDialog(context: context, child: DeleteTagDialog(tag));
+}
+
+void openSortingDialog(BuildContext context) {
+  showRiverpodDialog(context: context, child: SortingPopup());
 }
