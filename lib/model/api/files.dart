@@ -43,7 +43,6 @@ class FileAPI {
   static Future<SavedFileState> _internalUpload(PlatformFile file,
       StreamController<int> stream, CancelToken cancelToken) async {
     final modificationDate = _getModificationDate(file);
-    print(modificationDate);
     try {
       final upload = await client.post(
           "/file/${Uri.encodeComponent(file.name)}",
@@ -51,7 +50,7 @@ class FileAPI {
           cancelToken: cancelToken,
           options: Options(headers: {
             Headers.contentLengthHeader: file.size,
-            "modificationDate": modificationDate
+            if (modificationDate != null) "modificationDate": modificationDate
           }, contentType: ContentType.binary.toString()),
           onSendProgress: (total, _) {
         stream.add(total);
