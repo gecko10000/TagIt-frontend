@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:async/async.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:tagit_frontend/model/enum/media_type.dart';
 import 'package:tagit_frontend/model/enum/sort_order.dart';
@@ -18,8 +18,8 @@ class FileAPI {
   // no constructor
   FileAPI._();
 
-  static Future<List<SavedFileState>> getAllFiles(
-      FileOrder order, bool reversed) async {
+  static Future<List<SavedFileState>> getAllFiles(FileOrder order,
+      bool reversed) async {
     final response = await client.get("/files/all",
         options: Options(headers: {
           "fileOrder": order.name,
@@ -34,7 +34,9 @@ class FileAPI {
       final path = pFile.path;
       if (path == null) return null;
       final file = File(path);
-      return file.lastModifiedSync().millisecondsSinceEpoch;
+      return file
+          .lastModifiedSync()
+          .millisecondsSinceEpoch;
     } catch (ex) {
       return null;
     }
@@ -53,8 +55,8 @@ class FileAPI {
             if (modificationDate != null) "modificationDate": modificationDate
           }, contentType: ContentType.binary.toString()),
           onSendProgress: (total, _) {
-        stream.add(total);
-      });
+            stream.add(total);
+          });
       return SavedFileState.fromJson(upload.data);
     } on DioException catch (ex, st) {
       stream.addError(ex, st);
@@ -76,8 +78,8 @@ class FileAPI {
 
   // The first future is for choosing/getting the path.
   // The returned future is the download future.
-  static Future<Response> downloadFile(
-      SavedFileState savedFile, String path) async {
+  static Future<Response> downloadFile(SavedFileState savedFile,
+      String path) async {
     final url = "/file/${savedFile.uuid.uuid}";
     final queryParams = fileGetParams();
     return client.download(url, path, queryParameters: queryParams);
@@ -88,8 +90,8 @@ class FileAPI {
         data: FormData.fromMap({"name": newName}));
   }
 
-  static Future<SavedFileState> getInfo(
-      UuidValue fileId, TagOrder tagOrder, bool tagsReversed) async {
+  static Future<SavedFileState> getInfo(UuidValue fileId, TagOrder tagOrder,
+      bool tagsReversed) async {
     final response = await client.get("/file/${fileId.uuid}/info",
         options: Options(headers: {
           "tagOrder": tagOrder.name,
@@ -98,20 +100,20 @@ class FileAPI {
     return SavedFileState.fromJson(response.data);
   }
 
-  static Image getThumbnail(SavedFileState savedFile) {
+  static CachedNetworkImage getThumbnail(SavedFileState savedFile) {
     assert(savedFile.thumbnail);
-    return Image.network(
-      url("file/${savedFile.uuid}/thumb").toString(),
-      headers: defaultHeaders(),
+    return CachedNetworkImage(imageUrl:
+    url("file/${savedFile.uuid}/thumb").toString(),
+      httpHeaders: defaultHeaders(),
     );
   }
 
-  static Image getImage(SavedFileState savedFile) {
+  static CachedNetworkImage getImage(SavedFileState savedFile) {
     assert(savedFile.mediaType == MediaType.IMAGE);
     final dimensions = savedFile.dimensions;
-    return Image.network(
-      url("file/${savedFile.uuid}", queryParameters: fileGetParams())
-          .toString(),
+    return CachedNetworkImage(imageUrl:
+    url("file/${savedFile.uuid}", queryParameters: fileGetParams())
+        .toString(),
       width: dimensions?.width,
       height: dimensions?.height,
     );
@@ -132,8 +134,8 @@ class FileAPI {
     return _getMedia(savedFile);
   }
 
-  static Future<void> _modifyTag(
-      UuidValue fileId, UuidValue tagId, bool add) async {
+  static Future<void> _modifyTag(UuidValue fileId, UuidValue tagId,
+      bool add) async {
     await client.patch("/file/${fileId.uuid}/${add ? "add" : "remove"}",
         data: FormData.fromMap({"tag": tagId.uuid}));
   }
@@ -152,7 +154,7 @@ class FileAPI {
 
   static Future<bool> checkExists(String fileName) async {
     final response =
-        await client.get("/file/exists/${Uri.encodeComponent(fileName)}");
+    await client.get("/file/exists/${Uri.encodeComponent(fileName)}");
     final exists = response.data["exists"];
     return exists;
   }
