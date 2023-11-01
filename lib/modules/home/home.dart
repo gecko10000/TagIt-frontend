@@ -25,12 +25,11 @@ class Home extends ConsumerWidget {
                 return const EndpointScreen();
               }
               final needsAuth = value.get("token") == null;
-              return needsAuth
-                  ? const AuthScreen()
-                  : Scaffold(
-                      body: ref.watch(pageProvider),
-                      bottomNavigationBar: const HomeNavBar(),
-                    );
+              if (needsAuth) return const AuthScreen();
+              return Scaffold(
+                body: ref.watch(pageProvider),
+                bottomNavigationBar: const HomeNavBar(),
+              );
             }));
   }
 }
