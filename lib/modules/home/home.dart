@@ -25,6 +25,9 @@ class Home extends ConsumerWidget {
                 return const EndpointScreen();
               }
               final needsAuth = value.get("token") == null;
+              // don't use a ternary because HomeNavBar
+              // stays loaded otherwise (needs to be
+              // autoDispose to reset on open)
               if (needsAuth) return const AuthScreen();
               return Scaffold(
                 body: ref.watch(pageProvider),
