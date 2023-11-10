@@ -7,6 +7,8 @@ import '../upload/upload.dart';
 
 final homeIndexProvider = StateProvider.autoDispose((ref) => 0);
 
+// top-tier code
+const uploadPageIndex = 2;
 final _pages = [
   const BrowseScreen(tagId: null, tagName: null),
   const SearchScreen(),

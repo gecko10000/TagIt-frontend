@@ -54,14 +54,16 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
   }
 
   void initialPick() async {
-    if (_first) {
+    // use isEmpty so we don't open the file picker
+    // when uploading via share file
+    if (_first && ref.read(uploadsProvider).isEmpty) {
       final files = await pickFilesToUpload();
       // note: we use _first to determine
       // when to display the list of uploads
-      setState(() => _first = false);
       final uploads = await uploadFiles(files);
       ref.read(uploadsProvider.notifier).addAll(uploads);
     }
+    setState(() => _first = false);
   }
 
   @override
