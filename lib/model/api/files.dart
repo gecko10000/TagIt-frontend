@@ -101,7 +101,9 @@ class FileAPI {
   static CachedNetworkImage getThumbnail(SavedFileState savedFile) {
     assert(savedFile.thumbnail);
     return CachedNetworkImage(
-      imageUrl: url("file/${savedFile.uuid}/thumb").toString(),
+      imageUrl:
+          url("file/${savedFile.uuid}/thumb", queryParameters: fileGetParams())
+              .toString(),
       httpHeaders: defaultHeaders(),
     );
   }
