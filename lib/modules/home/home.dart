@@ -47,6 +47,7 @@ class _HomeState extends ConsumerState<Home> {
   }
 
   Future<void> handleIncomingShare() async {
+    if (!Platform.isAndroid && !Platform.isIOS) return;
     final handler = ShareHandlerPlatform.instance;
     final media = await handler.getInitialSharedMedia();
     if (media == null) return;
