@@ -6,6 +6,7 @@ import 'package:tagit_frontend/modules/browse/sorting_popup.dart';
 import 'package:tagit_frontend/modules/content_view/content_view.dart';
 import 'package:tagit_frontend/modules/management/tag/create_dialog.dart';
 import 'package:tagit_frontend/modules/management/tag/delete_dialog.dart';
+import 'package:tagit_frontend/modules/management/tag/rename_dialog.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../model/object/tag.dart';
@@ -46,4 +47,8 @@ void openSortingDialog(BuildContext context) {
 void openAllFiles(BuildContext context) {
   Navigator.of(context)
       .push(MaterialPageRoute(builder: (context) => const FileBrowser()));
+}
+
+void openRenameTagDialog(BuildContext context, TagState tag) {
+  showRiverpodDialog(context: context, child: TagRenameDialog(tag));
 }

@@ -78,7 +78,8 @@ class ContentViewer extends ConsumerWidget {
             Tooltip(
                 message: "Delete file",
                 child: TextButton(
-                    onPressed: () => deleteFile(context, ref, savedFile),
+                    onPressed: () =>
+                        openDeleteFileDialog(context, ref, savedFile),
                     style: defaultButtonStyle(),
                     child: const Icon(Icons.delete))),
           ],
@@ -106,7 +107,8 @@ class ContentViewer extends ConsumerWidget {
                       child: Tooltip(
                           message: "Rename file",
                           child: TextButton(
-                              onPressed: () => renameFile(context, savedFile),
+                              onPressed: () =>
+                                  openRenameFileDialog(context, savedFile),
                               style: defaultButtonStyle(),
                               child: BorderedText(
                                 savedFile.name,

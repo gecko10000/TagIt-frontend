@@ -25,14 +25,12 @@ class TagAPI {
     return TagState.fromJson(response.data);
   }
 
-  static Future<void> rename(UuidValue tagId, String newName) async {
-    await client.patch(
+  static Future<TagState> rename(UuidValue tagId, String newName) async {
+    final response = await client.patch(
       "/tag/${tagId.uuid}",
-      data: FormData.fromMap({
-        "name": newName
-      }), /*TODO: find out what this did?
-      options: Options(responseType: ResponseType.plain)*/
+      data: FormData.fromMap({"name": newName}),
     );
+    return TagState.fromJson(response.data);
   }
 
   static Future<void> delete(UuidValue tagId) async {

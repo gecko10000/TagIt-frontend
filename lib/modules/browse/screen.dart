@@ -43,12 +43,23 @@ class BrowseScreen extends ConsumerWidget {
                   },
                 );
           final titleString = tagName != null ? tagName! : "TagIt";
-          final title = Tooltip(
-              message: titleString,
-              child: Text(
-                titleString,
-                overflow: TextOverflow.fade,
-              ));
+          final title = Text(
+            titleString,
+            style: const TextStyle(fontSize: 20),
+          );
+          final titleButton = tagName == null
+              ? title
+              : TextButton(
+                  onPressed: () => openRenameTagDialog(context, tag),
+                  style: ButtonStyle(foregroundColor:
+                      MaterialStateProperty.resolveWith((states) {
+                    return states.contains(MaterialState.hovered)
+                        ? Colors.blue
+                        : Colors.white;
+                  })),
+                  child: title);
+          final titleTooltip =
+              Tooltip(message: titleString, child: titleButton);
           final actions = [
             IconButton(
                 onPressed: () => openCreateTagDialog(context, tag),
@@ -72,7 +83,7 @@ class BrowseScreen extends ConsumerWidget {
           final appBar = AppBar(
             automaticallyImplyLeading: false,
             leading: leading,
-            title: title,
+            title: titleTooltip,
             actions: actions,
           );
           return Scaffold(
