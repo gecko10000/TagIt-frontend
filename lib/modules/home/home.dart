@@ -46,7 +46,7 @@ class _HomeState extends ConsumerState<Home> {
             }));
   }
 
-  Future<void> handleShare() async {
+  Future<void> handleIncomingShare() async {
     final handler = ShareHandlerPlatform.instance;
     final media = await handler.getInitialSharedMedia();
     if (media == null) return;
@@ -63,7 +63,7 @@ class _HomeState extends ConsumerState<Home> {
   @override
   void initState() {
     super.initState();
-    handleShare();
+    handleIncomingShare();
   }
 
   PlatformFile toPlatformFile(String path) {
