@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tagit_frontend/model/object/saved_file.dart';
+import 'package:tagit_frontend/modules/browse/browser_model.dart';
 import 'package:tagit_frontend/modules/management/tag/picker/picker_tile.dart';
 import 'package:tagit_frontend/modules/management/tag/picker/tag_picker_model.dart';
 import 'package:uuid/uuid.dart';
@@ -49,6 +50,21 @@ class TagPickerScreen extends ConsumerWidget {
           automaticallyImplyLeading: false,
           leading: leadingIcon,
           actions: [
+            if (tag.hasValue)
+              IconButton(
+                tooltip: "Add Tag",
+                onPressed: () {
+                  openCreateTagDialog(context, tag.requireValue);
+                },
+                icon: const Icon(Icons.add),
+              ),
+            if (tagId != null && tag.hasValue)
+              IconButton(
+                  onPressed: () {
+                    openDeleteTagDialog(context, tag.requireValue);
+                  },
+                  tooltip: "Delete Tag",
+                  icon: const Icon(Icons.delete)),
             IconButton(
                 tooltip: "Confirm",
                 onPressed: () {
@@ -62,7 +78,7 @@ class TagPickerScreen extends ConsumerWidget {
             IconButton(
                 tooltip: "Cancel",
                 onPressed: () => closeTagPicker(context),
-                icon: const Icon(Icons.close))
+                icon: const Icon(Icons.close)),
           ],
         ),
         body: displayablesValue.when(

@@ -23,8 +23,9 @@ void openTagBrowser(BuildContext context, UuidValue tagId, String tagName,
 }
 
 void popAndOpenTagBrowser(
-    BuildContext context, UuidValue? tagId, String? tagName) {
-  Navigator.of(context).pushReplacement(_route(tagId, tagName, false));
+    BuildContext context, UuidValue? tagId, String? tagName,
+    {bool stackPush = false}) {
+  Navigator.of(context).pushReplacement(_route(tagId, tagName, stackPush));
 }
 
 void openContentView(BuildContext context, SavedFileState savedFile) {

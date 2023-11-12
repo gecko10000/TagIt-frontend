@@ -64,6 +64,10 @@ class BrowseScreen extends ConsumerWidget {
             IconButton(
                 onPressed: () => openCreateTagDialog(context, tag),
                 icon: const Icon(Icons.add)),
+            if (tagId != null)
+              IconButton(
+                  onPressed: () => openDeleteTagDialog(context, tag),
+                  icon: const Icon(Icons.delete)),
             IconButton(
                 onPressed: () => openSortingDialog(context),
                 icon: const Icon(Icons.sort)),
@@ -71,14 +75,10 @@ class BrowseScreen extends ConsumerWidget {
               IconButton(
                   onPressed: () => openAllFiles(context),
                   icon: const Icon(Icons.file_copy_sharp)),
-            if (tagId != null)
-              IconButton(
-                  onPressed: () => openDeleteTagDialog(context, tag),
-                  icon: const Icon(Icons.delete)),
             if (!stackPush)
               IconButton(
                   onPressed: () => Navigator.pop(context),
-                  icon: const Icon(Icons.close))
+                  icon: const Icon(Icons.close)),
           ];
           final appBar = AppBar(
             automaticallyImplyLeading: false,

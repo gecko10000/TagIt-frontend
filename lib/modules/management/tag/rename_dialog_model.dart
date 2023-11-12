@@ -14,6 +14,7 @@ Future<void> renameTag(
   ref.invalidate(tagProvider(tag.parentUUID));
   if (context.mounted) {
     Navigator.pop(context);
-    popAndOpenTagBrowser(context, newTag.uuid, newTag.fullName());
+    popAndOpenTagBrowser(context, newTag.uuid, newTag.fullName(),
+        stackPush: true);
   }
 }
