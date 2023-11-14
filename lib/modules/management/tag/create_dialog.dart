@@ -18,11 +18,8 @@ class _CreateDialogState extends ConsumerState<CreateDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final parentName = widget.parentTag.name;
-    // note: root tag has empty name
-    final title = parentName.isEmpty ? "New tag" : "New tag under $parentName";
     return AlertDialog(
-      title: Text(title),
+      title: const Text("Create Tag"),
       content: TextField(controller: controller),
       actions: [
         TextButton(

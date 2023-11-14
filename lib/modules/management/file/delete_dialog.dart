@@ -12,7 +12,7 @@ class DeleteFileDialog extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AlertDialog(
-      title: Text("Delete ${savedFile.name}?"),
+      title: Text("Delete file ${savedFile.name}?"),
       actions: [
         TextButton(
             onPressed: () => Navigator.pop(context),
