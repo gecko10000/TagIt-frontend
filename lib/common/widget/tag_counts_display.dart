@@ -10,19 +10,13 @@ class TagCountsDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final fileString = counts.files == counts.totalFiles
-        ? counts.files
-        : "${counts.files} (${counts.totalFiles})";
-    final tagString = counts.tags == counts.totalTags
-        ? counts.tags
-        : "${counts.tags} (${counts.totalTags})";
     return Tooltip(
       message: "${counts.files} direct files\n"
           "${counts.totalFiles} total files\n"
           "${counts.tags} direct subtags\n"
           "${counts.totalTags} total subtags",
-      child:
-          BorderedText("$fileString / $tagString", overflow: TextOverflow.fade),
+      child: BorderedText("${counts.files} / ${counts.tags}",
+          overflow: TextOverflow.fade),
     );
   }
 }

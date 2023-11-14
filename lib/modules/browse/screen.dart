@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tagit_frontend/modules/browse/browser.dart';
@@ -42,11 +44,27 @@ class BrowseScreen extends ConsumerWidget {
                     }
                   },
                 );
-          final titleString = tagName != null ? tagName! : "TagIt";
-          final title = Text(
+          final titleString = tagName ?? "TagIt";
+          final controller = ScrollController(
+              onAttach: (p) => Future(() => p.animateTo(p.maxScrollExtent,
+                  duration: const Duration(seconds: 1),
+                  curve: Curves.decelerate)));
+          final title = Scrollbar(
+              // only interactive on desktop platforms
+              interactive: !(Platform.isIOS || Platform.isAndroid),
+              scrollbarOrientation: ScrollbarOrientation.bottom,
+              controller: controller,
+              child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  controller: controller,
+                  child:
+                      Text(titleString, style: const TextStyle(fontSize: 20))));
+          /*final title = Text(
             titleString,
-            style: const TextStyle(fontSize: 20),
-          );
+            maxLines: 1,
+            softWrap: false,
+            style: const TextStyle(fontSize: 20, overflow: TextOverflow.fade),
+          );*/
           final titleButton = tagName == null
               ? title
               : TextButton(
