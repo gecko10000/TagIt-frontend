@@ -110,7 +110,9 @@ class BrowseScreen extends ConsumerWidget {
             body: body,
           );
         },
-        error: (ex, st) => Text("$ex\n$st"),
-        loading: () => const Center(child: CircularProgressIndicator()));
+        error: (ex, st) => Scaffold(appBar: AppBar(), body: Text("$ex\n$st")),
+        loading: () => Scaffold(
+            appBar: AppBar(),
+            body: const Center(child: CircularProgressIndicator())));
   }
 }
