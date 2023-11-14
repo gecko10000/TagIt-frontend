@@ -6,8 +6,9 @@ import '../../../model/object/tag.dart';
 
 class TagRenameDialog extends ConsumerStatefulWidget {
   final TagState toRename;
+  final bool stackPush;
 
-  const TagRenameDialog(this.toRename, {super.key});
+  const TagRenameDialog(this.toRename, {required this.stackPush, super.key});
 
   @override
   ConsumerState<TagRenameDialog> createState() => _TagRenameDialogState();
@@ -29,8 +30,9 @@ class _TagRenameDialogState extends ConsumerState<TagRenameDialog> {
             onPressed: () => Navigator.pop(context),
             child: const Text("Cancel")),
         TextButton(
-            onPressed: () =>
-                renameTag(context, ref, widget.toRename, controller.text),
+            onPressed: () => renameTag(
+                context, ref, widget.toRename, controller.text,
+                stackPush: widget.stackPush),
             child: const Text("Confirm"))
       ],
     );

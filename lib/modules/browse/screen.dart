@@ -50,7 +50,8 @@ class BrowseScreen extends ConsumerWidget {
           final titleButton = tagName == null
               ? title
               : TextButton(
-                  onPressed: () => openRenameTagDialog(context, tag),
+                  onPressed: () =>
+                      openRenameTagDialog(context, tag, stackPush: stackPush),
                   style: ButtonStyle(foregroundColor:
                       MaterialStateProperty.resolveWith((states) {
                     return states.contains(MaterialState.hovered)

@@ -50,6 +50,8 @@ void openAllFiles(BuildContext context) {
       .push(MaterialPageRoute(builder: (context) => const FileBrowser()));
 }
 
-void openRenameTagDialog(BuildContext context, TagState tag) {
-  showRiverpodDialog(context: context, child: TagRenameDialog(tag));
+void openRenameTagDialog(BuildContext context, TagState tag,
+    {required bool stackPush}) {
+  showRiverpodDialog(
+      context: context, child: TagRenameDialog(tag, stackPush: stackPush));
 }

@@ -7,7 +7,8 @@ import '../../../model/api/tags.dart';
 import '../../../model/object/tag.dart';
 
 Future<void> renameTag(
-    BuildContext context, WidgetRef ref, TagState tag, String newName) async {
+    BuildContext context, WidgetRef ref, TagState tag, String newName,
+    {required bool stackPush}) async {
   final fullNewName =
       tag.parentName == null ? newName : "${tag.parentName}/$newName";
   final newTag = await TagAPI.rename(tag.uuid, fullNewName);
@@ -15,6 +16,6 @@ Future<void> renameTag(
   if (context.mounted) {
     Navigator.pop(context);
     popAndOpenTagBrowser(context, newTag.uuid, newTag.fullName(),
-        stackPush: true);
+        stackPush: stackPush);
   }
 }
