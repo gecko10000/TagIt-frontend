@@ -29,30 +29,17 @@ class FileAPI {
     return files.map((j) => SavedFileState.fromJson(j)).toList();
   }
 
-  static int? _getModificationDate(PlatformFile pFile) {
-    try {
-      final path = pFile.path;
-      if (path == null) return null;
-      final file = File(path);
-      return file.lastModifiedSync().millisecondsSinceEpoch;
-    } catch (ex) {
-      return null;
-    }
-  }
-
   static Future<SavedFileState> _internalUpload(PlatformFile file,
       StreamController<int> stream, CancelToken cancelToken) async {
-    final modificationDate = _getModificationDate(file);
     try {
-      final upload = await client.post(
-          "/file/${Uri.encodeComponent(file.name)}",
-          data: file.readStream!,
-          cancelToken: cancelToken,
-          options: Options(headers: {
-            Headers.contentLengthHeader: file.size,
-            if (modificationDate != null) "modificationDate": modificationDate
-          }, contentType: ContentType.binary.toString()),
-          onSendProgress: (total, _) {
+      final upload = await client
+          .post("/file/${Uri.encodeComponent(file.name)}",
+              data: file.readStream!,
+              cancelToken: cancelToken,
+              options: Options(headers: {
+                Headers.contentLengthHeader: file.size,
+              }, contentType: ContentType.binary.toString()),
+              onSendProgress: (total, _) {
         stream.add(total);
       });
       return SavedFileState.fromJson(upload.data);
