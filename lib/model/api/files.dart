@@ -2,9 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:async/async.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:dio/dio.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:tagit_frontend/model/enum/media_type.dart';
 import 'package:tagit_frontend/model/enum/sort_order.dart';
@@ -85,25 +85,22 @@ class FileAPI {
     return SavedFileState.fromJson(response.data);
   }
 
-  static CachedNetworkImage getThumbnail(SavedFileState savedFile) {
+  static Image getThumbnail(SavedFileState savedFile) {
     assert(savedFile.thumbnail);
-    return CachedNetworkImage(
-      imageUrl:
-          url("file/${savedFile.uuid}/thumb", queryParameters: fileGetParams())
-              .toString(),
-      httpHeaders: defaultHeaders(),
+    return Image.network(
+      url("file/${savedFile.uuid}/thumb", queryParameters: fileGetParams())
+          .toString(),
     );
   }
 
-  static CachedNetworkImage getImage(SavedFileState savedFile) {
+  static Image getImage(SavedFileState savedFile) {
     assert(savedFile.mediaType == MediaType.IMAGE);
     final dimensions = savedFile.dimensions;
-    return CachedNetworkImage(
-      imageUrl: url("file/${savedFile.uuid}", queryParameters: fileGetParams())
+    return Image.network(
+      url("file/${savedFile.uuid}", queryParameters: fileGetParams())
           .toString(),
       width: dimensions?.width,
       height: dimensions?.height,
-      fadeInDuration: Duration.zero,
     );
   }
 
