@@ -86,17 +86,18 @@ class InteractiveTagList extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ref.watch(savedFileProvider(fileId)).when(
-        data: (savedFile) =>
-            Center(child: LayoutBuilder(builder: ((context, constraints) {
-              final child = tagList(context, ref, savedFile);
-              final width = constraints.maxWidth;
-              return width < maxWidth
-                  ? child
-                  : SizedBox(width: maxWidth, child: child);
-            }))),
-        error: (ex, st) => Text("$ex\n$st"),
-        loading: () => const CircularProgressIndicator());
+    return Center(
+        child: ref.watch(savedFileProvider(fileId)).when(
+            data: (savedFile) =>
+                LayoutBuilder(builder: ((context, constraints) {
+                  final child = tagList(context, ref, savedFile);
+                  final width = constraints.maxWidth;
+                  return width < maxWidth
+                      ? child
+                      : SizedBox(width: maxWidth, child: child);
+                })),
+            error: (ex, st) => Text("$ex\n$st"),
+            loading: () => const CircularProgressIndicator()));
     /*final numTags = savedFile.tags.length;
     return SizedBox(
         width: 400,

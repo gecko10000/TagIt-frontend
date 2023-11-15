@@ -84,7 +84,7 @@ class BrowseScreen extends ConsumerWidget {
               Tooltip(message: titleString, child: titleButton);
           final actions = [
             PopupMenuButton<String>(
-                icon: Icon(Icons.add),
+                icon: const Icon(Icons.add),
                 onSelected: (choice) async {
                   if (choice == "tag") {
                     openCreateTagDialog(context, tag);
@@ -105,8 +105,8 @@ class BrowseScreen extends ConsumerWidget {
                   }
                 },
                 itemBuilder: (c) => [
-                      PopupMenuItem(value: "tag", child: Text("Tag")),
-                      PopupMenuItem(value: "file", child: Text("File")),
+                      const PopupMenuItem(value: "tag", child: Text("Tag")),
+                      const PopupMenuItem(value: "file", child: Text("File")),
                     ]),
             if (tagId != null)
               IconButton(
