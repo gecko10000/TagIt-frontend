@@ -57,8 +57,8 @@ class _HomeState extends ConsumerState<Home> {
     if (filePaths.isEmpty) return;
     final platformFiles = filePaths.map((path) => toPlatformFile(path));
     final uploads = await uploadFiles(platformFiles);
-    ref.read(homeIndexProvider.notifier).state = uploadPageIndex;
     ref.read(uploadsProvider.notifier).addAll(uploads);
+    ref.read(homeIndexProvider.notifier).state = uploadPageIndex;
   }
 
   @override

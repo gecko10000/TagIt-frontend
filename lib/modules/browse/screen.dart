@@ -2,9 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tagit_frontend/model/api/files.dart';
 import 'package:tagit_frontend/modules/browse/browser.dart';
 import 'package:tagit_frontend/modules/browse/browser_model.dart';
+import 'package:tagit_frontend/modules/home/home_model.dart';
 import 'package:tagit_frontend/modules/management/tag/tag_view_model.dart';
+import 'package:tagit_frontend/modules/upload/upload_model.dart';
 import 'package:uuid/uuid.dart';
 
 class BrowseScreen extends ConsumerWidget {
@@ -80,9 +83,31 @@ class BrowseScreen extends ConsumerWidget {
           final titleTooltip =
               Tooltip(message: titleString, child: titleButton);
           final actions = [
-            IconButton(
-                onPressed: () => openCreateTagDialog(context, tag),
-                icon: const Icon(Icons.add)),
+            PopupMenuButton<String>(
+                icon: Icon(Icons.add),
+                onSelected: (choice) async {
+                  if (choice == "tag") {
+                    openCreateTagDialog(context, tag);
+                  } else if (choice == "file") {
+                    final files = await pickFilesToUpload();
+                    final uploads = await uploadFiles(files);
+                    ref.read(uploadsProvider.notifier).addAll(uploads);
+                    ref.read(homeIndexProvider.notifier).state =
+                        uploadPageIndex;
+                    for (final upload in uploads) {
+                      final future = upload.savedFileFuture;
+                      if (future == null) continue;
+                      future.then((file) async {
+                        await FileAPI.addTag(file.uuid, tag.uuid);
+                        ref.invalidate(tagProvider(tag.uuid));
+                      });
+                    }
+                  }
+                },
+                itemBuilder: (c) => [
+                      PopupMenuItem(value: "tag", child: Text("Tag")),
+                      PopupMenuItem(value: "file", child: Text("File")),
+                    ]),
             if (tagId != null)
               IconButton(
                   onPressed: () => openDeleteTagDialog(context, tag),
