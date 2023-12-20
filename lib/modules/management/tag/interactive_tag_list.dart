@@ -40,7 +40,7 @@ class InteractiveTagList extends ConsumerWidget {
         children: [
           IconButton(
               icon: const Icon(Icons.open_in_new),
-              onPressed: () => openTagBrowser(context, tag.uuid, tag.name,
+              onPressed: () => openTagBrowser(context, tag.uuid, tag.fullName(),
                   stackPush: false)),
           IconButton(
             icon: const Icon(Icons.delete),
